@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { fetchWithRetry } from '@/src/utils/fetchWithRetry';
 import ErrorBoundary from '@/src/components/ErrorBoundary';
+import { BarChart, Coins, Gauge, Key, LineChart, PieChart } from 'lucide-react';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -91,21 +92,21 @@ function ApiKeysUsageInner() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                     <div className="p-6 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
                         <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-2">
-                            <span className="material-symbols-outlined text-[18px]">bar_chart</span>
+                            <BarChart className="text-[18px]" />
                             <span>Total Requests</span>
                         </div>
                         <p className="text-3xl font-bold text-slate-900 dark:text-white">{totalRequests.toLocaleString()}</p>
                     </div>
                     <div className="p-6 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
                         <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-2">
-                            <span className="material-symbols-outlined text-[18px]">token</span>
+                            <Coins className="text-[18px]" />
                             <span>Total Tokens</span>
                         </div>
                         <p className="text-3xl font-bold text-slate-900 dark:text-white">{totalTokens.toLocaleString()}</p>
                     </div>
                     <div className="p-6 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
                         <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-2">
-                            <span className="material-symbols-outlined text-[18px]">vpn_key</span>
+                            <Key className="text-[18px]" />
                             <span>Active Keys</span>
                         </div>
                         <p className="text-3xl font-bold text-slate-900 dark:text-white">{keys.filter(k => k.is_active).length} / {keys.length}</p>
@@ -115,18 +116,18 @@ function ApiKeysUsageInner() {
                 <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden mb-8">
                     <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
                         <h2 className="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                            <span className="material-symbols-outlined text-[20px] text-indigo-500">donut_small</span>
+                            <PieChart className="text-[20px] text-indigo-500" />
                             Usage by Provider
                         </h2>
                     </div>
                     {Object.keys(usage).length === 0 ? (
                         <div className="p-12 text-center">
-                            <span className="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-4">analytics</span>
+                            <LineChart className="text-5xl text-slate-300 dark:text-slate-600 mb-4" />
                             <p className="text-slate-500 dark:text-slate-400">No usage data available for this period.</p>
                             <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">Usage tracking starts after your first API call.</p>
                         </div>
                     ) : (
-                        <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                        <div className="divide-y divide-slate-200 dark:divide-slate-700">
                             {Object.entries(usage).map(([provider, data]) => {
                                 const maxReq = Math.max(...Object.values(usage).map(u => u.total_requests), 1);
                                 const pct = (data.total_requests / maxReq) * 100;
@@ -155,7 +156,7 @@ function ApiKeysUsageInner() {
                 <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
                     <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
                         <h2 className="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                            <span className="material-symbols-outlined text-[20px] text-indigo-500">speed</span>
+                            <Gauge className="text-[20px] text-indigo-500" />
                             Rate Limit Status
                         </h2>
                     </div>
@@ -164,7 +165,7 @@ function ApiKeysUsageInner() {
                             <p>No keys configured. <a href="/api-keys" className="text-indigo-500 hover:underline">Add API keys</a></p>
                         </div>
                     ) : (
-                        <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                        <div className="divide-y divide-slate-200 dark:divide-slate-700">
                             {keys.map(key => {
                                 const usagePct = Math.min(100, (key.total_requests / Math.max(key.daily_quota, 1)) * 100);
                                 return (
@@ -177,7 +178,7 @@ function ApiKeysUsageInner() {
                                             </div>
                                             <span className="text-xs text-slate-400">{key.total_requests.toLocaleString()} total requests</span>
                                         </div>
-                                        <div className="grid grid-cols-3 gap-4 text-xs text-slate-500 dark:text-slate-400 mb-2">
+                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-500 dark:text-slate-400 mb-2">
                                             <span>{key.rate_limit_per_minute}/min</span>
                                             <span>{key.rate_limit_per_hour}/hour</span>
                                             <span>{key.daily_quota.toLocaleString()}/day</span>

@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import ThemeToggle from '@/components/layout/header/ThemeToggle';
 import NotificationBell from '@/components/NotificationBell';
+import { BookOpen, Menu, Settings, User } from 'lucide-react';
 
 const HEADER_STYLE = {
     backgroundColor: 'rgba(255, 255, 255, 0.4)',
@@ -24,7 +25,7 @@ const Logo = memo(({ href }) => (
         className="flex items-center gap-2 group active:scale-95 focus:ring-2 focus:ring-primary focus:outline-none rounded-lg transition-all text-decoration-none"
     >
         <div className="flex items-center justify-center pointer-events-none">
-            <span className="material-symbols-outlined text-[30px] sm:text-[34px] text-blue-700 dark:text-blue-400">auto_stories</span>
+            <BookOpen className="text-[30px] sm:text-[34px] text-blue-700 dark:text-blue-400" />
         </div>
         <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-none tracking-tight">
             ScholarForm <span className="text-blue-600 dark:text-blue-400">AI</span>
@@ -57,7 +58,7 @@ const Header = memo(function Header({ section = 'shared', isSidebarLayout = fals
                             className="p-1.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 rounded-lg transition-colors"
                             aria-label="Toggle Sidebar"
                         >
-                            <span className="material-symbols-outlined text-[24px]">menu</span>
+                            <Menu className="text-[24px]" />
                         </button>
                     )}
                     <Logo href={dashboardHref} />
@@ -68,7 +69,7 @@ const Header = memo(function Header({ section = 'shared', isSidebarLayout = fals
                         <ThemeToggle />
                         <NotificationBell />
                         <button aria-label="Settings" className="p-1.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 rounded-lg transition-colors">
-                            <span className="material-symbols-outlined text-[20px]">settings</span>
+                            <Settings className="text-[20px]" />
                         </button>
                     </div>
 
@@ -83,7 +84,7 @@ const Header = memo(function Header({ section = 'shared', isSidebarLayout = fals
                                 </span>
                             </div>
                             <button aria-label="User Profile" className="size-8 sm:size-9 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary-light transition-all rounded-lg hover:bg-slate-100 dark:hover:bg-white/10">
-                                <span className="material-symbols-outlined text-[22px] sm:text-[26px]">person</span>
+                                <User className="text-[22px] sm:text-[26px]" />
                             </button>
                         </div>
                     ) : (

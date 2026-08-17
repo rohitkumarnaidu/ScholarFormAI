@@ -29,7 +29,7 @@ describe('StatCard', () => {
 
     it('renders icon', () => {
         render(<StatCard {...baseProps} />);
-        expect(screen.getByText('description')).toBeInTheDocument();
+        expect(document.querySelector('.lucide-file-text')).toBeInTheDocument();
     });
 });
 

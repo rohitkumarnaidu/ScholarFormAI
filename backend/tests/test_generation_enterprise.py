@@ -1038,7 +1038,8 @@ class TestDocumentGeneratorGetDownloadPath:
 
 class TestDocumentGeneratorGetStatus:
     def test_get_status_without_session_fallback(self):
-        with patch("app.pipeline.generation.document_generator.DocumentService") as MockDS:
+        with patch("app.pipeline.generation.document_generator.DocumentService") as MockDS, \
+             patch("app.pipeline.generation.document_generator.GeneratorSessionRepository.get_session", return_value=None):
             MockDS.get_document.return_value = {
                 "status": "COMPLETED",
                 "current_stage": "DONE",

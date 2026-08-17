@@ -2,6 +2,8 @@
 // Copyright (c) 2026 ScholarForm AI
 
 import React, { memo } from 'react';
+import { TrendingDown, TrendingUp } from 'lucide-react';
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 function MetricsCard({ title, value, icon, subtitle, color = 'primary', trend, isLoading = false }) {
     const colorMap = {
@@ -37,16 +39,14 @@ function MetricsCard({ title, value, icon, subtitle, color = 'primary', trend, i
                     )}
                     {trend !== undefined && (
                         <div className={`flex items-center gap-1 mt-2 text-xs font-medium ${trend >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                            <span className="material-symbols-outlined text-sm">
-                                {trend >= 0 ? 'trending_up' : 'trending_down'}
-                            </span>
+                            {trend >= 0 ? <TrendingUp className="text-sm" /> : <TrendingDown className="text-sm" />}
                             {Math.abs(trend)}%
                         </div>
                     )}
                 </div>
                 {icon && (
                     <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${iconColorMap[color] || iconColorMap.primary}`}>
-                        <span className="material-symbols-outlined">{icon}</span>
+                        <DynamicIcon name={icon} />
                     </div>
                 )}
             </div>

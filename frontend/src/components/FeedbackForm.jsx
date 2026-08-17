@@ -4,6 +4,7 @@
 import { useRef, useState } from 'react';
 import { submitFeedback } from '@/services/api';
 import { FeedbackSubmissionSchema, getFirstZodError } from '@/lib/schemas';
+import { CheckCircle, Send } from 'lucide-react';
 
 export default function FeedbackForm({ documentId: propDocId, onSubmitted }) {
     const formRef = useRef(null);
@@ -155,7 +156,7 @@ export default function FeedbackForm({ documentId: propDocId, onSubmitted }) {
 
             {success && (
                 <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 text-sm flex items-center gap-2">
-                    <span className="material-symbols-outlined text-sm">check_circle</span>
+                    <CheckCircle className="text-sm" />
                     Feedback submitted successfully! Thank you for helping improve our AI.
                 </div>
             )}
@@ -173,7 +174,7 @@ export default function FeedbackForm({ documentId: propDocId, onSubmitted }) {
                     </>
                 ) : (
                     <>
-                        <span className="material-symbols-outlined">send</span>
+                        <Send />
                         Submit Correction
                     </>
                 )}

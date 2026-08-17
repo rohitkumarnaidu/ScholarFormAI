@@ -11,6 +11,7 @@ import MetadataStep from './_components/MetadataStep';
 import StepIndicator from './_components/StepIndicator';
 import TemplateStep from './_components/TemplateStep';
 import { useGeneratorState } from './_components/useGeneratorState';
+import { ArrowLeft, ArrowRight, Loader2, Sparkles } from 'lucide-react';
 
 export default function DocumentGeneratorPage() {
     usePageTitle('Generate Document - ScholarForm AI');
@@ -62,10 +63,10 @@ export default function DocumentGeneratorPage() {
             <div className="max-w-4xl mx-auto px-4 py-10">
                 <div className="text-center mb-10">
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary-light text-xs font-medium mb-4">
-                        <span className="material-symbols-outlined text-sm">auto_awesome</span>
+                        <Sparkles className="text-sm" />
                         AI Document Generator
                     </div>
-                    <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-500 dark:from-white dark:to-gray-400 bg-clip-text text-transparent mb-2">
+                    <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-500 dark:from-white dark:to-slate-400 bg-clip-text text-transparent mb-2">
                         Generate from Scratch
                     </h1>
                     <p className="text-slate-500 text-sm">No file upload needed - describe your document, the AI writes it.</p>
@@ -87,7 +88,7 @@ export default function DocumentGeneratorPage() {
                                 disabled={step === 1}
                                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-200 dark:hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition min-h-[44px]"
                             >
-                                <span className="material-symbols-outlined text-base">arrow_back</span>
+                                <ArrowLeft className="text-base" />
                                 Back
                             </button>
                             {step === 3 ? (
@@ -100,12 +101,12 @@ export default function DocumentGeneratorPage() {
                                 >
                                     {isSubmitting ? (
                                         <>
-                                            <span className="material-symbols-outlined text-base animate-spin">progress_activity</span>
+                                            <Loader2 className="text-base animate-spin" />
                                             Starting...
                                         </>
                                     ) : (
                                         <>
-                                            <span className="material-symbols-outlined text-base">auto_awesome</span>
+                                            <Sparkles className="text-base" />
                                             Generate Document
                                         </>
                                     )}
@@ -119,7 +120,7 @@ export default function DocumentGeneratorPage() {
                                     className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-hover shadow-lg shadow-primary/30 hover:shadow-primary/50 text-white text-sm font-semibold hover:scale-[1.02] disabled:opacity-40 disabled:cursor-not-allowed transition min-h-[44px] active:scale-95"
                                 >
                                     Continue
-                                    <span className="material-symbols-outlined text-base">arrow_forward</span>
+                                    <ArrowRight className="text-base" />
                                 </button>
                             )}
                         </div>

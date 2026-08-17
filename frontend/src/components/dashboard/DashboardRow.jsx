@@ -5,6 +5,7 @@
 
 import React, { memo } from 'react';
 import Link from 'next/link';
+import { Download, FileText } from 'lucide-react';
 
 // Constants for status (inlined to avoid missing imports in this context)
 const isCompleted = (status) => status === 'completed' || status === 'success' || status === 'ready';
@@ -25,7 +26,7 @@ const DashboardRow = memo(function DashboardRow({ item, style }) {
             <td className="px-4 md:px-6 py-4 min-w-[200px] md:min-w-[300px]">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                        <span className="material-symbols-outlined text-[20px]">article</span>
+                        <FileText className="text-[20px]" />
                     </div>
                     <div className="flex flex-col min-w-0">
                         <span className="text-slate-900 dark:text-white font-bold truncate max-w-[240px]">
@@ -67,7 +68,7 @@ const DashboardRow = memo(function DashboardRow({ item, style }) {
                             aria-label={`Download manuscript: ${item.originalFileName || item.filename}`}
                             className="h-9 px-4 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white focus:ring-2 focus:ring-primary focus:outline-none font-bold text-xs transition-all flex items-center gap-2"
                         >
-                            <span className="material-symbols-outlined text-[18px]">download</span>
+                            <Download className="text-[18px]" />
                             Download
                         </button>
                     ) : (

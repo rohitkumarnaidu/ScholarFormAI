@@ -2,6 +2,7 @@
 // Copyright (c) 2026 ScholarForm AI
 
 import React, { memo } from 'react';
+import { Check, Info, RefreshCw } from 'lucide-react';
 
 const ProcessingStepper = memo(function ProcessingStepper({
     isProcessing,
@@ -48,7 +49,7 @@ const ProcessingStepper = memo(function ProcessingStepper({
                                         'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-400'
                                     }`}>
                                     {isStepCompleted ? (
-                                        <span className="material-symbols-outlined text-sm font-bold">check</span>
+                                        <Check className="text-sm font-bold" />
                                     ) : isStepActive ? (
                                         <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
                                     ) : (
@@ -74,9 +75,7 @@ const ProcessingStepper = memo(function ProcessingStepper({
 
             <div className="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-b-xl flex justify-center">
                 <p className="text-xs text-slate-400 flex items-center gap-1 italic">
-                    <span className="material-symbols-outlined text-[14px]">
-                        {isProcessing ? 'sync' : 'info'}
-                    </span>
+                    {isProcessing ? <RefreshCw className="text-[14px]" /> : <Info className="text-[14px]" />}
                     {isProcessing ? 'Live updates from server...' : 'Ready to process'}
                 </p>
             </div>

@@ -12,6 +12,8 @@ import Link from 'next/link';
 
 import DashboardRow from '@/src/components/dashboard/DashboardRow';
 import { trackPageView } from '@/src/lib/rum';
+import { ArrowRight, FolderOpen, Plus } from 'lucide-react';
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 const StatsCard = memo(({ 
     title, 
@@ -27,7 +29,7 @@ const StatsCard = memo(({
     const cardContent = (
         <>
             <div className="bg-slate-100/50 dark:bg-slate-800/50 h-48 flex items-center justify-center group-hover:bg-slate-200/50 dark:group-hover:bg-slate-700/50 transition-colors">
-                <span className={`material-symbols-outlined ${iconColor} text-5xl`}>{icon}</span>
+                <DynamicIcon name={icon} className={`w-12 h-12 ${iconColor}`} />
             </div>
             <div className="p-6">
                 <div className="flex justify-between items-start mb-2">
@@ -39,7 +41,7 @@ const StatsCard = memo(({
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-4">{description}</p>
                 {href ? (
                     <div className={btnClass}>
-                        <span className="material-symbols-outlined text-sm">add</span>
+                        <Plus className="text-sm" />
                         {btnText}
                     </div>
                 ) : (
@@ -155,10 +157,10 @@ export default function DashboardPage() {
                         </h2>
                         <div className="flex items-center gap-4">
                             <button onClick={handleRefresh} className="text-sm font-semibold text-primary hover:text-blue-700 transition-colors flex items-center gap-1.5">
-                                <span className={`material-symbols-outlined text-lg ${loading ? 'animate-spin' : ''}`}>refresh</span> Refresh
+                                <DynamicIcon name="refresh" className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} /> Refresh
                             </button>
                             <Link href="/history" className="text-sm font-semibold text-primary hover:text-blue-700 transition-colors flex items-center gap-1">
-                                View full history <span className="material-symbols-outlined text-lg">arrow_forward</span>
+                                View full history <ArrowRight className="text-lg" />
                             </Link>
                         </div>
                     </div>
@@ -193,7 +195,7 @@ export default function DashboardPage() {
                                     <tr>
                                         <td colSpan="4" className="px-6 py-12 text-center">
                                             <div className="flex flex-col items-center gap-3">
-                                                <span className="material-symbols-outlined text-4xl text-slate-300">folder_open</span>
+                                                <FolderOpen className="text-4xl text-slate-300" />
                                                 <p className="text-slate-500 font-medium">No activity found. Start by uploading a manuscript.</p>
                                                 <Link href="/upload" className="mt-2 text-primary font-bold hover:underline">New Upload</Link>
                                             </div>

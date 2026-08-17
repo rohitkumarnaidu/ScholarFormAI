@@ -7,6 +7,7 @@ import React, { memo, useMemo } from 'react';
 import Skeleton from '@/components/ui/Skeleton';
 
 import { cn } from '@/src/lib/utils';
+import { BarChart } from 'lucide-react';
 
 const COLOR_MAP = {
     'current-month': 'bg-primary hover:bg-blue-600',
@@ -45,11 +46,11 @@ const UsageChart = memo(function UsageChart({ data, days = 7, height = 180, load
         return (
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm">
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary text-lg">bar_chart</span>
+                    <BarChart className="text-primary text-lg" />
                     Formatting Activity
                 </h3>
                 <div className="flex flex-col items-center justify-center py-8 text-center">
-                    <span className="material-symbols-outlined text-3xl text-slate-300 dark:text-slate-600 mb-2">bar_chart</span>
+                    <BarChart className="text-3xl text-slate-300 dark:text-slate-600 mb-2" />
                     <p className="text-sm text-slate-500 dark:text-slate-400">No activity data available</p>
                 </div>
             </div>
@@ -64,7 +65,7 @@ const UsageChart = memo(function UsageChart({ data, days = 7, height = 180, load
     return (
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary text-lg">bar_chart</span>
+                <BarChart className="text-primary text-lg" />
                 Formatting Activity ({days}-day view)
             </h3>
             <div className="flex gap-1">

@@ -6,6 +6,8 @@
 import React, { memo, useMemo, useCallback } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { AlignLeft, LogOut, Wand2, X } from 'lucide-react';
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 const APP_GUEST_LINKS = [
   { href: '/upload', label: 'Upload', icon: 'upload_file' },
@@ -53,7 +55,7 @@ const NavItem = memo(function NavItem({ href, label, icon, active, isCollapsed, 
       aria-label={label}
       className={`active-nav-link flex items-center gap-3 py-2.5 rounded-xl text-[15px] font-semibold active:scale-[0.98] transition-all ${isCollapsed ? 'px-0 justify-center w-11 h-11 mx-auto' : 'px-3 w-full'} ${active ? 'bg-primary/10 text-primary dark:bg-primary/25 dark:text-blue-400 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`}
     >
-      <span className={`material-symbols-outlined shrink-0 text-[20px] ${active ? 'fill-current' : ''}`} aria-hidden="true">{icon}</span>
+      <DynamicIcon name={icon} className={`shrink-0 w-5 h-5 ${active ? 'fill-current text-current' : ''}`} aria-hidden="true" />
       {!isCollapsed && <span className="truncate">{label}</span>}
     </button>
   );
@@ -131,7 +133,7 @@ const Sidebar = memo(function Sidebar({ section = 'shared', onClose, isCollapsed
       {onClose && (
         <div className="flex justify-end mb-4 pr-1">
           <button onClick={onClose} className="lg:hidden p-1 text-slate-500 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 " aria-label="Close Sidebar">
-            <span className="material-symbols-outlined" aria-hidden="true">close</span>
+            <X />
           </button>
         </div>
       )}
@@ -146,7 +148,7 @@ const Sidebar = memo(function Sidebar({ section = 'shared', onClose, isCollapsed
               aria-label={m.charAt(0).toUpperCase() + m.slice(1)}
               className={`active-mode-btn flex items-center gap-3 py-2 rounded-xl text-[15px] active:scale-[0.98] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${isCollapsed ? 'px-0 justify-center w-10 h-10 mx-auto' : 'px-3 w-full'} ${activeMode === m ? 'bg-white dark:bg-white/10 shadow-sm text-slate-900 dark:text-white font-bold ring-1 ring-slate-900/5 dark:ring-white/10' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium hover:bg-slate-200/50 dark:hover:bg-white/5'}`}
             >
-              <span className="material-symbols-outlined shrink-0 text-[20px]" aria-hidden="true">{m === 'formatter' ? 'format_align_left' : 'magic_button'}</span>
+              {m === 'formatter' ? <AlignLeft className="shrink-0 text-[20px]" /> : <Wand2 className="shrink-0 text-[20px]" />}
               {!isCollapsed && <span className="truncate capitalize">{m}</span>}
             </button>
           ))}
@@ -190,7 +192,7 @@ const Sidebar = memo(function Sidebar({ section = 'shared', onClose, isCollapsed
           title={isCollapsed ? actionData.label : undefined}
           className={`h-11 flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-[15px] font-bold active:scale-[0.98] transition-all shadow-lg shadow-primary/20 shrink-0 overflow-hidden ${isCollapsed ? 'w-11 px-0' : 'w-full px-4'}`}
         >
-          <span className="material-symbols-outlined shrink-0 text-[20px]">{actionData.icon}</span>
+          <DynamicIcon name={actionData.icon} className="shrink-0 w-5 h-5" />
           {!isCollapsed && <span className="truncate">{actionData.label}</span>}
         </button>
         {uiUser && (
@@ -199,7 +201,7 @@ const Sidebar = memo(function Sidebar({ section = 'shared', onClose, isCollapsed
             title={isCollapsed ? 'Sign Out' : undefined}
             className={`h-10 flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 active:scale-[0.98] transition-all ${isCollapsed ? 'w-11 px-0' : 'w-full px-4'}`}
           >
-            <span className="material-symbols-outlined shrink-0 text-[20px]">logout</span>
+            <LogOut className="shrink-0 text-[20px]" />
             {!isCollapsed && <span className="truncate font-semibold">Sign Out</span>}
           </button>
         )}

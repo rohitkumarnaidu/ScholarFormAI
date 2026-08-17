@@ -24,6 +24,7 @@ import { useUnsavedChanges } from '@/src/hooks/useUnsavedChanges';
 import { isCompleted } from '@/src/constants/status';
 import { submitEdit, getPreview } from '@/src/services/api';
 import useJobFromUrl from '@/src/hooks/useJobFromUrl';
+import { AlertTriangle, CheckCircle, Clock, Code, FileText, LineChart, List, ListOrdered, Redo, RefreshCw, Save, Table as TableIcon, Undo } from 'lucide-react';
 
 const getContentFromSections = (sections) => {
     if (!sections || typeof sections !== 'object') {
@@ -185,7 +186,7 @@ export default function Edit() {
 
         } catch (error) {
             console.error("Save failed:", error);
-            toast.error();
+            toast.error('Failed to save changes. Please try again.');
         } finally {
             setIsSaving(false);
         }
@@ -282,11 +283,11 @@ export default function Edit() {
                             disabled={isSaving}
                             title="Save (Ctrl+S or Ctrl+Enter)"
                             className="flex items-center gap-1.5 px-3 py-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" aria-label="Save">
-                            <span className="material-symbols-outlined text-[18px]" aria-hidden="true">save</span>
+                            <Save className="text-[18px]" />
                             <span className="text-sm font-medium hidden sm:inline">Save</span>
                         </button>
                         <button onClick={handleRevalidate} className="flex items-center gap-1.5 px-3 py-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" aria-label="Local Validate">
-                            <span className="material-symbols-outlined text-[18px]" aria-hidden="true">refresh</span>
+                            <RefreshCw className="text-[18px]" />
                             <span className="text-sm font-medium hidden sm:inline">Local Validate</span>
                         </button>
                         <button
@@ -295,7 +296,7 @@ export default function Edit() {
                             className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-400"
                             aria-label="Export"
                         >
-                            <span className="material-symbols-outlined text-[18px]" aria-hidden="true">description</span>
+                            <FileText className="text-[18px]" />
                             <span className="text-sm font-bold hidden sm:inline">Export</span>
                         </button>
                     </div>
@@ -313,10 +314,11 @@ export default function Edit() {
                                     : 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-900/30'
                                     }`}>
                                     <div className="flex items-center gap-2">
-                                        <span className={`material-symbols-outlined text-sm ${validationMessage.type === 'success' ? 'text-green-600 dark:text-green-400' : 'text-amber-600 dark:text-amber-400'
-                                            }`}>
-                                            {validationMessage.type === 'success' ? 'check_circle' : 'warning'}
-                                        </span>
+                                        {validationMessage.type === 'success' ? (
+                                            <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+                                        ) : (
+                                            <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                                        )}
                                         <p className={`text-sm font-medium ${validationMessage.type === 'success' ? 'text-green-900 dark:text-green-300' : 'text-amber-900 dark:text-amber-300'
                                             }`}>
                                             {validationMessage.text}
@@ -390,7 +392,7 @@ export default function Edit() {
                                         }`}
                                         title="Bullet List"
                                     >
-                                        <span className="material-symbols-outlined text-[14px]">format_list_bulleted</span>
+                                        <List className="text-[14px]" />
                                     </button>
                                     <button
                                         type="button"
@@ -402,7 +404,7 @@ export default function Edit() {
                                         }`}
                                         title="Numbered List"
                                     >
-                                        <span className="material-symbols-outlined text-[14px]">format_list_numbered</span>
+                                        <ListOrdered className="text-[14px]" />
                                     </button>
                                     <div className="w-px h-5 bg-slate-200 dark:bg-slate-700 mx-1" />
                                     <button
@@ -411,7 +413,7 @@ export default function Edit() {
                                         className="px-2 py-1 rounded text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                                         title="Undo (Ctrl+Z)"
                                     >
-                                        <span className="material-symbols-outlined text-[14px]">undo</span>
+                                        <Undo className="text-[14px]" />
                                     </button>
                                     <button
                                         type="button"
@@ -419,7 +421,7 @@ export default function Edit() {
                                         className="px-2 py-1 rounded text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                                         title="Redo (Ctrl+Y)"
                                     >
-                                        <span className="material-symbols-outlined text-[14px]">redo</span>
+                                        <Redo className="text-[14px]" />
                                     </button>
                                     <div className="w-px h-5 bg-slate-200 dark:bg-slate-700 mx-1" />
                                     <button
@@ -428,7 +430,7 @@ export default function Edit() {
                                         className="px-2 py-1 rounded text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                                         title="Insert Table"
                                     >
-                                        <span className="material-symbols-outlined text-[14px]">table</span>
+                                        <TableIcon className="text-[14px]" />
                                     </button>
                                     <button
                                         type="button"
@@ -440,7 +442,7 @@ export default function Edit() {
                                         }`}
                                         title="Code Block"
                                     >
-                                        <span className="material-symbols-outlined text-[14px]">code</span>
+                                        <Code className="text-[14px]" />
                                     </button>
                                 </div>
 
@@ -456,7 +458,7 @@ export default function Edit() {
                     <aside className="w-full xl:w-80 border-t xl:border-t-0 xl:border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col max-h-[360px] xl:max-h-none">
                         <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
                             <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                <span className="material-symbols-outlined text-primary">analytics</span>
+                                <LineChart className="text-primary" />
                                 Live Report
                             </h3>
                             <span className="text-xs font-semibold bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-slate-600 dark:text-slate-400">
@@ -467,7 +469,7 @@ export default function Edit() {
                             {job.result?.errors?.map((err, i) => (
                                 <div key={i} className="p-4 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 rounded-xl">
                                     <div className="flex gap-2">
-                                        <span className="material-symbols-outlined text-red-500 text-sm">error</span>
+                                        <AlertTriangle className="text-red-500 text-sm" />
                                         <h4 className="text-sm font-bold text-red-900 dark:text-red-400">{err.issue || "Formatting Error"}</h4>
                                     </div>
                                     <p className="text-xs text-red-700 dark:text-red-300 mt-1">{err.message || err}</p>
@@ -476,7 +478,7 @@ export default function Edit() {
                             {job.result?.warnings?.map((warn, i) => (
                                 <div key={i} className="p-4 bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 rounded-xl">
                                     <div className="flex gap-2">
-                                        <span className="material-symbols-outlined text-amber-500 text-sm">warning</span>
+                                        <AlertTriangle className="text-amber-500 text-sm" />
                                         <h4 className="text-sm font-bold text-amber-900 dark:text-amber-400">Suggestion</h4>
                                     </div>
                                     <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">{warn.message || warn}</p>
@@ -494,7 +496,7 @@ export default function Edit() {
                     </div>
                     <div className="flex flex-wrap items-center gap-4">
                         <div className="flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-[12px]">schedule</span>
+                            <Clock className="text-[12px]" />
                             <span>Last saved: {lastSaved}</span>
                         </div>
                         <span className="break-all">ID: {job.id}</span>

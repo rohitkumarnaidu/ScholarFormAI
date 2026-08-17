@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { motion, useMotionValue, useTransform, animate, useInView, Variants, useMotionValueEvent } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
+import { ArrowRight, Book, Code, FileText, Sparkles } from 'lucide-react';
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 const features = [
   {
@@ -98,7 +100,7 @@ export default function Home() {
           <div className="container mx-auto px-4 max-w-6xl h-16 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="bg-primary w-8 h-8 rounded-lg flex items-center justify-center shadow-sm">
-                <span className="material-symbols-outlined text-white text-[20px]">description</span>
+                <FileText className="text-white text-[20px]" />
               </div>
               <span className="font-extrabold text-xl tracking-tight text-slate-900">ScholarForm<span className="text-primary">AI</span></span>
             </div>
@@ -122,7 +124,7 @@ export default function Home() {
           >
             <motion.div variants={itemVariants} className="mb-6 flex justify-center">
               <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary shadow-sm backdrop-blur-sm">
-                <span className="material-symbols-outlined text-[16px]">auto_awesome</span>
+                <Sparkles className="text-[16px]" />
                 Enterprise-Grade Academic Formatting
               </span>
             </motion.div>
@@ -146,7 +148,7 @@ export default function Home() {
               >
                 <span className="relative z-10 flex items-center gap-2">
                   Start Formatting
-                  <span className="material-symbols-outlined text-[20px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+                  <ArrowRight className="text-[20px] transition-transform group-hover:translate-x-1" />
                 </span>
                 <div className="absolute inset-0 z-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
               </Link>
@@ -155,7 +157,7 @@ export default function Home() {
                 className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-8 py-4 text-base font-bold text-slate-700 transition-all hover:bg-slate-50 hover:border-slate-400 hover:scale-[1.02] active:scale-95 shadow-sm"
               >
                 Read Documentation
-                <span className="material-symbols-outlined text-[20px]">menu_book</span>
+                <Book className="text-[20px]" />
               </Link>
             </motion.div>
           </motion.div>
@@ -213,7 +215,7 @@ export default function Home() {
               >
                 <div className="relative z-10">
                   <div className="mb-6 inline-flex rounded-xl bg-white p-3 text-primary border border-slate-200 shadow-sm transition-colors group-hover:bg-primary group-hover:text-white group-hover:border-primary">
-                    <span className="material-symbols-outlined text-[28px]">{feature.icon}</span>
+                    <DynamicIcon name={feature.icon} className="w-7 h-7" />
                   </div>
                   <h3 className="mb-3 text-xl font-bold text-slate-900 tracking-tight">
                     {feature.title}
@@ -287,17 +289,17 @@ export default function Home() {
                   className="inline-flex items-center gap-3 rounded-xl bg-primary px-10 py-5 text-lg font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-blue-700 hover:shadow-xl"
                 >
                   Start Now for Free
-                  <span className="material-symbols-outlined text-[24px]">arrow_forward</span>
+                  <ArrowRight className="text-[24px]" />
                 </Link>
               </motion.div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <a
-                  href="https://github.com/amf/automated-manuscript-formatter"
+                  href="https://github.com/rohitkumarnaidu/ScholarFormAI"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-3 rounded-xl border-2 border-slate-700 bg-transparent px-10 py-5 text-lg font-bold text-white transition-all hover:border-slate-500 hover:bg-slate-800"
                 >
-                  <span className="material-symbols-outlined text-[24px]">code</span>
+                  <Code className="text-[24px]" />
                   Star on GitHub
                 </a>
               </motion.div>

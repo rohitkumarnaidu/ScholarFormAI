@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 ScholarForm AI
 
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
+
 export default function HealthStatusIndicator({ status, label, details }) {
     const statusConfig = {
         healthy: {
@@ -34,7 +36,7 @@ export default function HealthStatusIndicator({ status, label, details }) {
     return (
         <div className={`flex items-center gap-3 p-4 rounded-xl ${config.bg} transition-colors`}>
             <div className="relative">
-                <span className={`material-symbols-outlined text-xl ${config.text}`}>{config.icon}</span>
+                <DynamicIcon name={config.icon} className={`w-5 h-5 ${config.text}`} />
                 <span className={`absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full ${config.dot} ${status === 'healthy' ? 'animate-pulse' : ''}`} />
             </div>
             <div className="flex-1">

@@ -37,6 +37,6 @@ describe('MetricsCard', () => {
 
     it('renders icon when provided', () => {
         const { container } = render(<MetricsCard title="Docs" value="3" icon="description" />);
-        expect(container.querySelector('.material-symbols-outlined')).toHaveTextContent('description');
+        expect(container.querySelector('.lucide-file-text')).toBeInTheDocument();
     });
 });

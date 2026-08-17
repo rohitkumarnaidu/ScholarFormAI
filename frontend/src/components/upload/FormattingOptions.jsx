@@ -2,6 +2,7 @@
 // Copyright (c) 2026 ScholarForm AI
 
 import React, { memo } from 'react';
+import { FileText, LayoutTemplate, ListOrdered, ListTree, RefreshCw, Rocket, Scaling, Sliders } from 'lucide-react';
 
 const FormattingOptions = memo(function FormattingOptions({
     addPageNumbers,
@@ -22,14 +23,14 @@ const FormattingOptions = memo(function FormattingOptions({
     return (
         <div className="bg-white rounded-xl border border-slate-200 dark:border-slate-700/70 p-6 shadow-sm hover:shadow-md dark:hover:shadow-none transition-shadow">
             <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary">tune</span>
+                <Sliders className="text-primary" />
                 2. Formatting Options
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100 dark:border-slate-700/70 bg-slate-50 hover:bg-white hover:shadow-sm dark:hover:shadow-none dark:hover:bg-white/10 transition-all">
                         <div className="flex items-center gap-2">
-                            <span className="material-symbols-outlined text-slate-500">format_list_numbered</span>
+                            <ListOrdered className="text-slate-500" />
                             <span className="text-sm font-bold text-slate-900 dark:text-white">Add Page Numbers</span>
                         </div>
                         <div className="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
@@ -49,7 +50,7 @@ const FormattingOptions = memo(function FormattingOptions({
 
                     <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100 dark:border-slate-700/70 bg-slate-50 hover:bg-white hover:shadow-sm dark:hover:shadow-none dark:hover:bg-white/10 transition-all">
                         <div className="flex items-center gap-2">
-                            <span className="material-symbols-outlined text-slate-500">border_style</span>
+                            <LayoutTemplate className="text-slate-500" />
                             <span className="text-sm font-bold text-slate-900 dark:text-white">Add Borders</span>
                         </div>
                         <div className="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
@@ -71,7 +72,7 @@ const FormattingOptions = memo(function FormattingOptions({
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100 dark:border-slate-700/70 bg-slate-50 hover:bg-white hover:shadow-sm dark:hover:shadow-none dark:hover:bg-white/10 transition-all">
                         <div className="flex items-center gap-2">
-                            <span className="material-symbols-outlined text-slate-500">article</span>
+                            <FileText className="text-slate-500" />
                             <span className="text-sm font-bold text-slate-900 dark:text-white">Add Cover Page</span>
                         </div>
                         <div className="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
@@ -92,7 +93,7 @@ const FormattingOptions = memo(function FormattingOptions({
                     <div className="flex items-center justify-between p-3 rounded-lg border border-slate-100 dark:border-slate-700/70 bg-slate-50 hover:bg-white hover:shadow-sm dark:hover:shadow-none dark:hover:bg-white/10 transition-all">
                         <div className="flex flex-col">
                             <div className="flex items-center gap-2">
-                                <span className="material-symbols-outlined text-slate-500">toc</span>
+                                <ListTree className="text-slate-500" />
                                 <span className="text-sm font-bold text-slate-900 dark:text-white">Generate TOC</span>
                             </div>
                             <span className="text-[10px] text-slate-400 pl-8">Auto generates from headings</span>
@@ -116,7 +117,7 @@ const FormattingOptions = memo(function FormattingOptions({
                 <div className="col-span-1 md:col-span-2">
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                            <span className="material-symbols-outlined text-slate-500">aspect_ratio</span>
+                            <Scaling className="text-slate-500" />
                             Page Size
                         </label>
                         <select
@@ -139,9 +140,7 @@ const FormattingOptions = memo(function FormattingOptions({
                 disabled={!file || isProcessing}
                 className={`w-full mt-8 bg-primary hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/25 flex items-center justify-center gap-3 transition-all transform ${(!file || isProcessing) ? 'opacity-50 cursor-not-allowed' : 'hover:-translate-y-0.5'}`}
             >
-                <span className="material-symbols-outlined">
-                    {progress === 100 ? 'replay' : isProcessing ? 'sync' : 'rocket_launch'}
-                </span>
+                {progress === 100 ? 'replay' : isProcessing ? <RefreshCw /> : <Rocket />}
                 {isProcessing ? 'Processing Manuscript...' : progress === 100 ? 'Re-process Manuscript' : 'Process Document'}
             </button>
         </div>

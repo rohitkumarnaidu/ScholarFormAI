@@ -6,6 +6,7 @@
 import { useEffect, useMemo, Suspense } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { Loader2 } from 'lucide-react';
 
 const isAdminUser = (user) => (
     user?.app_metadata?.role === 'admin' ||
@@ -40,7 +41,7 @@ function AuthGuardInner({ children, requireAdmin }) {
         return (
             <div className="w-full max-w-7xl mx-auto px-6 py-16 flex items-center justify-center">
                 <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400">
-                    <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                    <Loader2 className="animate-spin" />
                     <span className="text-sm font-medium">Loading your session...</span>
                 </div>
             </div>
@@ -63,7 +64,7 @@ export default function AuthGuard({ children, requireAdmin = false }) {
         <Suspense fallback={
             <div className="w-full max-w-7xl mx-auto px-6 py-16 flex items-center justify-center">
                 <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400">
-                    <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                    <Loader2 className="animate-spin" />
                     <span className="text-sm font-medium">Loading your session...</span>
                 </div>
             </div>

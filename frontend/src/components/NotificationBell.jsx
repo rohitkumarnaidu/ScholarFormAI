@@ -5,6 +5,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useNotifications } from '@/context/NotificationContext';
+import { Bell } from 'lucide-react';
 
 export default function NotificationBell() {
     const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +46,7 @@ export default function NotificationBell() {
                 aria-expanded={isOpen}
                 aria-haspopup="menu"
             >
-                <span className="material-symbols-outlined">notifications</span>
+                <Bell />
                 {unreadCount > 0 && (
                     <span
                         role="status"
@@ -74,7 +75,7 @@ export default function NotificationBell() {
 
                     {recentItems.length === 0 ? (
                         <div className="px-4 py-8 text-center">
-                            <span className="material-symbols-outlined text-3xl text-slate-300 dark:text-slate-600">notifications_none</span>
+                            <Bell className="text-3xl text-slate-300 dark:text-slate-600" />
                             <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">No notifications</p>
                         </div>
                     ) : (

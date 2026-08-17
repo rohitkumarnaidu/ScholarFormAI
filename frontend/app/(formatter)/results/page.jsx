@@ -12,6 +12,7 @@ import { useDocument } from '@/src/context/DocumentContext';
 import { getPreview, getJobSummary } from '@/src/services/api.documents';
 import useJobFromUrl from '@/src/hooks/useJobFromUrl';
 import Skeleton from '@/src/components/ui/Skeleton';
+import { AlertTriangle, ArrowLeftRight, Bot, CheckCircle, ChevronRight, Download, FileEdit, FileSearch, FileText, FileUp, LineChart, Quote, Sparkles } from 'lucide-react';
 
 function ValidationResults() {
     const router = useRouter();
@@ -140,7 +141,7 @@ function ValidationResults() {
             <div className="min-h-screen flex flex-col bg-background-light dark:bg-background-dark">
                 <main className="flex-1 flex flex-col items-center justify-center p-6 text-center">
                     <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
-                        <span className="material-symbols-outlined text-slate-400 text-3xl">find_in_page</span>
+                        <FileSearch className="text-slate-400 text-3xl" />
                     </div>
                     <p className="text-slate-500 dark:text-slate-400 mb-4">No validation results found. Your document may not have been processed yet.</p>
                     <button onClick={() => navigate('/upload')} className="text-primary font-bold hover:underline">Return to Upload</button>
@@ -189,7 +190,7 @@ function ValidationResults() {
             <div className="min-h-screen flex flex-col bg-background-light dark:bg-background-dark">
                 <main className="flex-1 flex flex-col items-center justify-center p-6 text-center">
                     <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-full flex items-center justify-center mb-4">
-                        <span className="material-symbols-outlined text-3xl">error</span>
+                        <AlertTriangle className="text-3xl" />
                     </div>
                     <p className="text-slate-500 dark:text-slate-400 mb-2">Failed to load validation results.</p>
                     {resultLoadError ? <p className="text-red-500 text-sm mb-4">{resultLoadError}</p> : null}
@@ -253,7 +254,7 @@ function ValidationResults() {
             <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <nav className="flex flex-wrap items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400">
                     <Link href="/history" className="hover:text-primary transition-colors">My Files</Link>
-                    <span className="material-symbols-outlined text-xs">chevron_right</span>
+                    <ChevronRight className="text-xs" />
                     <span className="text-slate-900 dark:text-slate-100">Validation Results</span>
                 </nav>
 
@@ -266,11 +267,11 @@ function ValidationResults() {
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                         <button onClick={() => navigate('/upload')} className="flex w-full sm:w-auto items-center justify-center rounded-lg h-11 px-6 bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm font-bold hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors">
-                            <span className="material-symbols-outlined mr-2 text-lg">upload_file</span>
+                            <FileUp className="mr-2 text-lg" />
                             Re-upload
                         </button>
                         <button onClick={() => navigate('/download')} className="flex w-full sm:w-auto items-center justify-center rounded-lg h-11 px-6 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
-                            <span className="material-symbols-outlined mr-2 text-lg">download</span>
+                            <Download className="mr-2 text-lg" />
                             Verify & Download
                         </button>
                     </div>
@@ -302,7 +303,7 @@ function ValidationResults() {
                                         const provider = providerMap[key] || { label: job.llm_provider, cls: 'bg-slate-100 text-slate-700 dark:bg-slate-700/60 dark:text-slate-300 ring-slate-200 dark:ring-slate-600' };
                                         return (
                                             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold ring-1 ${provider.cls}`}>
-                                                <span className="material-symbols-outlined text-[11px]">smart_toy</span>
+                                                <Bot className="text-[11px]" />
                                                 {provider.label}
                                             </span>
                                         );
@@ -312,7 +313,7 @@ function ValidationResults() {
                         </div>
                     </div>
                     <div className="w-full lg:w-48 h-28 bg-slate-100 dark:bg-slate-800 rounded-lg flex flex-col items-center justify-center text-slate-400 border border-dashed border-slate-300 dark:border-slate-700 overflow-hidden relative group">
-                        <span className="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform">description</span>
+                        <FileText className="text-3xl group-hover:scale-110 transition-transform" />
                         <span className="text-[10px] mt-2 font-mono">DOCUMENT PREVIEW</span>
                         <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                             <button onClick={() => navigate('/compare')} className="text-[10px] font-bold bg-white text-primary px-3 py-1 rounded shadow-sm">VIEW DIFF</button>
@@ -345,7 +346,7 @@ function ValidationResults() {
                             <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800 space-y-5">
                                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
                                     <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-primary">analytics</span>
+                                        <LineChart className="text-primary" />
                                         Document Quality Analysis
                                     </h2>
                                 </div>
@@ -407,7 +408,7 @@ function ValidationResults() {
                                         {/* Citation Count Badge */}
                                         <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700/50">
                                             <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-                                                <span className="material-symbols-outlined text-[18px]">format_quote</span>
+                                                <Quote className="text-[18px]" />
                                             </div>
                                             <div>
                                                 <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Citations Detected</p>
@@ -428,7 +429,7 @@ function ValidationResults() {
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center gap-1 text-green-600 dark:text-green-400 text-xs font-bold">
-                                                    <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                                                    <CheckCircle className="text-[14px]" />
                                                     None detected
                                                 </div>
                                             )}
@@ -440,7 +441,7 @@ function ValidationResults() {
                     })()
                 ) : (
                     <div className="bg-slate-50 dark:bg-slate-800/50 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-6 flex items-center gap-4">
-                        <span className="material-symbols-outlined text-slate-400 text-3xl">analytics</span>
+                        <LineChart className="text-slate-400 text-3xl" />
                         <div>
                             <p className="font-semibold text-slate-700 dark:text-slate-300">Quality analysis not available</p>
                             <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Quality scores (template compliance, content quality &amp; citations) will appear here when the backend provides them.</p>
@@ -452,7 +453,7 @@ function ValidationResults() {
                     <div className="bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 rounded-xl p-6 flex flex-col">
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-red-700 dark:text-red-400 font-bold text-sm">Errors</span>
-                            <span className="material-symbols-outlined text-red-600 dark:text-red-400">error</span>
+                            <AlertTriangle className="text-red-600 dark:text-red-400" />
                         </div>
                         <p className="text-3xl sm:text-4xl font-black text-red-700 dark:text-red-400">{errors.length}</p>
                         <p className="text-xs text-red-600/70 dark:text-red-400/50 mt-1 font-medium italic">{errors.length > 0 ? 'Require immediate attention' : 'No critical issues'}</p>
@@ -460,7 +461,7 @@ function ValidationResults() {
                     <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 rounded-xl p-6 flex flex-col">
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-amber-700 dark:text-amber-400 font-bold text-sm">Warnings</span>
-                            <span className="material-symbols-outlined text-amber-600 dark:text-amber-400">warning</span>
+                            <AlertTriangle className="text-amber-600 dark:text-amber-400" />
                         </div>
                         <p className="text-3xl sm:text-4xl font-black text-amber-700 dark:text-amber-400">{warnings.length}</p>
                         <p className="text-xs text-amber-600/70 dark:text-amber-400/50 mt-1 font-medium italic">Formatting improvements</p>
@@ -468,7 +469,7 @@ function ValidationResults() {
                     <div className="bg-primary/5 dark:bg-primary/10 border border-primary/10 dark:border-primary/20 rounded-xl p-6 flex flex-col">
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-primary font-bold text-sm">AI Advisory</span>
-                            <span className="material-symbols-outlined text-primary">auto_awesome</span>
+                            <Sparkles className="text-primary" />
                         </div>
                         <p className="text-3xl sm:text-4xl font-black text-primary">{advisories.length}</p>
                         <p className="text-xs text-primary/70 mt-1 font-medium italic">Insights and optimizations</p>
@@ -524,7 +525,7 @@ function ValidationResults() {
                         )) : (
                             <div className="flex flex-col items-center justify-center py-16 px-4">
                                 <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
-                                    <span className="material-symbols-outlined text-5xl">check_circle</span>
+                                    <CheckCircle className="text-5xl" />
                                 </div>
                                 <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">No validation issues found</h3>
                                 <p className="text-slate-500 dark:text-slate-400 text-center max-w-md">
@@ -539,11 +540,11 @@ function ValidationResults() {
 
                 <div className="flex flex-col sm:flex-row gap-4 pt-8">
                     <button onClick={() => navigate('/compare')} className="flex-1 flex items-center justify-center gap-2 py-4 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl font-bold text-slate-700 dark:text-slate-200 hover:border-primary transition-all shadow-sm">
-                        <span className="material-symbols-outlined">compare_arrows</span>
+                        <ArrowLeftRight />
                         Compare with Original
                     </button>
                     <button onClick={() => navigate('/edit')} className="flex-1 flex items-center justify-center gap-2 py-4 bg-primary text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-primary/20">
-                        <span className="material-symbols-outlined">edit_note</span>
+                        <FileEdit />
                         Edit Processed Version
                     </button>
                 </div>

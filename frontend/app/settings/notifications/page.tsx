@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { BellRing, MessageSquare } from 'lucide-react';
 
 export default function NotificationSettingsPage() {
   const { session } = useAuth();
@@ -98,9 +99,7 @@ export default function NotificationSettingsPage() {
             {['Email', 'Slack', 'Microsoft Teams', 'Discord', 'SMS', 'Push Notifications'].map((channel) => (
               <div key={channel} className="flex justify-between items-center p-4 rounded-lg bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-700">
                 <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-slate-400">
-                    {channel === 'Email' ? 'mail' : channel === 'SMS' ? 'sms' : 'notifications_active'}
-                  </span>
+                  {channel === 'Email' ? 'mail' : channel === 'SMS' ? <MessageSquare className="text-slate-400" /> : <BellRing className="text-slate-400" />}
                   <span className="font-medium text-slate-700 dark:text-slate-300">{channel}</span>
                 </div>
                 <button className="text-sm text-primary font-medium hover:underline">

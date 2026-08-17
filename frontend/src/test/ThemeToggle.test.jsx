@@ -45,7 +45,7 @@ describe('ThemeToggle', () => {
         const ThemeToggle = await getComponent();
         render(<ThemeToggle />);
         await waitFor(() => {
-            expect(screen.getByText('light_mode')).toBeInTheDocument();
+            expect(document.querySelector('.lucide-sun')).toBeInTheDocument();
         });
     });
 
@@ -56,7 +56,7 @@ describe('ThemeToggle', () => {
         const ThemeToggle = await getComponent();
         render(<ThemeToggle />);
         await waitFor(() => {
-            expect(screen.getByText('dark_mode')).toBeInTheDocument();
+            expect(document.querySelector('.lucide-moon')).toBeInTheDocument();
         });
     });
 });

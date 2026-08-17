@@ -17,6 +17,7 @@ import TemplateSelector from '@/src/components/upload/TemplateSelector';
 import FormattingOptions from '@/src/components/upload/FormattingOptions';
 import ProcessingStepper from '@/src/components/upload/ProcessingStepper';
 import FastModeToggle from '@/src/components/FastModeToggle';
+import { AlertTriangle, CloudUpload, FileUp, RefreshCw, X, XCircle } from 'lucide-react';
 
 const ACCEPTED_FORMATS = '.docx,.pdf,.tex,.txt,.html,.htm,.md,.markdown,.doc';
 const MAX_UPLOAD_SIZE_BYTES = 50 * 1024 * 1024;
@@ -137,7 +138,7 @@ function UploadContent() {
                     {quotaWarning && (
                         <div className="p-4 mb-4 bg-orange-50 border border-orange-200 text-orange-800 dark:bg-orange-900/30 dark:border-orange-800 dark:text-orange-300 rounded-xl flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <span className="material-symbols-outlined">warning</span>
+                                <AlertTriangle />
                                 <span className="font-medium">{quotaWarning}</span>
                             </div>
                         </div>
@@ -168,7 +169,7 @@ function UploadContent() {
                         {/* 1. Document Source */}
                         <div className="bg-white rounded-xl border border-slate-200 dark:border-slate-700/70 p-6 shadow-sm hover:shadow-md dark:hover:shadow-none transition-shadow">
                             <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                                <span className="material-symbols-outlined text-primary">upload_file</span>
+                                <FileUp className="text-primary" />
                                 1. Document Source
                             </h2>
                             <div
@@ -180,9 +181,7 @@ function UploadContent() {
                             >
                                 <div className="flex flex-col items-center gap-4 relative z-10">
                                     <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${file ? 'bg-primary text-white scale-110' : 'bg-primary/10 text-primary group-hover/zone:scale-110'}`}>
-                                        <span className={`material-symbols-outlined text-4xl ${isProcessing ? 'animate-spin' : ''}`}>
-                                            {file ? 'check_circle' : 'cloud_upload'}
-                                        </span>
+                                        {isProcessing ? <RefreshCw className="w-10 h-10 animate-spin" /> : <CloudUpload className="w-10 h-10" />}
                                     </div>
                                     <div className="text-center">
                                         <p className="text-slate-900 dark:text-white text-lg font-bold">
@@ -197,7 +196,7 @@ function UploadContent() {
                                                         onClick={(e) => { e.stopPropagation(); setFile(null); setFileError(null); }} 
                                                         className="hover:text-red-500 dark:hover:text-red-400 transition-colors flex items-center p-0.5" 
                                                     >
-                                                        <span className="material-symbols-outlined text-sm">close</span>
+                                                        <X className="text-sm" />
                                                     </button>
                                                 </div>
                                             ) : 'Supported formats: DOCX, PDF, TEX, TXT, HTML, MD, DOC (Max 50MB)'}
@@ -255,7 +254,7 @@ function UploadContent() {
                                 onClick={cancelUpload}
                                 className="w-full mt-3 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 font-bold py-3 rounded-xl border border-red-200 dark:border-red-800 flex items-center justify-center gap-2 transition-all"
                             >
-                                <span className="material-symbols-outlined text-lg">cancel</span>
+                                <XCircle className="text-lg" />
                                 Cancel Processing
                             </button>
                         )}

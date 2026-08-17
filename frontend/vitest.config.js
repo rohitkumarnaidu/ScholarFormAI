@@ -15,6 +15,7 @@ export default defineConfig({
             '@/lib': fileURLToPath(new URL('./src/lib', import.meta.url)),
             '@/utils': fileURLToPath(new URL('./src/utils', import.meta.url)),
             '@/constants': fileURLToPath(new URL('./src/constants', import.meta.url)),
+            '@/src': fileURLToPath(new URL('./src', import.meta.url)),
             '@': fileURLToPath(new URL('./src', import.meta.url)),
             '@testing-library/react': fileURLToPath(new URL('./node_modules/@testing-library/react', import.meta.url)),
             '@testing-library/user-event': fileURLToPath(new URL('./node_modules/@testing-library/user-event', import.meta.url)),

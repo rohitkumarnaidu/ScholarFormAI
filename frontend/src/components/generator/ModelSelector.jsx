@@ -1,6 +1,8 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { fetchWithRetry } from '@/utils/fetchWithRetry';
+import { Brain, Check, ChevronDown, Loader2 } from 'lucide-react';
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -75,12 +77,12 @@ const ModelSelector = ({ selectedModel, onModelChange, userToken }) => {
                 className="flex items-center gap-1.5 px-2 py-1 text-xs rounded-md bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 transition-colors"
                 title={selectedModel ? `Using: ${selectedModel}` : 'Select model'}
             >
-                <span className="material-symbols-outlined text-[16px]">psychiatry</span>
+                <Brain className="text-[16px]" />
                 <span className="max-w-[120px] truncate">{currentModelInfo?.model || selectedModel || 'Auto'}</span>
                 {loading ? (
-                    <span className="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+                    <Loader2 className="text-[16px] animate-spin" />
                 ) : (
-                    <span className="material-symbols-outlined text-[16px]">expand_more</span>
+                    <ChevronDown className="text-[16px]" />
                 )}
             </button>
 
@@ -102,11 +104,11 @@ const ModelSelector = ({ selectedModel, onModelChange, userToken }) => {
                                     <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${m.isConfigured ? 'bg-emerald-500' : 'bg-slate-300'}`} />
                                     <span className="flex-1 truncate">{m.model}</span>
                                     <span className="flex items-center gap-1 text-[10px] text-zinc-400 shrink-0">
-                                        <span className="material-symbols-outlined text-[12px]">{m.icon}</span>
+                                        <DynamicIcon name={m.icon} className="w-3 h-3" />
                                         {m.providerName}
                                     </span>
                                     {selectedModel === m.model && (
-                                        <span className="material-symbols-outlined text-[14px] text-indigo-600 shrink-0">check</span>
+                                        <Check className="text-[14px] text-indigo-600 shrink-0" />
                                     )}
                                 </button>
                             ))}
@@ -126,7 +128,7 @@ const ModelSelector = ({ selectedModel, onModelChange, userToken }) => {
                                     <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-slate-300" />
                                     <span className="flex-1 truncate">{m.model}</span>
                                     <span className="flex items-center gap-1 text-[10px]">
-                                        <span className="material-symbols-outlined text-[12px]">{m.icon}</span>
+                                        <DynamicIcon name={m.icon} className="w-3 h-3" />
                                         {m.providerName}
                                     </span>
                                 </button>

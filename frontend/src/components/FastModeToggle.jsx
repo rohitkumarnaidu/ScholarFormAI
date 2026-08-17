@@ -1,3 +1,4 @@
+import { Zap } from 'lucide-react';
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 ScholarForm AI
 
@@ -6,7 +7,7 @@ export default function FastModeToggle({ fastMode, setFastMode, disabled }) {
         <div className="flex items-center justify-between p-3 rounded-lg border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-900/20 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors">
             <div className="flex flex-col">
                 <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-amber-600 dark:text-amber-400">bolt</span>
+                    <Zap className="text-amber-600 dark:text-amber-400" />
                     <span className="text-sm font-bold text-slate-900 dark:text-white">Fast Mode</span>
                 </div>
                 <span className="text-[10px] text-slate-500 dark:text-slate-400 pl-8">

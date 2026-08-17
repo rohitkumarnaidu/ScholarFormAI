@@ -3,6 +3,8 @@
 import React from 'react';
 import { useNotifications } from '@/context/NotificationContext';
 import { formatDistanceToNow } from 'date-fns';
+import { Bell } from 'lucide-react';
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 export default function NotificationsPage() {
   const { notifications, markAsRead, markAllAsRead, fetchHistory } = useNotifications();
@@ -23,7 +25,7 @@ export default function NotificationsPage() {
 
       {notifications.length === 0 ? (
         <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-          <span className="material-symbols-outlined text-6xl text-slate-300 dark:text-slate-600 mb-4 block">notifications_none</span>
+          <Bell className="text-6xl text-slate-300 dark:text-slate-600 mb-4 block" />
           <h3 className="text-lg font-medium text-slate-900 dark:text-white">You're all caught up!</h3>
           <p className="text-slate-500 mt-1">No new notifications to display.</p>
         </div>
@@ -42,11 +44,9 @@ export default function NotificationsPage() {
               <div className="flex justify-between items-start gap-4">
                 <div className="flex gap-4 items-start">
                   <div className={`p-2 rounded-lg ${notif.read_at ? 'bg-slate-100 dark:bg-slate-700 text-slate-500' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'}`}>
-                    <span className="material-symbols-outlined">
-                      {notif.type === 'security' ? 'security' : 
+                    <DynamicIcon name={notif.type === 'security' ? 'security' : 
                        notif.type === 'billing' ? 'receipt_long' : 
-                       notif.type === 'ai' ? 'smart_toy' : 'notifications'}
-                    </span>
+                       notif.type === 'ai' ? 'smart_toy' : 'notifications'} />
                   </div>
                   <div>
                     <h3 className={`font-semibold ${notif.read_at ? 'text-slate-700 dark:text-slate-300' : 'text-slate-900 dark:text-white'}`}>

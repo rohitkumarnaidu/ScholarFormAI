@@ -4,6 +4,7 @@
 import React, { memo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { fetchTemplates } from '../../services/api.templates';
+import { ArrowRight, ChevronDown } from 'lucide-react';
 
 const FALLBACK_OPTIONS = [
     { value: 'none', label: 'None (No formatting)' },
@@ -68,13 +69,13 @@ const TemplateSelector = memo(function TemplateSelector({
                             ))}
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-                            <span className="material-symbols-outlined text-[18px] text-slate-500 dark:text-slate-400">expand_more</span>
+                            <ChevronDown className="text-[18px] text-slate-500 dark:text-slate-400" />
                         </div>
                     </div>
                 </div>
 
                 <Link className="text-sm font-medium text-primary hover:underline flex items-center gap-1 shrink-0" href="/templates">
-                    Browse Library <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                    Browse Library <ArrowRight className="text-[16px]" />
                 </Link>
             </div>
 

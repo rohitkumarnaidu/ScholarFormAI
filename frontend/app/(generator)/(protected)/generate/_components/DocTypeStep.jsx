@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
-// Copyright (c) 2026 ScholarForm AI
-
 'use client';
+
+import { CheckCircle } from 'lucide-react';
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 const DOC_TYPES = [
     { id: 'academic_paper', label: 'Academic Paper', icon: 'article', description: 'Research paper with abstract, methodology, results, and references.', color: 'from-blue-500 to-blue-700' },
@@ -28,14 +28,14 @@ export default function DocTypeStep({ selected, onSelect }) {
                             }`}
                     >
                         <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${docType.color} flex items-center justify-center`}>
-                            <span className="material-symbols-outlined text-white text-xl">{docType.icon}</span>
+                            <DynamicIcon name={docType.icon} className="text-white w-5 h-5" />
                         </div>
                         <div>
                             <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm">{docType.label}</p>
                             <p className="text-slate-500 dark:text-slate-400 text-xs mt-1 leading-relaxed">{docType.description}</p>
                         </div>
                         {selected === docType.id && (
-                            <span className="absolute top-3 right-3 material-symbols-outlined text-primary-light text-base">check_circle</span>
+                            <CheckCircle className="absolute top-3 right-3  text-primary-light text-base" />
                         )}
                     </button>
                 ))}

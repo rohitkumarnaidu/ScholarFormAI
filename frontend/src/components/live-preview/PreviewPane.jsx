@@ -3,6 +3,7 @@
 
 'use client';
 import { useRef, useEffect, useLayoutEffect } from 'react';
+import { FileText } from 'lucide-react';
 
 const ALLOWED_TAGS = new Set([
     'p', 'div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
@@ -130,7 +131,7 @@ export default function PreviewPane({ html, isLoading }) {
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center h-full text-center py-20 text-slate-400 dark:text-slate-600 select-none">
-                        <span className="material-symbols-outlined text-[48px] mb-3 opacity-30">article</span>
+                        <FileText className="text-[48px] mb-3 opacity-30" />
                         <p className="text-sm font-medium">Preview will appear here as you type</p>
                     </div>
                 )}

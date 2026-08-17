@@ -7,6 +7,8 @@ import { useConfirm } from '@/src/components/ConfirmDialog';
 import { useDebounce } from '@/src/hooks/useDebounce';
 import { fetchWithRetry } from '@/src/utils/fetchWithRetry';
 import ErrorBoundary from '@/src/components/ErrorBoundary';
+import { ArrowRight, BrainCircuit, Check, CloudOff, Code, Edit, Globe, Link, Loader2, Trash2 } from 'lucide-react';
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -474,7 +476,7 @@ function ProvidersPageInner() {
                 )}
                 {!providersLoading && providersError && (
                     <div className="mb-6 p-6 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800 text-center">
-                        <span className="material-symbols-outlined text-4xl text-red-400 mb-3">cloud_off</span>
+                        <CloudOff className="text-4xl text-red-400 mb-3" />
                         <p className="text-sm text-red-700 dark:text-red-300 mb-3">{providersError}</p>
                         <button onClick={loadProviders}
                             className="px-4 py-2 bg-red-100 dark:bg-red-800/30 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-800/50 transition text-sm font-medium">
@@ -498,9 +500,7 @@ function ProvidersPageInner() {
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="flex items-center gap-3">
                                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white text-lg ${isCustom ? 'bg-violet-500' : p.key_configured ? 'bg-emerald-500' : 'bg-slate-400'}`}>
-                                            <span className="material-symbols-outlined text-[22px]">
-                                                {PROVIDER_ICONS[p.provider_id] || (isCustom ? 'extension' : 'cloud')}
-                                            </span>
+                                            <DynamicIcon name={PROVIDER_ICONS[p.provider_id] || (isCustom ? 'extension' : 'cloud')} className="w-5.5 h-5.5" />
                                         </div>
                                         <div>
                                             <h3 className="font-semibold text-slate-900 dark:text-white">{p.name}</h3>
@@ -515,12 +515,12 @@ function ProvidersPageInner() {
                                             <button onClick={() => startEdit(customProviders.find(c => c.id === p.custom_provider_id))}
                                                 className="p-1.5 text-slate-400 hover:text-indigo-500 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition"
                                                 title="Edit">
-                                                <span className="material-symbols-outlined text-[18px]">edit</span>
+                                                <Edit className="text-[18px]" />
                                             </button>
                                             <button onClick={() => handleDelete(p.custom_provider_id)}
                                                 className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition"
                                                 title="Delete">
-                                                <span className="material-symbols-outlined text-[18px]">delete</span>
+                                                <Trash2 className="text-[18px]" />
                                             </button>
                                         </div>
                                     )}
@@ -529,13 +529,13 @@ function ProvidersPageInner() {
                                 {/* Details */}
                                 <div className="space-y-2 text-sm mb-4">
                                     <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                                        <span className="material-symbols-outlined text-[16px]">link</span>
+                                        <Link className="text-[16px]" />
                                         <span className="truncate">{typeof p.base_url === 'string' ? p.base_url : ''}</span>
                                     </div>
                                     {p.models && p.models.length > 0 && (
                                         <div>
                                             <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 mb-1">
-                                                <span className="material-symbols-outlined text-[16px]">model_training</span>
+                                                <BrainCircuit className="text-[16px]" />
                                                 <span>{p.models.length} model{p.models.length !== 1 ? 's' : ''}</span>
                                             </div>
                                             <div className="flex flex-wrap gap-1">
@@ -555,7 +555,7 @@ function ProvidersPageInner() {
                                             <button onClick={() => handleDiscoverModels(p.provider_id, typeof p.base_url === 'string' ? p.base_url : '')}
                                                 disabled={discovering === p.provider_id}
                                                 className="flex items-center gap-1 text-[10px] text-slate-400 hover:text-indigo-500 transition disabled:opacity-50">
-                                                <span className="material-symbols-outlined text-[14px]">{discovering === p.provider_id ? 'progress_activity' : 'travel_explore'}</span>
+                                                {discovering === p.provider_id ? <Loader2 className="text-[14px]" /> : <Globe className="text-[14px]" />}
                                                 {discovering === p.provider_id ? 'Discovering...' : 'Discover Models'}
                                             </button>
                                             {discoveredModels[p.provider_id] && discoveredModels[p.provider_id].length > 0 && (
@@ -568,7 +568,7 @@ function ProvidersPageInner() {
                                                     </div>
                                                     <button onClick={() => handleUseDiscovered(p.provider_id, discoveredModels[p.provider_id])}
                                                         className="flex items-center gap-1 text-[10px] font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition">
-                                                        <span className="material-symbols-outlined text-[12px]">check</span>
+                                                        <Check className="text-[12px]" />
                                                         Use in Chat
                                                     </button>
                                                 </div>
@@ -643,7 +643,7 @@ function ProvidersPageInner() {
                 {/* Empty State */}
                 {filteredProviders.length === 0 && (
                     <div className="p-12 text-center bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                        <span className="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-4">cloud_off</span>
+                        <CloudOff className="text-5xl text-slate-300 dark:text-slate-600 mb-4" />
                         <p className="text-slate-500 dark:text-slate-400">No providers match your search.</p>
                     </div>
                 )}
@@ -652,7 +652,7 @@ function ProvidersPageInner() {
                 <div className="mt-8 p-6 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 rounded-xl border border-indigo-200 dark:border-indigo-800">
                     <div className="flex items-start gap-4">
                         <div className="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center shrink-0">
-                            <span className="material-symbols-outlined text-2xl text-indigo-600 dark:text-indigo-400">code</span>
+                            <Code className="text-2xl text-indigo-600 dark:text-indigo-400" />
                         </div>
                         <div>
                             <h3 className="font-semibold text-lg text-slate-900 dark:text-white mb-1">Open Source Contributor?</h3>
@@ -661,7 +661,7 @@ function ProvidersPageInner() {
                             </p>
                             <a href="/contributing" className="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300">
                                 View Contributor Guide
-                                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                <ArrowRight className="text-[16px]" />
                             </a>
                         </div>
                     </div>

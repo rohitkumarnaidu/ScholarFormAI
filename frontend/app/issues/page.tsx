@@ -329,7 +329,7 @@ export default function IssuesPage() {
               <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">No issues found</p>
             </div>
           ) : (
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-slate-100">
               {issues.map((issue) => {
                 const cat = (issue.category as string) || "other";
                 const CatIcon = categoryIcons[cat] || MessageSquare;

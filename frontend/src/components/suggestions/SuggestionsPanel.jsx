@@ -6,6 +6,7 @@
 import React, { memo, useCallback, useEffect } from 'react';
 import Skeleton from '@/components/ui/Skeleton';
 import SuggestionCard from './SuggestionCard';
+import { Sparkles, X } from 'lucide-react';
 
 const SuggestionsPanel = memo(function SuggestionsPanel({
     suggestions = [],
@@ -38,7 +39,7 @@ const SuggestionsPanel = memo(function SuggestionsPanel({
             <div className="fixed top-0 right-0 h-full w-full sm:w-96 bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 shadow-2xl z-50 flex flex-col">
                 <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
                     <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-primary">auto_awesome</span>
+                        <Sparkles className="text-primary" />
                         <h2 className="text-lg font-bold text-slate-900 dark:text-white">AI Suggestions</h2>
                         {!loading && (
                             <span className="text-xs font-semibold bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-500">
@@ -51,7 +52,7 @@ const SuggestionsPanel = memo(function SuggestionsPanel({
                         className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                         aria-label="Close suggestions panel"
                     >
-                        <span className="material-symbols-outlined">close</span>
+                        <X />
                     </button>
                 </div>
 
@@ -81,7 +82,7 @@ const SuggestionsPanel = memo(function SuggestionsPanel({
                         </>
                     ) : suggestions.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
-                            <span className="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600 mb-3">auto_awesome</span>
+                            <Sparkles className="text-4xl text-slate-300 dark:text-slate-600 mb-3" />
                             <h3 className="text-base font-semibold text-slate-900 dark:text-white mb-1">No suggestions yet</h3>
                             <p className="text-sm text-slate-500 dark:text-slate-400">AI suggestions will appear here as you edit your document.</p>
                         </div>

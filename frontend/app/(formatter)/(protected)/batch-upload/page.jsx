@@ -10,6 +10,7 @@ import UpgradeModal from '@/src/components/UpgradeModal';
 
 import BatchUploadPanel from '@/src/components/BatchUploadPanel';
 import { uploadDocumentWithProgress } from '@/src/services/api';
+import { Download, FileUp, Palette, Rocket } from 'lucide-react';
 
 export default function BatchUpload() {
     usePageTitle('Batch Upload');
@@ -111,7 +112,7 @@ export default function BatchUpload() {
                 <main className="flex-1 max-w-4xl mx-auto px-4 py-8 w-full">
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-                        <span className="material-symbols-outlined text-primary text-4xl">upload_file</span>
+                        <FileUp className="text-primary text-4xl" />
                         Batch Upload
                     </h1>
                     <p className="text-slate-600 dark:text-slate-400 mt-2">
@@ -122,7 +123,7 @@ export default function BatchUpload() {
                 {/* Template Selection */}
                 <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm mb-6">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                        <span className="material-symbols-outlined text-primary">style</span>
+                        <Palette className="text-primary" />
                         Template
                     </h2>
                     <select
@@ -175,7 +176,7 @@ export default function BatchUpload() {
                                     }}
                                     className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg shadow-green-600/25 transition-all flex items-center gap-2"
                                 >
-                                    <span className="material-symbols-outlined">download</span>
+                                    <Download />
                                     Download All ({completedCount})
                                 </button>
                             )}
@@ -191,7 +192,7 @@ export default function BatchUpload() {
                                     </>
                                 ) : (
                                     <>
-                                        <span className="material-symbols-outlined">rocket_launch</span>
+                                        <Rocket />
                                         Process All ({files.filter((f) => f.status === 'pending').length})
                                     </>
                                 )}

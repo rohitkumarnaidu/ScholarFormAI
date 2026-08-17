@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 import { useAuth } from '@/src/context/AuthContext';
+import { AlertTriangle, ArrowLeft, CheckCircle, Eye, EyeOff, KeyRound, Lock, User } from 'lucide-react';
 
 function ResetPasswordContent() {
     usePageTitle('Reset Password');
@@ -94,7 +95,7 @@ function ResetPasswordContent() {
                             <div className="flex -space-x-3">
                                 {[1, 2, 3, 4].map((i) => (
                                     <div key={i} className="w-10 h-10 rounded-full border-2 border-white dark:border-background-dark bg-gradient-to-br from-violet-200 to-indigo-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center shadow-md">
-                                        <span className="material-symbols-outlined text-[16px] text-white/40">person</span>
+                                        <User className="text-[16px] text-white/40" />
                                     </div>
                                 ))}
                             </div>
@@ -117,14 +118,14 @@ function ResetPasswordContent() {
 
                             {error && (
                                 <div className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 flex items-start gap-3">
-                                    <span className="material-symbols-outlined text-red-500 text-[20px] shrink-0 mt-0.5">error</span>
+                                    <AlertTriangle className="text-red-500 text-[20px] shrink-0 mt-0.5" />
                                     <p className="text-red-700 dark:text-red-400 text-sm leading-relaxed">{error}</p>
                                 </div>
                             )}
 
                             {message && (
                                 <div className="mb-6 p-4 rounded-xl bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 flex items-start gap-3">
-                                    <span className="material-symbols-outlined text-green-500 text-[20px] shrink-0 mt-0.5">check_circle</span>
+                                    <CheckCircle className="text-green-500 text-[20px] shrink-0 mt-0.5" />
                                     <p className="text-green-700 dark:text-green-400 text-sm leading-relaxed font-medium">{message}</p>
                                 </div>
                             )}
@@ -134,7 +135,7 @@ function ResetPasswordContent() {
                                 <div className="flex flex-col gap-2">
                                     <label className="text-sm font-semibold text-white/90" htmlFor="password">New Password</label>
                                     <div className="relative flex items-center">
-                                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-[20px] pointer-events-none">lock</span>
+                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-[20px] pointer-events-none" />
                                         <input
                                             id="password"
                                             className="form-input flex w-full rounded-xl text-white bg-white/5 border border-white/10 placeholder:text-white/40 focus:outline-0 focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 h-12 pl-12 pr-12 text-sm font-medium transition-all shadow-sm"
@@ -150,9 +151,7 @@ function ResetPasswordContent() {
                                             onClick={() => setShowPassword(!showPassword)}
                                             title={showPassword ? "Hide password" : "Show password"}
                                         >
-                                            <span className="material-symbols-outlined text-[20px]">
-                                                {showPassword ? 'visibility_off' : 'visibility'}
-                                            </span>
+                                            {showPassword ? <EyeOff className="text-[20px]" /> : <Eye className="text-[20px]" />}
                                         </button>
                                     </div>
                                     <p className="text-xs text-white/60 mt-1 pl-1">At least 8 characters with a number</p>
@@ -162,7 +161,7 @@ function ResetPasswordContent() {
                                 <div className="flex flex-col gap-2">
                                     <label className="text-sm font-semibold text-white/90" htmlFor="confirmPassword">Confirm Password</label>
                                     <div className="relative flex items-center">
-                                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-[20px] pointer-events-none">lock_reset</span>
+                                        <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-[20px] pointer-events-none" />
                                         <input
                                             id="confirmPassword"
                                             className="form-input flex w-full rounded-xl text-white bg-white/5 border border-white/10 placeholder:text-white/40 focus:outline-0 focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 h-12 pl-12 pr-12 text-sm font-medium transition-all shadow-sm"
@@ -178,9 +177,7 @@ function ResetPasswordContent() {
                                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                             title={showConfirmPassword ? "Hide password" : "Show password"}
                                         >
-                                            <span className="material-symbols-outlined text-[20px]">
-                                                {showConfirmPassword ? 'visibility_off' : 'visibility'}
-                                            </span>
+                                            {showConfirmPassword ? <EyeOff className="text-[20px]" /> : <Eye className="text-[20px]" />}
                                         </button>
                                     </div>
                                 </div>
@@ -204,7 +201,7 @@ function ResetPasswordContent() {
 
                             <div className="mt-8 text-center sm:text-left border-white/10 pt-6 border-t font-medium">
                                 <Link href="/login" className="inline-flex items-center gap-2 text-accent-400 hover:text-accent-300 transition-colors text-sm font-semibold">
-                                    <span className="material-symbols-outlined text-[18px]">keyboard_backspace</span>
+                                    <ArrowLeft className="text-[18px]" />
                                     Back to Sign in
                                 </Link>
                             </div>

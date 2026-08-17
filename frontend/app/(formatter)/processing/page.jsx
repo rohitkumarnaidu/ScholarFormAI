@@ -13,6 +13,7 @@ import { useDocument } from '@/src/context/DocumentContext';
 import { useJobStatusSSE } from '@/src/services/api.hooks';
 import { isCompleted, isFailed } from '@/src/constants/status';
 import { trackPageView } from '@/src/lib/rum';
+import { AlertTriangle, FileUp, History, RefreshCw, ShieldCheck, XCircle } from 'lucide-react';
 
 const PHASE_MAPPING = {
     UPLOADED: 0,
@@ -204,7 +205,7 @@ export default function Processing() {
                     <div className="max-w-2xl w-full bg-white dark:bg-slate-900 rounded-2xl border border-red-200 dark:border-red-900/50 shadow-xl overflow-hidden animate-in fade-in zoom-in duration-500">
                         <div className="p-6 sm:p-8 border-b border-slate-100 dark:border-slate-800 text-center">
                             <div className="inline-flex items-center justify-center size-20 rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 mb-6">
-                                <span className="material-symbols-outlined text-5xl">warning</span>
+                                <AlertTriangle className="text-5xl" />
                             </div>
                             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">Processing Failed</h1>
                             <p className="text-slate-500 dark:text-slate-400">We encountered an issue while processing your document.</p>
@@ -222,14 +223,14 @@ export default function Processing() {
                                     }}
                                     className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-hover transition-all active:scale-[0.98]"
                                 >
-                                    <span className="material-symbols-outlined text-lg">refresh</span>
+                                    <RefreshCw className="text-lg" />
                                     Retry Processing
                                 </button>
                                 <button
                                     onClick={() => navigate(job?.type === 'generator' ? '/generate' : '/upload')}
                                     className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all active:scale-[0.98]"
                                 >
-                                    <span className="material-symbols-outlined text-lg">settings_backup_restore</span>
+                                    <History className="text-lg" />
                                     Restore Draft & Edit
                                 </button>
                             </div>
@@ -247,7 +248,7 @@ export default function Processing() {
                 <div className="max-w-2xl w-full bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden animate-in fade-in zoom-in duration-500">
                     <div className="p-6 sm:p-8 border-b border-slate-100 dark:border-slate-800 text-center">
                         <div className="inline-flex items-center justify-center size-20 rounded-full bg-primary/10 text-primary mb-6 animate-pulse">
-                            <span className="material-symbols-outlined text-5xl">sync</span>
+                            <RefreshCw className="text-5xl" />
                         </div>
                         <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">Processing Manuscript</h1>
                         <p className="text-slate-500 dark:text-slate-400">{getContextualMessage(normalizedPhase)}</p>
@@ -288,7 +289,7 @@ export default function Processing() {
                         disabled={isCancelling}
                         className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 border border-red-200 dark:border-red-800/50 text-red-600 rounded-xl font-bold text-sm hover:bg-red-50 dark:hover:bg-red-900/20 transition-all disabled:opacity-50"
                     >
-                        <span className="material-symbols-outlined text-lg">cancel</span>
+                        <XCircle className="text-lg" />
                         {isCancelling ? 'Cancelling...' : 'Cancel Processing'}
                     </button>
                     {!isCancelling && (
@@ -296,14 +297,14 @@ export default function Processing() {
                             onClick={handleCancelProcessing}
                             className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
                         >
-                            <span className="material-symbols-outlined text-lg">upload_file</span>
+                            <FileUp className="text-lg" />
                             Upload Another Document
                         </button>
                     )}
                 </div>
 
                 <p className="mt-6 text-slate-400 text-sm flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[18px]">verified_user</span>
+                    <ShieldCheck className="text-[18px]" />
                     Your data is encrypted and stored securely.
                 </p>
             </main>

@@ -11,6 +11,7 @@ import { useTheme } from '@/src/context/ThemeContext';
 import { supabase } from '@/src/lib/supabaseClient';
 import { UserProfileSchema } from '@/src/lib/schemas';
 import { z } from 'zod';
+import { ChevronRight, CreditCard, Edit, Lock, LogOut, RefreshCw, Star, X } from 'lucide-react';
 
 const NAME_MAX = 80;
 const INSTITUTION_MAX = 120;
@@ -91,7 +92,7 @@ export default function Profile() {
                 await refreshSession();
             } catch (error) {
                 console.error('Error uploading avatar:', error);
-                toast.error();
+                toast.error('Failed to upload avatar. Please try again.');
             } finally {
                 setUploading(false);
             }
@@ -236,7 +237,7 @@ export default function Profile() {
                                 />
                                 {uploading && (
                                     <div className="absolute inset-0 flex items-center justify-center">
-                                        <span className="material-symbols-outlined animate-spin text-white drop-shadow-md">refresh</span>
+                                        <RefreshCw className="animate-spin text-white drop-shadow-md" />
                                     </div>
                                 )}
                                 <button
@@ -245,7 +246,7 @@ export default function Profile() {
                                     className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full shadow-lg hover:bg-primary-hover transition-all flex items-center justify-center disabled:opacity-50 min-w-[44px] min-h-[44px]"
                                     aria-label="Change avatar"
                                 >
-                                    <span className="material-symbols-outlined text-[18px]">edit</span>
+                                    <Edit className="text-[18px]" />
                                 </button>
                                 <input type="file" ref={fileInputRef} onChange={handleAvatarChange} accept="image/*" className="hidden" />
                             </div>
@@ -332,7 +333,7 @@ export default function Profile() {
                                             <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
                                                 <h2 className="text-slate-900 dark:text-white text-2xl font-bold">{fullName}</h2>
                                                 <div className="flex h-7 items-center justify-center gap-x-1.5 rounded-full bg-primary/10 px-3 border border-primary/20">
-                                                    <span className="material-symbols-outlined text-primary text-[16px] font-bold">star</span>
+                                                    <Star className="text-primary text-[16px] font-bold" />
                                                     <p className="text-primary text-xs font-bold uppercase tracking-wider">Free Plan</p>
                                                 </div>
                                             </div>
@@ -372,27 +373,27 @@ export default function Profile() {
                             className="flex items-center justify-between p-5 bg-glass-surface backdrop-blur-xl border border-glass-border rounded-xl hover:border-primary/50 hover:shadow-md transition-all group text-left min-h-[64px]">
                             <div className="flex items-center gap-4">
                                 <div className="p-2.5 bg-white/10 dark:bg-white/10 rounded-xl text-slate-600 dark:text-slate-300 group-hover:bg-primary group-hover:text-white transition-colors">
-                                    <span className="material-symbols-outlined">lock</span>
+                                    <Lock />
                                 </div>
                                 <span className="font-bold text-slate-700 dark:text-slate-200">Change Password</span>
                             </div>
-                            <span className="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">chevron_right</span>
+                            <ChevronRight className="text-slate-400 group-hover:text-primary transition-colors" />
                         </button>
                         <button onClick={() => router.push('/settings')}
                             className="flex items-center justify-between p-5 bg-glass-surface backdrop-blur-xl border border-glass-border rounded-xl hover:border-primary/50 hover:shadow-md transition-all group text-left min-h-[64px]">
                             <div className="flex items-center gap-4">
                                 <div className="p-2.5 bg-primary/10 rounded-xl text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                                    <span className="material-symbols-outlined">payments</span>
+                                    <CreditCard />
                                 </div>
                                 <span className="font-bold text-slate-700 dark:text-slate-200">Manage Subscription</span>
                             </div>
-                            <span className="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">chevron_right</span>
+                            <ChevronRight className="text-slate-400 group-hover:text-primary transition-colors" />
                         </button>
                         <button onClick={async () => { await signOut({ redirectToLogin: true }); }}
                             className="flex items-center justify-between p-5 bg-white dark:bg-slate-900 border border-red-100 dark:border-red-900/20 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/10 transition-all group text-left min-h-[64px]">
                             <div className="flex items-center gap-4">
                                 <div className="p-2.5 bg-red-100 dark:bg-red-900/20 rounded-xl text-red-600 group-hover:bg-red-600 group-hover:text-white transition-colors">
-                                    <span className="material-symbols-outlined">logout</span>
+                                    <LogOut />
                                 </div>
                                 <span className="font-bold text-red-600">Sign out</span>
                             </div>
@@ -458,7 +459,7 @@ export default function Profile() {
                         <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-white/5 dark:bg-white/5">
                             <h3 className="font-bold text-slate-800 dark:text-slate-100">Adjust Avatar</h3>
                             <button onClick={() => setCropImage(null)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1" aria-label="Close">
-                                <span className="material-symbols-outlined text-xl">close</span>
+                                <X className="text-xl" />
                             </button>
                         </div>
                         <div className="p-6 flex flex-col items-center gap-4">

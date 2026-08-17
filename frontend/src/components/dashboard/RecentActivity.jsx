@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Skeleton from '@/components/ui/Skeleton';
 
 import { cn } from '@/src/lib/utils';
+import { History } from 'lucide-react';
 
 const ACTIVITY_ICONS = {
     upload: '↑',
@@ -80,13 +81,13 @@ const RecentActivity = memo(function RecentActivity({ activities, loading = fals
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
                 <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                     <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <span className="material-symbols-outlined text-primary text-lg">history</span>
+                        <History className="text-primary text-lg" />
                         Recent Activity
                     </h3>
                     <Link href="/history" className="text-xs font-semibold text-primary hover:underline">View all</Link>
                 </div>
                 <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
-                    <span className="material-symbols-outlined text-3xl text-slate-300 dark:text-slate-600 mb-2">history</span>
+                    <History className="text-3xl text-slate-300 dark:text-slate-600 mb-2" />
                     <p className="text-sm text-slate-500 dark:text-slate-400">No recent activity</p>
                     <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Upload a manuscript to get started</p>
                 </div>
@@ -98,7 +99,7 @@ const RecentActivity = memo(function RecentActivity({ activities, loading = fals
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
             <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary text-lg">history</span>
+                    <History className="text-primary text-lg" />
                     Recent Activity
                 </h3>
                 <Link href="/history" className="text-xs font-semibold text-primary hover:underline">View all</Link>

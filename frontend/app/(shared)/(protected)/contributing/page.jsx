@@ -1,5 +1,6 @@
 'use client';
 import usePageTitle from '@/src/hooks/usePageTitle';
+import { Puzzle, Server } from 'lucide-react';
 
 const PROVIDERS_CONFIG = [
     { name: 'OpenAI', env: 'OPENAI_API_KEY', url: 'https://platform.openai.com/api-keys' },
@@ -142,7 +143,7 @@ npm install && npm run dev</pre>
                     <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">Running Local Models</h2>
                     <div className="space-y-4 text-sm text-slate-600 dark:text-slate-400">
                         <div className="flex items-start gap-3">
-                            <span className="material-symbols-outlined text-[20px] text-indigo-500 mt-0.5">dns</span>
+                            <Server className="text-[20px] text-indigo-500 mt-0.5" />
                             <div>
                                 <p className="font-medium text-slate-900 dark:text-white mb-1">Ollama</p>
                                 <p>Install <a href="https://ollama.ai/download" target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 hover:underline">Ollama</a>, pull a model, and it&apos;s automatically available as the Tier 4 fallback.</p>
@@ -151,7 +152,7 @@ npm install && npm run dev</pre>
                             </div>
                         </div>
                         <div className="flex items-start gap-3">
-                            <span className="material-symbols-outlined text-[20px] text-indigo-500 mt-0.5">extension</span>
+                            <Puzzle className="text-[20px] text-indigo-500 mt-0.5" />
                             <div>
                                 <p className="font-medium text-slate-900 dark:text-white mb-1">vLLM / LM Studio / Custom Endpoints</p>
                                 <p>Add any OpenAI-compatible endpoint as a custom provider via the Providers page in the app.</p>

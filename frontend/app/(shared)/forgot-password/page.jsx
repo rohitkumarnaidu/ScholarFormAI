@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 import { useAuth } from '@/src/context/AuthContext';
+import { AlertTriangle, ArrowLeft, CheckCircle, KeyRound, Mail, User } from 'lucide-react';
 
 export default function ForgotPassword() {
     usePageTitle('Forgot Password');
@@ -78,7 +79,7 @@ export default function ForgotPassword() {
                             <div className="flex -space-x-3">
                                 {[1, 2, 3, 4].map((i) => (
                                     <div key={i} className="w-10 h-10 rounded-full border-2 border-white dark:border-background-dark bg-gradient-to-br from-violet-200 to-indigo-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center shadow-md">
-                                        <span className="material-symbols-outlined text-[16px] text-white/40">person</span>
+                                        <User className="text-[16px] text-white/40" />
                                     </div>
                                 ))}
                             </div>
@@ -96,7 +97,7 @@ export default function ForgotPassword() {
                             {/* Inline icon + heading */}
                             <div className="flex items-center gap-3 mb-2">
                                 <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
-                                    <span className="material-symbols-outlined text-primary text-[22px]">lock_reset</span>
+                                    <KeyRound className="text-primary text-[22px]" />
                                 </div>
                                 <h1 className="text-2xl font-bold tracking-tight text-white">Forgot password?</h1>
                             </div>
@@ -105,7 +106,7 @@ export default function ForgotPassword() {
                             {message && (
                                 <div className="mb-6 p-4 rounded-xl bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 flex flex-col items-start gap-3">
                                     <div className="flex items-center gap-3 w-full">
-                                        <span className="material-symbols-outlined text-green-500 text-[20px] shrink-0">check_circle</span>
+                                        <CheckCircle className="text-green-500 text-[20px] shrink-0" />
                                         <p className="text-green-700 dark:text-green-400 text-sm leading-relaxed font-medium">{message}</p>
                                     </div>
                                     {countdown !== null && (
@@ -118,7 +119,7 @@ export default function ForgotPassword() {
 
                             {error && (
                                 <div className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 flex items-start gap-3">
-                                    <span className="material-symbols-outlined text-red-500 text-[20px] shrink-0 mt-0.5">error</span>
+                                    <AlertTriangle className="text-red-500 text-[20px] shrink-0 mt-0.5" />
                                     <p className="text-red-700 dark:text-red-400 text-sm leading-relaxed">{error}</p>
                                 </div>
                             )}
@@ -128,7 +129,7 @@ export default function ForgotPassword() {
                                 <div className="flex flex-col gap-2 text-left">
                                     <label className="text-sm font-semibold text-white/90" htmlFor="email">Email Address</label>
                                     <div className="relative">
-                                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-[20px]">mail</span>
+                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-[20px]" />
                                         <input
                                             id="email"
                                             className="form-input flex w-full rounded-xl text-white bg-white/5 border border-white/10 placeholder:text-white/40 focus:outline-0 focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 h-12 pl-12 pr-4 text-sm font-medium transition-all shadow-sm"
@@ -160,7 +161,7 @@ export default function ForgotPassword() {
 
                             <div className="mt-10 text-center sm:text-left border-white/10 pt-6 border-t font-medium">
                                 <Link href="/login" className="inline-flex items-center gap-2 text-accent-400 hover:text-accent-300 transition-colors text-sm font-semibold">
-                                    <span className="material-symbols-outlined text-[18px]">keyboard_backspace</span>
+                                    <ArrowLeft className="text-[18px]" />
                                     Back to Sign in
                                 </Link>
                             </div>

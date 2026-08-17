@@ -4,6 +4,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { CheckCircle } from 'lucide-react';
 
 export default function TemplateStep({ selected, onSelect, templates }) {
     const [filter, setFilter] = useState('');
@@ -36,7 +37,7 @@ export default function TemplateStep({ selected, onSelect, templates }) {
                     placeholder="Search templates..."
                     value={filter}
                     onChange={(event) => setFilter(event.target.value)}
-                    className="flex-1 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-gray-500 text-sm focus:outline-none focus:border-primary transition"
+                    className="flex-1 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-500 text-sm focus:outline-none focus:border-primary transition"
                 />
                 <div className="flex gap-2 flex-wrap">
                     {categories.map((category) => (
@@ -69,7 +70,7 @@ export default function TemplateStep({ selected, onSelect, templates }) {
                         </span>
                         <span className="text-slate-900 dark:text-slate-100 font-semibold text-sm">{entry.name}</span>
                         {selected === entry.id && (
-                            <span className="material-symbols-outlined text-primary-light text-sm mt-1">check_circle</span>
+                            <CheckCircle className="text-primary-light text-sm mt-1" />
                         )}
                     </button>
                 ))}

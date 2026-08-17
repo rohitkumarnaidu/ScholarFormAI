@@ -2,6 +2,7 @@ import React, { memo, useState, useCallback, useEffect, useRef } from 'react';
 import ConfirmDialog from '../ui/ConfirmDialog';
 
 import { cn } from '@/src/lib/utils';
+import { ArrowLeftRight, CheckCircle, Download, Trash2 } from 'lucide-react';
 
 const BatchActions = memo(function BatchActions({
     selectedIds = [],
@@ -61,7 +62,7 @@ const BatchActions = memo(function BatchActions({
             >
                 <div className="max-w-3xl mx-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl rounded-2xl p-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <span className="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-full">check_circle</span>
+                        <CheckCircle className="text-primary bg-primary/10 p-2 rounded-full" />
                         <div>
                             <p className="text-slate-900 dark:text-white font-bold text-sm">
                                 {count} item{count !== 1 ? 's' : ''} selected
@@ -81,21 +82,21 @@ const BatchActions = memo(function BatchActions({
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold text-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                             title={count < 2 ? 'Select at least 2 items to compare' : 'Compare selected'}
                         >
-                            <span className="material-symbols-outlined text-[16px]">compare_arrows</span>
+                            <ArrowLeftRight className="text-[16px]" />
                             Compare
                         </button>
                         <button
                             onClick={handleExport}
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold text-xs transition-colors"
                         >
-                            <span className="material-symbols-outlined text-[16px]">download</span>
+                            <Download className="text-[16px]" />
                             Export
                         </button>
                         <button
                             onClick={handleDeleteClick}
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 text-red-600 border border-red-200 dark:border-red-900/50 font-semibold text-xs transition-colors"
                         >
-                            <span className="material-symbols-outlined text-[16px]">delete</span>
+                            <Trash2 className="text-[16px]" />
                             Delete
                         </button>
                     </div>

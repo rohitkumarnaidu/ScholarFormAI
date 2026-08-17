@@ -6,6 +6,7 @@
 import React, { memo, useState, useCallback } from 'react';
 
 import { cn } from '@/src/lib/utils';
+import { Check, MoreHorizontal, X } from 'lucide-react';
 
 const TYPE_COLORS = {
     style: { badge: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', label: 'Style' },
@@ -109,14 +110,14 @@ const SuggestionCard = memo(function SuggestionCard({ suggestion, onAccept, onRe
                     onClick={handleAccept}
                     className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold text-xs transition-colors"
                 >
-                    <span className="material-symbols-outlined text-[14px]">check</span>
+                    <Check className="text-[14px]" />
                     Accept
                 </button>
                 <button
                     onClick={handleReject}
                     className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold text-xs transition-colors"
                 >
-                    <span className="material-symbols-outlined text-[14px]">close</span>
+                    <X className="text-[14px]" />
                     Reject
                 </button>
                 <button
@@ -124,7 +125,7 @@ const SuggestionCard = memo(function SuggestionCard({ suggestion, onAccept, onRe
                     className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                     title="Dismiss"
                 >
-                    <span className="material-symbols-outlined text-[16px]">more_horiz</span>
+                    <MoreHorizontal className="text-[16px]" />
                 </button>
             </div>
         </div>

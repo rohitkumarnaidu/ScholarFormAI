@@ -6,6 +6,8 @@ import usePageTitle from '@/src/hooks/usePageTitle';
 import { useState, useEffect, useMemo } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useRouter } from 'next/navigation';
+import { ChevronDown, ChevronLeft, ChevronRight, CloudDownload, Loader2, PlusCircle, Search, SearchX, X } from 'lucide-react';
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 import { getBuiltinTemplates, searchCSLStyles, fetchCSLStyle } from '@/src/services/api'; // B-FIX-22f
 
@@ -193,7 +195,7 @@ export default function Templates() {
                             <label className="flex flex-col min-w-40 h-14 w-full">
                                 <div className="flex w-full flex-1 items-stretch rounded-xl h-full shadow-sm">
                                     <div className="text-[#4c6c9a] flex border-none bg-white dark:bg-slate-800 items-center justify-center pl-5 rounded-l-xl border-r-0">
-                                        <span className="material-symbols-outlined text-[24px]">search</span>
+                                        <Search className="text-[24px]" />
                                     </div>
                                     <input
                                         className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#0d131b] dark:text-white focus:outline-0 focus:ring-0 border-none bg-white dark:bg-slate-800 focus:border-none h-full placeholder:text-[#4c6c9a] dark:placeholder:text-slate-500 px-4 rounded-l-none border-l-0 pl-3 text-lg font-normal leading-normal"
@@ -216,7 +218,7 @@ export default function Templates() {
                                         }`}
                                 >
                                     <p className={`text-sm font-${activeCategory === cat ? 'semibold' : 'medium'} leading-normal ${activeCategory !== cat ? 'text-[#0d131b] dark:text-slate-300' : ''}`}>{cat}</p>
-                                    <span className="material-symbols-outlined text-[20px]">keyboard_arrow_down</span>
+                                    <ChevronDown className="text-[20px]" />
                                 </button>
                             ))}
                         </div>
@@ -256,7 +258,7 @@ export default function Templates() {
                                 >
                                     <div className="flex justify-between items-start">
                                         <div className={`size-12 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center border border-slate-100 dark:border-slate-700 ${template.available ? 'text-primary' : 'text-slate-400'}`}>
-                                            <span className="material-symbols-outlined text-[32px]">{template.icon}</span>
+                                            <DynamicIcon name={template.icon} className="w-8 h-8" />
                                         </div>
                                         <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${template.available
                                             ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
@@ -296,7 +298,7 @@ export default function Templates() {
                                 onClick={() => window.open('mailto:templates@scholarform.ai?subject=Template%20Request', '_self')}
                             >
                                 <div className="size-14 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-primary shadow-sm transition-colors">
-                                    <span className="material-symbols-outlined text-[32px]">add_circle</span>
+                                    <PlusCircle className="text-[32px]" />
                                 </div>
                                 <div className="text-center">
                                     <h3 className="text-[#0d131b] dark:text-white text-lg font-bold">Missing a journal?</h3>
@@ -308,7 +310,7 @@ export default function Templates() {
                             {/* No results */}
                             {paginatedTemplates.length === 0 && (
                                 <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
-                                    <span className="material-symbols-outlined text-4xl text-slate-300 mb-3">search_off</span>
+                                    <SearchX className="text-4xl text-slate-300 mb-3" />
                                     <p className="text-slate-500 font-medium">No templates found matching your criteria.</p>
                                     <button
                                         onClick={() => { setSearchQuery(''); setActiveCategory('All Publishers'); }}
@@ -329,7 +331,7 @@ export default function Templates() {
                                 disabled={currentPage === 1}
                                 className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                             >
-                                <span className="material-symbols-outlined">chevron_left</span>
+                                <ChevronLeft />
                             </button>
                             <div className="flex gap-2">
                                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
@@ -350,7 +352,7 @@ export default function Templates() {
                                 disabled={currentPage === totalPages}
                                 className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                             >
-                                <span className="material-symbols-outlined">chevron_right</span>
+                                <ChevronRight />
                             </button>
                         </div>
                     )}
@@ -359,7 +361,7 @@ export default function Templates() {
                     <div className="mt-12 p-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-800 transition-colors">
                         <div className="flex flex-col gap-2 mb-6">
                             <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                <span className="material-symbols-outlined text-primary">cloud_download</span>
+                                <CloudDownload className="text-primary" />
                                 Import Custom Style
                             </h3>
                             <p className="text-sm text-slate-500 dark:text-slate-400">Search the global Citation Style Language (CSL) repository (10,000+ journals).</p>
@@ -373,7 +375,7 @@ export default function Templates() {
 
                         <form onSubmit={handleCslSearch} className="flex gap-3 max-w-2xl mb-2">
                             <div className="relative flex-1">
-                                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                                 <input
                                     type="text"
                                     value={cslQuery}
@@ -389,7 +391,7 @@ export default function Templates() {
                                 className="px-6 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-lg hover:bg-slate-800 dark:hover:bg-slate-100 disabled:opacity-50 transition-colors flex items-center gap-2 justify-center min-w-[120px]"
                             >
                                 {cslSearching ? (
-                                    <><span className="material-symbols-outlined animate-spin text-[18px]">progress_activity</span> Searching</>
+                                    <><Loader2 className="animate-spin text-[18px]" /> Searching</>
                                 ) : 'Search'}
                             </button>
                         </form>
@@ -406,7 +408,7 @@ export default function Templates() {
                                                 className="shrink-0 px-4 py-1.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-md text-xs font-bold transition-colors disabled:opacity-50 flex items-center justify-center min-w-[80px]"
                                             >
                                                 {cslImporting === res.slug ? (
-                                                    <span className="material-symbols-outlined animate-spin text-[16px]">progress_activity</span>
+                                                    <Loader2 className="animate-spin text-[16px]" />
                                                 ) : 'Import'}
                                             </button>
                                         </li>
@@ -431,7 +433,7 @@ export default function Templates() {
                             <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
                                 <div className="flex items-center gap-3">
                                     <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                                        <span className="material-symbols-outlined">{previewTemplate.icon}</span>
+                                        <DynamicIcon name={previewTemplate.icon} />
                                     </div>
                                     <div>
                                         <Dialog.Title className="text-lg font-bold text-slate-900 dark:text-white">
@@ -448,7 +450,7 @@ export default function Templates() {
                                         className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                                         aria-label="Close template preview"
                                     >
-                                        <span className="material-symbols-outlined text-slate-400">close</span>
+                                        <X className="text-slate-400" />
                                     </button>
                                 </Dialog.Close>
                             </div>

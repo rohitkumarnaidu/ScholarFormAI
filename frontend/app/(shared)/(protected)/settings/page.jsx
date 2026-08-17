@@ -12,6 +12,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { ConfirmDialog } from '@/src/components/ui';
 import { fetchWithAuth } from '@/src/services/api.core';
+import { AlertTriangle, CheckCircle, FileUp, Key, Loader2, Mail, Moon, Save, Settings, User, Zap } from 'lucide-react';
 
 const SETTINGS_KEY = 'scholarform_settings';
 
@@ -177,7 +178,7 @@ export default function SettingsPage() {
             <main className="max-w-3xl mx-auto px-4 py-8">
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-                        <span className="material-symbols-outlined text-primary text-4xl">settings</span>
+                        <Settings className="text-primary text-4xl" />
                         Settings
                     </h1>
                     <p className="text-slate-600 dark:text-slate-400 mt-2">Configure your preferences and manage your plan.</p>
@@ -216,7 +217,7 @@ export default function SettingsPage() {
                 {/* Upload Preferences */}
                 <section className="bg-glass-surface backdrop-blur-xl border border-glass-border  shadow-xl shadow-primary/5 mb-6">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                        <span className="material-symbols-outlined text-primary">upload_file</span>
+                        <FileUp className="text-primary" />
                         Upload Preferences
                     </h2>
                     <div className="space-y-4">
@@ -237,7 +238,7 @@ export default function SettingsPage() {
                         <div className="flex items-center justify-between p-3 rounded-lg border border-glass-border bg-white/5 dark:bg-white/5">
                             <div className="flex flex-col">
                                 <div className="flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-amber-500">bolt</span>
+                                    <Zap className="text-amber-500" />
                                     <span className="text-sm font-bold text-slate-900 dark:text-white">Fast Mode Default</span>
                                 </div>
                                 <span className="text-[10px] text-slate-500 pl-8">Skip AI reasoning for faster processing</span>
@@ -250,19 +251,19 @@ export default function SettingsPage() {
                 {/* Account Settings */}
                 <section className="bg-glass-surface backdrop-blur-xl border border-glass-border  shadow-xl shadow-primary/5 mb-6">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                        <span className="material-symbols-outlined text-primary">person</span>
+                        <User className="text-primary" />
                         Account
                     </h2>
                     <div className="flex items-center justify-between p-3 rounded-lg border border-glass-border bg-white/5 dark:bg-white/5">
                         <div className="flex items-center gap-2">
-                            <span className="material-symbols-outlined text-slate-500">email</span>
+                            <Mail className="text-slate-500" />
                             <span className="text-sm font-bold text-slate-900 dark:text-white">Email Notifications</span>
                         </div>
                         <Toggle checked={settings.emailNotifications} onChange={(v) => update('emailNotifications', v)} />
                     </div>
                     <div className="flex items-center justify-between p-3 rounded-lg border border-glass-border bg-white/5 dark:bg-white/5 mt-3">
                         <div className="flex items-center gap-2">
-                            <span className="material-symbols-outlined text-slate-500">dark_mode</span>
+                            <Moon className="text-slate-500" />
                             <span className="text-sm font-bold text-slate-900 dark:text-white">Dark Mode</span>
                         </div>
                         <Toggle
@@ -280,7 +281,7 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                         <div>
                             <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-                                <span className="material-symbols-outlined text-primary">key</span>
+                                <Key className="text-primary" />
                                 API Key Management
                             </h2>
                             <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -291,7 +292,7 @@ export default function SettingsPage() {
                             href="/api-keys"
                             className="px-4 py-2 bg-primary hover:bg-primary-hover text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/25 transition-all flex items-center gap-2 active:scale-95"
                         >
-                            <span className="material-symbols-outlined text-base">manage_keys</span>
+                            <Key className="text-base" />
                             Manage Keys
                         </a>
                     </div>
@@ -300,13 +301,13 @@ export default function SettingsPage() {
                 {/* Feedback Banners */}
                 {saved && (
                     <div className="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 flex items-center text-green-700 dark:text-green-400 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                        <span className="material-symbols-outlined mr-2">check_circle</span>
+                        <CheckCircle className="mr-2" />
                         <span className="font-medium text-sm">Settings saved ✓</span>
                     </div>
                 )}
                 {error && (
                     <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 flex items-center text-red-700 dark:text-red-400 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                        <span className="material-symbols-outlined mr-2">error</span>
+                        <AlertTriangle className="mr-2" />
                         <span className="font-medium text-sm">{error}</span>
                     </div>
                 )}
@@ -320,7 +321,7 @@ export default function SettingsPage() {
                         disabled={saved}
                         title="Save Changes (Ctrl+S or Ctrl+Enter)"
                         className="px-6 py-3 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl shadow-lg shadow-primary/25 transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50">
-                        <span className="material-symbols-outlined">save</span>
+                        <Save />
                         Save Settings
                     </button>
                 </div>
@@ -360,7 +361,7 @@ export default function SettingsPage() {
                                     disabled={billingLoading}
                                     className="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-md transition-all disabled:opacity-70 flex justify-center items-center"
                                 >
-                                    {billingLoading ? <span className="material-symbols-outlined animate-spin mr-2">progress_activity</span> : null}
+                                    {billingLoading ? <Loader2 className="animate-spin mr-2" /> : null}
                                     Upgrade to Pro
                                 </button>
                                 <p className="text-xs text-center text-slate-500">You will be redirected to Stripe for secure checkout.</p>
@@ -372,7 +373,7 @@ export default function SettingsPage() {
                                     disabled={billingLoading}
                                     className="flex-1 py-3 bg-primary hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition-all disabled:opacity-70 flex justify-center items-center"
                                 >
-                                    {billingLoading ? <span className="material-symbols-outlined animate-spin mr-2">progress_activity</span> : null}
+                                    {billingLoading ? <Loader2 className="animate-spin mr-2" /> : null}
                                     Manage Subscription
                                 </button>
                                 <button 

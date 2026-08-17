@@ -4,6 +4,8 @@
 'use client';
 import { useRef, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { ArrowRight, CheckCircle, FileUp, Rocket, Shield, Sparkles, Users } from 'lucide-react';
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 function useCountUp(target, duration = 1500) {
     const [count, setCount] = useState(0);
@@ -118,7 +120,7 @@ export function LandingHero() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
                     <div className="flex flex-col gap-6 fade-in-up">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider w-fit">
-                            <span className="material-symbols-outlined text-sm">auto_awesome</span>
+                            <Sparkles className="text-sm" />
                             Two AI Modes - Formatter + Generator
                         </div>
 
@@ -133,11 +135,11 @@ export function LandingHero() {
 
                         <div className="flex flex-col sm:flex-row gap-4 sm:gap-3 w-full sm:w-auto">
                             <Link href="/upload?guest=1" className="group inline-flex h-12 sm:h-[52px] items-center justify-center gap-2.5 px-4 sm:px-6 rounded-xl bg-slate-900 hover:bg-black dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-[14px] sm:text-base font-bold shadow-lg shadow-slate-900/20 dark:shadow-white/10 hover:-translate-y-0.5 active:scale-[0.98] transition-all">
-                                <span className="material-symbols-outlined text-[18px] sm:text-[20px]">upload_file</span>
+                                <FileUp className="text-[18px] sm:text-[20px]" />
                                 <span className="whitespace-nowrap">Formatter: Upload Manuscript</span>
                             </Link>
                             <Link href="/generate" className="inline-flex h-12 sm:h-[52px] items-center justify-center gap-2 px-4 sm:px-6 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-transparent text-slate-700 dark:text-slate-300 text-[14px] sm:text-base font-bold hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:-translate-y-0.5 active:scale-[0.98] transition-all">
-                                <span className="material-symbols-outlined text-[18px] sm:text-[20px]">auto_awesome</span>
+                                <Sparkles className="text-[18px] sm:text-[20px]" />
                                 <span className="whitespace-nowrap">Generator: Create Draft</span>
                             </Link>
                         </div>
@@ -181,9 +183,9 @@ export function LandingHero() {
                                         <div className="h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
                                             <div className="h-full rounded-full bg-primary" style={heroAnimation('hero-progress-fill 6s ease-out infinite')} />
                                         </div>
-                                        {['Citations', 'Headings', 'Margins', 'References'].map((label, i) => (
+                                        {['Citations', 'Headings', 'Margins', 'References'].map((label) => (
                                             <div key={label} className="flex items-center gap-1.5">
-                                                <span className="material-symbols-outlined text-green-500 text-xs" style={shouldAnimateHero ? { animation: 'hero-check-pop 6s ease-out infinite', animationDelay: `${2 + i * 0.5}s`, opacity: 0 } : { opacity: 1 }}>check_circle</span>
+                                                <CheckCircle className="text-green-500 text-xs" />
                                                 <span className="text-[9px] text-slate-500 dark:text-slate-400">{label}</span>
                                             </div>
                                         ))}
@@ -197,7 +199,7 @@ export function LandingHero() {
                         <div className="absolute -bottom-6 -left-6 bg-white dark:bg-slate-800 p-6 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 hidden md:block">
                             <div className="flex items-center gap-4">
                                 <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
-                                    <span className="material-symbols-outlined text-green-600">check_circle</span>
+                                    <CheckCircle className="text-green-600" />
                                 </div>
                                 <div>
                                     <p className="text-sm text-slate-500 dark:text-slate-400">~98% Precision*</p>
@@ -277,7 +279,7 @@ export function FeatureGrid() {
                             <div key={f.title} className={`group p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 ${c.hover} transition-all duration-300 ${c.shadow} hover:-translate-y-1.5 ${c.bg} relative overflow-hidden`}>
                                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${c.gradient} opacity-0 group-hover:opacity-100 transition-opacity`} />
                                 <div className={`size-12 rounded-xl bg-gradient-to-br ${c.from} ${c.to} text-white flex items-center justify-center mb-6 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-${f.color}-500/30 transition-all`}>
-                                    <span className="material-symbols-outlined">{f.icon}</span>
+                                    <DynamicIcon name={f.icon} />
                                 </div>
                                 <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-3">{f.title}</h4>
                                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{f.description}</p>
@@ -361,7 +363,7 @@ export function TemplatePreview() {
                             <div className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${t.gradient} rounded-l-xl`} />
                             <div className="flex justify-between items-start">
                                 <div className={`size-10 rounded-lg ${t.bg} flex items-center justify-center ${t.text} ${t.border}`}>
-                                    <span className="material-symbols-outlined text-[24px]">{t.icon}</span>
+                                    <DynamicIcon name={t.icon} className="w-6 h-6" />
                                 </div>
                                 <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Available</span>
                             </div>
@@ -376,7 +378,7 @@ export function TemplatePreview() {
                 <div className="flex justify-center">
                     <Link href="/templates" className="flex items-center gap-2 px-8 py-3 rounded-xl border border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all">
                         <span>View All Templates</span>
-                        <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                        <ArrowRight className="text-sm" />
                     </Link>
                 </div>
             </div>
@@ -405,19 +407,19 @@ export function PricingSection() {
                         </div>
                         <ul className="space-y-3 mb-8 flex-1">
                             <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                                <span className="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                                <CheckCircle className="text-green-500 text-lg mt-0.5" />
                                 3 manuscript formats / month
                             </li>
                             <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                                <span className="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                                <CheckCircle className="text-green-500 text-lg mt-0.5" />
                                 Core templates (IEEE, APA)
                             </li>
                             <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                                <span className="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                                <CheckCircle className="text-green-500 text-lg mt-0.5" />
                                 Standard DOCX export
                             </li>
                             <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                                <span className="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                                <CheckCircle className="text-green-500 text-lg mt-0.5" />
                                 Community forum support
                             </li>
                         </ul>
@@ -440,23 +442,23 @@ export function PricingSection() {
                         </div>
                         <ul className="space-y-3 mb-8 flex-1">
                             <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                                <span className="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                                <CheckCircle className="text-green-500 text-lg mt-0.5" />
                                 Unlimited manuscript formatting
                             </li>
                             <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                                <span className="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                                <CheckCircle className="text-green-500 text-lg mt-0.5" />
                                 Full access to 1,000+ templates
                             </li>
                             <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                                <span className="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                                <CheckCircle className="text-green-500 text-lg mt-0.5" />
                                 High-fidelity PDF &amp; LaTeX export
                             </li>
                             <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                                <span className="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                                <CheckCircle className="text-green-500 text-lg mt-0.5" />
                                 Deep AI structural insights
                             </li>
                             <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                                <span className="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                                <CheckCircle className="text-green-500 text-lg mt-0.5" />
                                 Priority queue processing
                             </li>
                         </ul>
@@ -475,23 +477,23 @@ export function PricingSection() {
                         </div>
                         <ul className="space-y-3 mb-8 flex-1">
                             <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                                <span className="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                                <CheckCircle className="text-green-500 text-lg mt-0.5" />
                                 Everything included in Pro
                             </li>
                             <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                                <span className="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                                <CheckCircle className="text-green-500 text-lg mt-0.5" />
                                 Unlimited collaborative team seats
                             </li>
                             <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                                <span className="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                                <CheckCircle className="text-green-500 text-lg mt-0.5" />
                                 Institutional custom template builder
                             </li>
                             <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                                <span className="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                                <CheckCircle className="text-green-500 text-lg mt-0.5" />
                                 SSO integration &amp; admin analytics
                             </li>
                             <li className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                                <span className="material-symbols-outlined text-green-500 text-lg mt-0.5">check_circle</span>
+                                <CheckCircle className="text-green-500 text-lg mt-0.5" />
                                 Dedicated account manager
                             </li>
                         </ul>
@@ -559,7 +561,7 @@ export function AboutSection() {
                         <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
                             We combine deep learning models trained on thousands of published papers with rule-based validation engines that catch every formatting detail. From citation styles to figure placement, margin sizes to heading hierarchy — we handle it all so you can focus on what matters: your research.
                         </p>
-                        <div className="grid grid-cols-3 gap-6 mt-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-4">
                             <div ref={researchers.ref} className="text-center">
                                 <p className="text-3xl font-black text-primary">{researchers.count >= 1000 ? `${(researchers.count / 1000).toFixed(researchers.count >= 25000 ? 0 : 1)}k+` : `${researchers.count}+`}</p>
                                 <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">Researchers</p>
@@ -578,7 +580,7 @@ export function AboutSection() {
                         <div className="flex flex-col gap-6">
                             <div className="flex items-start gap-4">
                                 <div className="size-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                                    <span className="material-symbols-outlined">rocket_launch</span>
+                                    <Rocket />
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-slate-900 dark:text-white mb-1">Our Mission</h4>
@@ -587,7 +589,7 @@ export function AboutSection() {
                             </div>
                             <div className="flex items-start gap-4">
                                 <div className="size-10 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 flex items-center justify-center shrink-0">
-                                    <span className="material-symbols-outlined">security</span>
+                                    <Shield />
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-slate-900 dark:text-white mb-1">Privacy First</h4>
@@ -596,7 +598,7 @@ export function AboutSection() {
                             </div>
                             <div className="flex items-start gap-4">
                                 <div className="size-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 text-amber-600 flex items-center justify-center shrink-0">
-                                    <span className="material-symbols-outlined">groups</span>
+                                    <Users />
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-slate-900 dark:text-white mb-1">Open Community</h4>

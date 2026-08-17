@@ -6,6 +6,8 @@ import usePageTitle from '@/src/hooks/usePageTitle';
 import { useState } from 'react';
 import FeedbackForm from '@/src/components/FeedbackForm';
 import { getFeedbackSummary } from '@/src/services/api';
+import { MessageSquare } from 'lucide-react';
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 export default function FeedbackPage() {
     usePageTitle('Feedback');
@@ -33,7 +35,7 @@ export default function FeedbackPage() {
             <main className="max-w-4xl mx-auto px-4 py-8">
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-                        <span className="material-symbols-outlined text-primary text-4xl">feedback</span>
+                        <MessageSquare className="text-primary text-4xl" />
                         Feedback &amp; Corrections
                     </h1>
                     <p className="text-slate-600 dark:text-slate-400 mt-2">
@@ -55,7 +57,7 @@ export default function FeedbackPage() {
                                 : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'
                                 }`}
                         >
-                            <span className="material-symbols-outlined text-sm">{tab.icon}</span>
+                            <DynamicIcon name={tab.icon} className="w-3.5 h-3.5" />
                             {tab.label}
                         </button>
                     ))}

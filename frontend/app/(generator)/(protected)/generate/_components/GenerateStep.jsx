@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: MIT
-// Copyright (c) 2026 ScholarForm AI
-
 'use client';
+
+import { FileDown, FileJson, Plus, RefreshCw, Check } from 'lucide-react';
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 export default function GenerateStep({ status, progress, stage, message, error, outline, onDownload, onReset }) {
     const stages = [
@@ -43,7 +43,7 @@ export default function GenerateStep({ status, progress, stage, message, error, 
                     return (
                         <div key={entry.key} className={`flex items-center gap-3 p-3 rounded-xl transition ${isDone ? 'bg-green-500/10' : isActive ? 'bg-primary/10' : 'bg-white/3'}`}>
                             <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${isDone ? 'bg-green-500' : isActive ? 'bg-primary' : 'bg-white/10'}`}>
-                                <span className="material-symbols-outlined text-white text-sm">{isDone ? 'check' : entry.icon}</span>
+                                {isDone ? <Check className="text-white w-3.5 h-3.5" /> : <DynamicIcon name={entry.icon} className="text-white w-3.5 h-3.5" />}
                             </div>
                             <span className={`text-sm ${isDone ? 'text-green-300' : isActive ? 'text-blue-300' : 'text-slate-600'}`}>{entry.label}</span>
                             {isActive && <span className="ml-auto text-xs text-primary-light animate-pulse">In progress...</span>}
@@ -80,7 +80,7 @@ export default function GenerateStep({ status, progress, stage, message, error, 
                         onClick={() => onDownload('docx')}
                         className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-primary-hover shadow-lg shadow-primary/30 hover:shadow-primary/50 text-white rounded-xl font-semibold text-sm hover:scale-[1.02] transition active:scale-95"
                     >
-                        <span className="material-symbols-outlined text-base">file_download</span>
+                        <FileDown className="text-base" />
                         Download DOCX
                     </button>
                     <button
@@ -88,7 +88,7 @@ export default function GenerateStep({ status, progress, stage, message, error, 
                         onClick={() => onDownload('pdf')}
                         className="flex items-center gap-2 px-6 py-3 bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-white rounded-xl font-semibold text-sm hover:bg-slate-200 dark:hover:bg-white/20 transition active:scale-95"
                     >
-                        <span className="material-symbols-outlined text-base">picture_as_pdf</span>
+                        <FileJson className="text-base" />
                         Download PDF
                     </button>
                     <button
@@ -96,7 +96,7 @@ export default function GenerateStep({ status, progress, stage, message, error, 
                         onClick={onReset}
                         className="flex items-center gap-2 px-6 py-3 bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-white rounded-xl font-semibold text-sm hover:bg-slate-200 dark:hover:bg-white/20 transition active:scale-95"
                     >
-                        <span className="material-symbols-outlined text-base">add</span>
+                        <Plus className="text-base" />
                         Generate Another
                     </button>
                 </div>
@@ -108,7 +108,7 @@ export default function GenerateStep({ status, progress, stage, message, error, 
                     onClick={onReset}
                     className="flex items-center gap-2 px-6 py-3 bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-white rounded-xl font-semibold text-sm hover:bg-slate-200 dark:hover:bg-white/20 transition active:scale-95"
                 >
-                    <span className="material-symbols-outlined text-base">refresh</span>
+                    <RefreshCw className="text-base" />
                     Try Again
                 </button>
             )}

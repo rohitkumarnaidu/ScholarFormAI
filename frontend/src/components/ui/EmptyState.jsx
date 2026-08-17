@@ -5,6 +5,7 @@
 
 import { forwardRef } from 'react';
 import Button from './Button';
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 import { cn } from '@/src/lib/utils';
 
@@ -31,7 +32,7 @@ const EmptyState = forwardRef(function EmptyState(
             {...props}
         >
             <div className="mx-auto mb-3 w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400">
-                <span className="material-symbols-outlined">{icon}</span>
+                <DynamicIcon name={icon} className="w-6 h-6" />
             </div>
             <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{description}</p>

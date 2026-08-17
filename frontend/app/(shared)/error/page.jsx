@@ -26,6 +26,7 @@ function normalizeError(errorValue) {
 }
 
 import { Suspense } from 'react';
+import { AlertTriangle, FileUp, Headset } from 'lucide-react';
 
 function ErrorContent() {
     usePageTitle('Error');
@@ -58,7 +59,7 @@ function ErrorContent() {
             <div className="max-w-[640px] w-full bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-[#e7ecf3] dark:border-slate-800 overflow-hidden">
                 <div className="flex flex-col items-center gap-6 px-4 sm:px-8 pt-10 pb-6">
                     <div className="flex items-center justify-center w-24 h-24 rounded-full bg-red-50 dark:bg-red-900/20 text-red-500">
-                        <span className="material-symbols-outlined text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>error</span>
+                        <AlertTriangle className="text-6xl" />
                     </div>
                     <div className="flex flex-col items-center gap-3 text-center">
                         <h1 className="text-[#0d131b] dark:text-white text-3xl font-bold leading-tight tracking-tight">{title}</h1>
@@ -88,12 +89,12 @@ function ErrorContent() {
 
                 <div className="bg-slate-50 dark:bg-slate-800/30 px-4 sm:px-8 py-6 flex flex-col sm:flex-row gap-3 justify-center">
                     <Link href={primaryLink} className="flex-1 flex min-w-[160px] cursor-pointer items-center justify-center rounded-lg h-12 px-6 bg-primary text-white text-sm font-bold leading-normal tracking-wide transition-opacity hover:opacity-90 active:scale-95 duration-150">
-                        <span className="material-symbols-outlined mr-2">upload_file</span>
+                        <FileUp className="mr-2" />
                         <span className="truncate">{primaryLabel}</span>
                     </Link>
                     {isNotFound ? (
                         <Link href="/upload" className="flex-1 flex min-w-[160px] cursor-pointer items-center justify-center rounded-lg h-12 px-6 bg-white dark:bg-slate-800 border border-[#cfd9e7] dark:border-slate-700 text-[#0d131b] dark:text-white text-sm font-bold leading-normal tracking-wide transition-all hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-95 duration-150">
-                            <span className="material-symbols-outlined mr-2">upload_file</span>
+                            <FileUp className="mr-2" />
                             <span className="truncate">Open Upload</span>
                         </Link>
                     ) : (
@@ -101,7 +102,7 @@ function ErrorContent() {
                             onClick={() => window.open('mailto:support@scholarform.ai', '_self')}
                             className="flex-1 flex min-w-[160px] cursor-pointer items-center justify-center rounded-lg h-12 px-6 bg-white dark:bg-slate-800 border border-[#cfd9e7] dark:border-slate-700 text-[#0d131b] dark:text-white text-sm font-bold leading-normal tracking-wide transition-all hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-95 duration-150"
                         >
-                            <span className="material-symbols-outlined mr-2">support_agent</span>
+                            <Headset className="mr-2" />
                             <span className="truncate">Contact Support</span>
                         </button>
                     )}

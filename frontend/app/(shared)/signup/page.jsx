@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useAuth } from '@/src/context/AuthContext';
 import { SignupSchema } from '@/src/lib/schemas';
 import { z } from 'zod';
+import { AlertTriangle, CheckCircle, Eye, EyeOff, FileText, GraduationCap, Lock, Mail, User, X } from 'lucide-react';
 
 function SignupContent() {
     usePageTitle('Create Account');
@@ -130,7 +131,7 @@ function SignupContent() {
                 <div className="hidden lg:flex w-full lg:w-[50%] flex-col justify-center pr-8 xl:pr-16 relative h-full">
                     <div className="max-w-lg animate-in fade-in slide-in-from-left-8 duration-1000">
                         <div className="mb-8 inline-flex items-center gap-2 rounded-lg bg-primary/10 px-4 py-2 text-primary font-bold">
-                            <span className="material-symbols-outlined text-[20px]">description</span>
+                            <FileText className="text-[20px]" />
                             <span>ScholarForm AI</span>
                         </div>
                         <h2 className="text-4xl xl:text-5xl font-extrabold text-slate-900 mb-6 leading-tight tracking-tight">
@@ -144,16 +145,16 @@ function SignupContent() {
                         <div className="flex items-center gap-4">
                             <div className="flex -space-x-3">
                                 <div className="w-10 h-10 rounded-full border-2 border-slate-50 flex items-center justify-center bg-slate-200 text-slate-500 shadow-sm">
-                                    <span className="material-symbols-outlined text-[18px]">person</span>
+                                    <User className="text-[18px]" />
                                 </div>
                                 <div className="w-10 h-10 rounded-full border-2 border-slate-50 flex items-center justify-center bg-slate-300 text-slate-600 shadow-sm">
-                                    <span className="material-symbols-outlined text-[18px]">person</span>
+                                    <User className="text-[18px]" />
                                 </div>
                                 <div className="w-10 h-10 rounded-full border-2 border-slate-50 flex items-center justify-center bg-slate-400 text-white shadow-sm">
-                                    <span className="material-symbols-outlined text-[18px]">person</span>
+                                    <User className="text-[18px]" />
                                 </div>
                                 <div className="w-10 h-10 rounded-full border-2 border-slate-50 flex items-center justify-center bg-primary text-white shadow-sm">
-                                    <span className="material-symbols-outlined text-[18px]">person</span>
+                                    <User className="text-[18px]" />
                                 </div>
                             </div>
                             <div className="text-sm font-semibold text-slate-600">
@@ -175,14 +176,14 @@ function SignupContent() {
 
                             {error && (
                                 <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 flex items-start gap-3">
-                                    <span className="material-symbols-outlined text-red-500 shrink-0 mt-0.5">error</span>
+                                    <AlertTriangle className="text-red-500 shrink-0 mt-0.5" />
                                     <p className="text-red-700 text-sm font-medium">{error}</p>
                                 </div>
                             )}
 
                             {successMessage && (
                                 <div className="mb-6 p-4 rounded-xl bg-green-50 border border-green-200 flex items-start gap-3">
-                                    <span className="material-symbols-outlined text-green-500 shrink-0 mt-0.5">check_circle</span>
+                                    <CheckCircle className="text-green-500 shrink-0 mt-0.5" />
                                     <p className="text-green-700 text-sm font-medium">{successMessage}</p>
                                 </div>
                             )}
@@ -192,7 +193,7 @@ function SignupContent() {
                                 <div className="flex flex-col gap-2">
                                     <label className="text-sm font-bold text-slate-700" htmlFor="fullName">Full Name</label>
                                     <div className="relative w-full">
-                                        <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">person</span>
+                                        <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                                         <input
                                             id="fullName"
                                             className={`w-full rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/20 border bg-white focus:border-primary h-11 pl-11 pr-4 text-sm font-medium transition-all placeholder:text-slate-400 ${fieldErrors.full_name ? 'border-red-500' : 'border-slate-300'}`}
@@ -209,7 +210,7 @@ function SignupContent() {
                                 <div className="flex flex-col gap-2">
                                     <label className="text-sm font-bold text-slate-700" htmlFor="email">Institutional Email</label>
                                     <div className="relative w-full">
-                                        <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">mail</span>
+                                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                                         <input
                                             id="email"
                                             className={`w-full rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/20 border bg-white focus:border-primary h-11 pl-11 pr-4 text-sm font-medium transition-all placeholder:text-slate-400 ${fieldErrors.email ? 'border-red-500' : 'border-slate-300'}`}
@@ -228,7 +229,7 @@ function SignupContent() {
                                         Institution <span className="text-xs text-slate-400 font-normal ml-1">(Optional)</span>
                                     </label>
                                     <div className="relative w-full">
-                                        <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">school</span>
+                                        <GraduationCap className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                                         <input
                                             id="institution"
                                             className={`w-full rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/20 border bg-white focus:border-primary h-11 pl-11 pr-4 text-sm font-medium transition-all placeholder:text-slate-400 ${fieldErrors.institution ? 'border-red-500' : 'border-slate-300'}`}
@@ -246,7 +247,7 @@ function SignupContent() {
                                     <div className="flex flex-col gap-2">
                                         <label className="text-sm font-bold text-slate-700" htmlFor="password">Password</label>
                                         <div className="relative w-full">
-                                            <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+                                            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                                             <input
                                                 id="password"
                                                 className={`w-full rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/20 border bg-white focus:border-primary h-11 pl-11 pr-12 text-sm font-medium transition-all placeholder:text-slate-400 ${fieldErrors.password ? 'border-red-500' : 'border-slate-300'}`}
@@ -261,7 +262,7 @@ function SignupContent() {
                                                 onClick={() => setShowPassword(!showPassword)}
                                                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                                             >
-                                                <span className="material-symbols-outlined text-[20px]">{showPassword ? 'visibility_off' : 'visibility'}</span>
+                                                {showPassword ? <EyeOff className="text-[20px]" /> : <Eye className="text-[20px]" />}
                                             </button>
                                         </div>
                                         {password && (
@@ -283,7 +284,7 @@ function SignupContent() {
                                     <div className="flex flex-col gap-2">
                                         <label className="text-sm font-bold text-slate-700" htmlFor="confirmPassword">Confirm Password</label>
                                         <div className="relative w-full">
-                                            <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+                                            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                                             <input
                                                 id="confirmPassword"
                                                 className={`w-full rounded-lg text-slate-900 focus:outline-none focus:ring-2 h-11 pl-11 pr-12 text-sm font-medium transition-all placeholder:text-slate-400 border bg-white ${confirmPassword && confirmPassword !== password
@@ -301,7 +302,7 @@ function SignupContent() {
                                                 onClick={() => setShowConfirm(!showConfirm)}
                                                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                                             >
-                                                <span className="material-symbols-outlined text-[20px]">{showConfirm ? 'visibility_off' : 'visibility'}</span>
+                                                {showConfirm ? <EyeOff className="text-[20px]" /> : <Eye className="text-[20px]" />}
                                             </button>
                                         </div>
                                     </div>
@@ -309,9 +310,7 @@ function SignupContent() {
 
                                 {/* Requirements hint */}
                                 <div className="flex items-center gap-2 mt-2">
-                                    <span className={`material-symbols-outlined text-[16px] transition-colors ${isPasswordValid ? 'text-green-500' : 'text-slate-400'}`}>
-                                        {isPasswordValid ? 'check_circle' : 'info'}
-                                    </span>
+                                    {isPasswordValid ? <CheckCircle className="w-4 h-4 text-green-500 transition-colors" /> : <X className="w-4 h-4 text-slate-400 transition-colors" />}
                                     <span className="text-slate-500 text-xs font-medium">Requires 8+ characters and a number.</span>
                                 </div>
 

@@ -10,6 +10,7 @@ import Link from 'next/link';
 import * as Diff from 'diff';
 import { getComparison } from '@/src/services/api';
 import useJobFromUrl from '@/src/hooks/useJobFromUrl';
+import { BadgeCheck, ChevronRight, FileDown, FileEdit, FileText, History, Info, Network, Pause, Play, RefreshCw, Wand2 } from 'lucide-react';
 
 const toLineText = (value) => {
     if (typeof value === 'string') {
@@ -317,7 +318,7 @@ export default function Compare() {
                     <div>
                         <nav className="flex text-xs text-slate-500 mb-1 gap-2 items-center">
                             <Link className="hover:underline" href="/history">Documents</Link>
-                            <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+                            <ChevronRight className="text-[14px]" />
                             <span className="font-medium break-all">{job.originalFileName}</span>
                         </nav>
                         <div className="flex items-center gap-3">
@@ -332,7 +333,7 @@ export default function Compare() {
                             onClick={() => setIsPaused(!isPaused)}
                             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-bold transition-all ${isPaused ? 'bg-amber-50 border-amber-200 text-amber-600' : 'bg-primary/5 border-primary/20 text-primary hover:bg-primary/10'}`}
                         >
-                            <span className="material-symbols-outlined text-[18px]">{isPaused ? 'play_arrow' : 'pause'}</span>
+                            {isPaused ? <Play className="text-[18px]" /> : <Pause className="text-[18px]" />}
                             {isPaused ? 'Resume Highlights' : 'Pause Highlights'}
                         </button>
                         <span className="text-xs font-medium text-slate-500 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded uppercase">{job.template} Template Applied</span>
@@ -348,7 +349,7 @@ export default function Compare() {
                                     onClick={() => setViewMode('text')}
                                     className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-sm font-bold transition-all ${viewMode === 'text' ? 'bg-white dark:bg-slate-700 shadow-sm text-primary' : 'text-slate-500 dark:text-slate-400 hover:text-primary'}`}
                                 >
-                                    <span className="material-symbols-outlined text-[20px]">description</span>
+                                    <FileText className="text-[20px]" />
                                     Text View
                                 </button>
                                 {/* Only show Structured view if data exists */}
@@ -357,18 +358,18 @@ export default function Compare() {
                                         onClick={() => setViewMode('structured')}
                                         className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'structured' ? 'bg-white dark:bg-slate-700 shadow-sm text-primary' : 'text-slate-500 dark:text-slate-400 hover:text-primary'}`}
                                     >
-                                        <span className="material-symbols-outlined text-[20px]">account_tree</span>
+                                        <Network className="text-[20px]" />
                                         Structured
                                     </button>
                                 )}
                             </div>
                             <div className="flex h-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 p-1">
                                 <label onClick={() => setScrollSync(!scrollSync)} className={`cursor-pointer flex h-full items-center justify-center rounded-md px-3 text-xs transition-all ${scrollSync ? 'bg-white dark:bg-slate-700 shadow-sm text-primary font-bold' : 'text-slate-500 dark:text-slate-400 font-medium hover:text-primary'}`}>
-                                    <span className="material-symbols-outlined text-[18px] mr-1">sync_alt</span>
+                                    <RefreshCw className="text-[18px] mr-1" />
                                     <span className="truncate">Sync: {scrollSync ? 'ON' : 'OFF'}</span>
                                 </label>
                                 <label onClick={() => setHighlights(!highlights)} className={`cursor-pointer flex h-full items-center justify-center rounded-md px-3 text-xs transition-all ${highlights ? 'bg-white dark:bg-slate-700 shadow-sm text-primary font-bold' : 'text-slate-500 dark:text-slate-400 font-medium hover:text-primary'}`}>
-                                    <span className="material-symbols-outlined text-[18px] mr-1">auto_fix_high</span>
+                                    <Wand2 className="text-[18px] mr-1" />
                                     <span className="truncate">Highlights: {highlights ? 'ON' : 'OFF'}</span>
                                 </label>
                             </div>
@@ -376,13 +377,13 @@ export default function Compare() {
 
                         <div className="flex items-center gap-2 self-end sm:self-auto">
                             <button onClick={() => navigate(getJobRoute('download', '/download'))} className="p-2 text-slate-500 hover:text-primary transition-colors" title="Download">
-                                <span className="material-symbols-outlined">file_download</span>
+                                <FileDown />
                             </button>
                             <button
                                 onClick={() => navigate(getJobRoute('edit', '/edit'))}
                                 className="flex items-center justify-center rounded-lg h-10 bg-primary text-white gap-2 px-4 sm:px-6 text-sm font-bold shadow-md hover:bg-blue-600 transition-all"
                             >
-                                <span className="material-symbols-outlined">edit_note</span>
+                                <FileEdit />
                                 <span className="truncate">Edit Version</span>
                             </button>
                         </div>
@@ -418,7 +419,7 @@ export default function Compare() {
                             <div className="flex-1 flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
                                 <div className="px-6 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center">
                                     <h3 className="font-bold text-sm text-slate-700 dark:text-slate-200 uppercase tracking-wider flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-[18px] text-slate-400">history</span>
+                                        <History className="text-[18px] text-slate-400" />
                                         Original
                                     </h3>
                                     <span className="text-[10px] text-slate-400">Source: {job.originalFileName}</span>
@@ -438,7 +439,7 @@ export default function Compare() {
                             </div>
 
                             <div className="hidden lg:flex flex-col items-center justify-center px-0 text-slate-300 dark:text-slate-700">
-                                <span className="material-symbols-outlined">link</span>
+                                <Link />
                             </div>
 
                             {/* Right Panel: Processed */}
@@ -446,13 +447,13 @@ export default function Compare() {
                                 {isPaused && (
                                     <div className="absolute inset-0 bg-white/20 dark:bg-slate-900/20 backdrop-blur-[1px] z-10 flex items-center justify-center pointer-events-none">
                                         <div className="bg-white/90 dark:bg-slate-800/90 p-4 rounded-full shadow-2xl border border-amber-200 animate-in fade-in zoom-in duration-300">
-                                            <span className="material-symbols-outlined text-amber-500 text-6xl">auto_fix_off</span>
+                                            <Wand2 className="text-amber-500 text-6xl" />
                                         </div>
                                     </div>
                                 )}
                                 <div className="px-6 py-3 border-b border-slate-200 dark:border-slate-800 bg-primary/5 flex justify-between items-center">
                                     <h3 className="font-bold text-sm text-primary uppercase tracking-wider flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-[18px]">verified</span>
+                                        <BadgeCheck className="text-[18px]" />
                                         Processed ({job.template})
                                     </h3>
                                     <div className="flex gap-2">
@@ -508,7 +509,7 @@ export default function Compare() {
                     </div>
                     <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-slate-500">
                         <span className="flex items-center gap-1">
-                            <span className="material-symbols-outlined text-[16px]">info</span>
+                            <Info className="text-[16px]" />
                             {htmlDiffDocument ? 'Backend HTML diff active' : 'Client-side diff active'}
                         </span>
                         <span className="sm:border-l border-slate-300 dark:border-slate-600 sm:pl-4 break-all">Job ID: {job.id}</span>

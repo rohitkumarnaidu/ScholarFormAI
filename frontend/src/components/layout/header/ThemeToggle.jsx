@@ -5,6 +5,7 @@
 
 import { useTheme } from '@/context/ThemeContext';
 import { useEffect, useState } from 'react';
+import { Moon, Sun } from 'lucide-react';
 
 export default function ThemeToggle() {
     const { theme, toggleTheme, systemTheme } = useTheme();
@@ -28,9 +29,7 @@ export default function ThemeToggle() {
             aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
             title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
         >
-            <span className="material-symbols-outlined text-[20px]">
-                {isDark ? 'light_mode' : 'dark_mode'}
-            </span>
+            {isDark ? <Sun className="text-[20px]" /> : <Moon className="text-[20px]" />}
         </button>
     );
 }

@@ -12,6 +12,7 @@ import { useAuth } from '@/src/context/AuthContext';
 import { downloadExport } from '@/src/services/api';
 import { isCompleted, isFailed, isProcessing } from '@/src/constants/status';
 import useJobFromUrl from '@/src/hooks/useJobFromUrl';
+import { AlertTriangle, CheckCircle, ClipboardCheck, Clock, Code, Download as DownloadIcon, FileText, FileUp, History, Loader2, Lock, Sparkles } from 'lucide-react';
 
 // Feature flag: enable LaTeX export once Agent Alpha ships Module 2 Step 5
 const LATEX_EXPORT_ENABLED = process.env.NEXT_PUBLIC_LATEX_EXPORT_ENABLED === 'true';
@@ -102,7 +103,7 @@ export default function Download() {
             <div className="min-h-screen flex flex-col items-center justify-center bg-background-light dark:bg-background-dark">
                 <div className="p-8 max-w-md text-center">
                     <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span className="material-symbols-outlined text-3xl">error</span>
+                        <AlertTriangle className="text-3xl" />
                     </div>
                     <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Formatting Failed</h2>
                     <p className="text-slate-500 dark:text-slate-400 mb-6">{job.error || "An unexpected error occurred during processing."}</p>
@@ -182,7 +183,7 @@ export default function Download() {
                     {/* Success Header */}
                     <div className="flex flex-col items-center mb-8">
                         <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 shadow-sm">
-                            <span className="material-symbols-outlined text-4xl">check_circle</span>
+                            <CheckCircle className="text-4xl" />
                         </div>
                         <h1 className="text-[#0d131b] dark:text-slate-50 tracking-light text-[28px] sm:text-[32px] font-bold leading-tight px-4 text-center pb-2">Formatting Complete!</h1>
                         <p className="text-[#4c6c9a] dark:text-slate-400 text-base text-center max-w-[500px]">Your manuscript has been successfully processed and is ready for submission.</p>
@@ -194,7 +195,7 @@ export default function Download() {
                         {downloadError && (
                             <div className="mb-6 p-4 rounded-xl border bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-900/30 animate-in fade-in slide-in-from-top duration-300">
                                 <div className="flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-sm text-red-600 dark:text-red-400">error</span>
+                                    <AlertTriangle className="text-sm text-red-600 dark:text-red-400" />
                                     <p className="text-sm font-medium text-red-900 dark:text-red-300">{downloadError}</p>
                                 </div>
                             </div>
@@ -215,23 +216,23 @@ export default function Download() {
                                         <div className="w-4/6 h-1.5 bg-slate-100 dark:bg-slate-800 rounded"></div>
                                     </div>
                                     <div className="mt-auto self-end w-8 h-8 rounded bg-primary/10 flex items-center justify-center">
-                                        <span className="material-symbols-outlined text-[16px] text-primary">auto_awesome</span>
+                                        <Sparkles className="text-[16px] text-primary" />
                                     </div>
                                 </div>
                             </div>
                             <div className="flex w-full grow flex-col items-stretch justify-center gap-6 py-6 sm:py-8 px-5 sm:px-6 @xl:px-8">
                                 <div>
                                     <h3 className="text-[#0d131b] dark:text-slate-50 text-lg sm:text-xl font-bold leading-tight tracking-[-0.015em] mb-2 flex items-center gap-2 break-all">
-                                        <span className="material-symbols-outlined text-primary">description</span>
+                                        <FileText className="text-primary" />
                                         {job.originalFileName}
                                     </h3>
                                     <div className="flex flex-col gap-2">
                                         <div className="flex items-center gap-2 text-[#4c6c9a] dark:text-slate-400">
-                                            <span className="material-symbols-outlined text-sm">auto_awesome</span>
+                                            <Sparkles className="text-sm" />
                                             <p className="text-sm font-medium">{job.template?.toUpperCase()} Template Applied</p>
                                         </div>
                                         <div className="flex items-center gap-2 text-[#4c6c9a] dark:text-slate-400">
-                                            <span className="material-symbols-outlined text-sm">schedule</span>
+                                            <Clock className="text-sm" />
                                             <p className="text-sm">Processed on {new Date(job.timestamp).toLocaleString()}</p>
                                         </div>
                                     </div>
@@ -244,12 +245,12 @@ export default function Download() {
                                     >
                                         {isDownloading ? (
                                             <>
-                                                <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                                                <Loader2 className="animate-spin" />
                                                 <span className="truncate">Downloading...</span>
                                             </>
                                         ) : (
                                             <>
-                                                <span className="material-symbols-outlined">download</span>
+                                                <DownloadIcon />
                                                 <span className="truncate">Choose Export Format</span>
                                             </>
                                         )}
@@ -263,12 +264,12 @@ export default function Download() {
                                         >
                                             {isDownloading ? (
                                                 <>
-                                                    <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                                                    <Loader2 className="animate-spin" />
                                                     <span className="truncate">Downloading...</span>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <span className="material-symbols-outlined">code</span>
+                                                    <Code />
                                                     <span className="truncate">Download as LaTeX (.tex)</span>
                                                 </>
                                             )}
@@ -289,7 +290,7 @@ export default function Download() {
                             <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-[220px_1fr] gap-2 md:gap-6 border-b border-slate-200 dark:border-slate-800 py-4 items-center">
                                 <p className="text-[#4c6c9a] dark:text-slate-400 text-sm font-semibold uppercase tracking-tight">Output Format</p>
                                 <div className="flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-blue-500">article</span>
+                                    <FileText className="text-blue-500" />
                                     <p className="text-[#0d131b] dark:text-slate-200 text-sm font-medium">DOCX, PDF</p>
                                 </div>
                             </div>
@@ -300,7 +301,7 @@ export default function Download() {
                             <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-[220px_1fr] gap-2 md:gap-6 border-b border-slate-200 dark:border-slate-800 py-4 items-center">
                                 <p className="text-[#4c6c9a] dark:text-slate-400 text-sm font-semibold uppercase tracking-tight">AI Enhancement</p>
                                 <div className="flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-primary text-sm">auto_awesome</span>
+                                    <Sparkles className="text-primary text-sm" />
                                     <p className="text-[#0d131b] dark:text-slate-200 text-sm">{job.flags?.ai_used ? 'AI Analysis and Correction enabled' : 'Standard formatting only'}</p>
                                 </div>
                             </div>
@@ -311,18 +312,18 @@ export default function Download() {
                     <div className="mt-10 mb-16 sm:mb-20 flex justify-center">
                         <div className="flex flex-col sm:flex-row gap-4 px-4 py-3 w-full max-w-[800px] justify-center flex-wrap">
                             <button onClick={handleUploadAnother} className="flex w-full sm:w-auto min-w-[160px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-6 bg-slate-200 dark:bg-slate-800 text-[#0d131b] dark:text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] grow transition-colors hover:bg-slate-300 dark:hover:bg-slate-700">
-                                <span className="material-symbols-outlined text-xl">upload_file</span>
+                                <FileUp className="text-xl" />
                                 <span className="truncate">Upload Another</span>
                             </button>
                             <button onClick={handleBrowseHistory} className="flex w-full sm:w-auto min-w-[160px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-6 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 text-[#0d131b] dark:text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] grow transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
-                                <span className="material-symbols-outlined text-xl">history</span>
+                                <History className="text-xl" />
                                 <span className="truncate">Browse Documents</span>
                             </button>
                             <button
                                 onClick={() => navigate(getJobRoute('results', '/results'))}
                                 className="flex w-full sm:w-auto min-w-[160px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-6 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 text-[#0d131b] dark:text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] grow transition-colors hover:bg-slate-50 dark:hover:bg-slate-800"
                             >
-                                <span className="material-symbols-outlined text-xl">fact_check</span>
+                                <ClipboardCheck className="text-xl" />
                                 <span className="truncate">Validation Report</span>
                             </button>
                         </div>
@@ -335,7 +336,7 @@ export default function Download() {
                         <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-700 scale-100 animate-in zoom-in-95 duration-200">
                             <div className="flex flex-col items-center text-center gap-4">
                                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                                    <span className="material-symbols-outlined text-2xl">lock</span>
+                                    <Lock className="text-2xl" />
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-bold text-slate-900 dark:text-white">Login Required</h3>

@@ -7,6 +7,7 @@ import React, { memo, useState, useMemo, useCallback } from 'react';
 import EmptyState from '@/components/ui/EmptyState';
 
 import { cn } from '@/src/lib/utils';
+import { History } from 'lucide-react';
 
 const STATUS_TABS = [
     { key: 'all', label: 'All' },
@@ -57,7 +58,7 @@ const SuggestionHistory = memo(function SuggestionHistory({
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
             <div className="p-4 border-b border-slate-200 dark:border-slate-800">
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary text-lg">history</span>
+                    <History className="text-primary text-lg" />
                     Suggestion History
                 </h3>
                 <div className="flex gap-1">

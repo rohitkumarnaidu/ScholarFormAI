@@ -251,7 +251,7 @@ export default function SettingsPage() {
                 </div>
               </button>
               <a
-                href="https://github.com/amf/automated-manuscript-formatter/releases"
+                href="https://github.com/rohitkumarnaidu/ScholarFormAI/releases"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white p-4 hover:shadow-md transition-shadow block"

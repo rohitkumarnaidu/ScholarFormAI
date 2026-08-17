@@ -34,7 +34,7 @@ describe('EmptyState component', () => {
 
     it('renders with icon', () => {
         const { container } = render(<EmptyState icon="search" />);
-        expect(container.querySelector('.material-symbols-outlined')).toHaveTextContent('search');
+        expect(container.querySelector('.lucide-search')).toBeInTheDocument();
     });
 
     it('does not render action button when only actionLabel given without onAction', () => {
@@ -49,7 +49,7 @@ describe('EmptyState component', () => {
 
     it('renders with default icon when no icon specified', () => {
         const { container } = render(<EmptyState />);
-        expect(container.querySelector('.material-symbols-outlined')).toHaveTextContent('inbox');
+        expect(container.querySelector('.lucide-inbox')).toBeInTheDocument();
     });
 
     it('renders action with secondary variant', () => {

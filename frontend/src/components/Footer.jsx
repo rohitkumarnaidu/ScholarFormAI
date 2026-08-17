@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useMetricsHealth } from '@/services/api.hooks';
 import { subscribeNewsletter } from '@/services/api.core';
+import { BadgeCheck, BookOpen, Check, Mail, RefreshCw, Send, Share2, Shield } from 'lucide-react';
 
 export default function Footer({ variant = 'app' }) {
     const { data: health } = useMetricsHealth({ staleTime: 60000, retry: false });
@@ -41,7 +42,7 @@ export default function Footer({ variant = 'app' }) {
                         <div className="md:col-span-4">
                             <div className="flex items-center gap-2 sm:gap-3 mb-6">
                                 <div className="size-10 sm:size-12 flex items-center justify-center">
-                                    <span className="material-symbols-outlined text-[32px] sm:text-[38px] text-blue-700 dark:text-blue-400">auto_stories</span>
+                                    <BookOpen className="text-[32px] sm:text-[38px] text-blue-700 dark:text-blue-400" />
                                 </div>
                                 <span className="text-[22px] font-black tracking-tight text-slate-900 dark:text-white">ScholarForm AI</span>
                             </div>
@@ -50,10 +51,10 @@ export default function Footer({ variant = 'app' }) {
                             </p>
                             <div className="flex items-center gap-4">
                                 <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="size-10 rounded-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all">
-                                    <span className="material-symbols-outlined text-lg">share</span>
+                                    <Share2 className="text-lg" />
                                 </a>
                                 <a href="mailto:contact@scholarform.ai" className="size-10 rounded-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all">
-                                    <span className="material-symbols-outlined text-lg">mail</span>
+                                    <Mail className="text-lg" />
                                 </a>
                             </div>
                         </div>
@@ -116,11 +117,11 @@ export default function Footer({ variant = 'app' }) {
                                         suppressHydrationWarning
                                     >
                                         {status === 'loading' ? (
-                                            <span className="material-symbols-outlined text-[20px] animate-spin">refresh</span>
+                                            <RefreshCw className="text-[20px] animate-spin" />
                                         ) : status === 'success' ? (
-                                            <span className="material-symbols-outlined text-[20px]">check</span>
+                                            <Check className="text-[20px]" />
                                         ) : (
-                                            <span className="material-symbols-outlined text-[20px]">send</span>
+                                            <Send className="text-[20px]" />
                                         )}
                                     </button>
                                 </form>
@@ -140,11 +141,11 @@ export default function Footer({ variant = 'app' }) {
                         </div>
                         <div className="flex items-center justify-center gap-6">
                             <div className="flex items-center gap-1.5 text-slate-400 dark:text-slate-500 group" title={health?.version ? `Backend Ver: ${health.version}` : 'GDPR Compliant'}>
-                                <span className={`material-symbols-outlined text-[16px] transition-colors ${health?.status ? 'text-green-500' : 'group-hover:text-green-500'}`}>shield</span>
+                                <Shield className={`w-4 h-4 transition-colors ${health?.status ? 'text-green-500' : 'group-hover:text-green-500'}`} />
                                 <span className="text-[11px] font-bold tracking-widest uppercase">GDPR Ready</span>
                             </div>
                             <div className="flex items-center gap-1.5 text-slate-400 dark:text-slate-500 group">
-                                <span className={`material-symbols-outlined text-[16px] transition-colors ${health?.status ? 'text-blue-500' : 'group-hover:text-blue-500'}`}>verified</span>
+                                <BadgeCheck className={`w-4 h-4 transition-colors ${health?.status ? 'text-blue-500' : 'group-hover:text-blue-500'}`} />
                                 <span className="text-[11px] font-bold tracking-widest uppercase">Publisher Partner</span>
                             </div>
                         </div>
@@ -158,7 +159,7 @@ export default function Footer({ variant = 'app' }) {
         <footer className="app-footer max-w-[1280px] mx-auto px-4 sm:px-6 py-8 sm:py-10 mt-10 sm:mt-12">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6">
                 <div className="flex items-center gap-2 text-slate-400" suppressHydrationWarning>
-                    <span className="material-symbols-outlined text-xl">auto_stories</span>
+                    <BookOpen className="text-xl" />
                     <span className="text-sm font-medium text-center md:text-left">&copy; {new Date().getFullYear()} ScholarForm AI. Built for academics.</span>
                 </div>
                 <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">

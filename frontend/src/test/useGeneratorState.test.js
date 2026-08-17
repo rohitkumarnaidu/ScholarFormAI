@@ -4,16 +4,15 @@
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useGeneratorState } from '@/app/(generator)/(protected)/generate/_components/useGeneratorState';
+import { toast } from 'sonner';
 
 const {
-    addToastMock,
     generateDocumentMock,
     streamGenerationStatusMock,
     downloadGeneratedDocumentMock,
     getBuiltinTemplatesMock,
     clearDraftMock,
 } = vi.hoisted(() => ({
-    addToastMock: vi.fn(),
     generateDocumentMock: vi.fn(),
     streamGenerationStatusMock: vi.fn(),
     downloadGeneratedDocumentMock: vi.fn(),
@@ -21,8 +20,8 @@ const {
     clearDraftMock: vi.fn(),
 }));
 
-vi.mock('@/context/ToastContext', () => ({
-    useToast: () => ({ addToast: addToastMock, showToast: addToastMock }),
+vi.mock('sonner', () => ({
+    toast: { error: vi.fn(), success: vi.fn(), info: vi.fn() },
 }));
 
 vi.mock('@/services/api', () => ({
@@ -173,7 +172,7 @@ describe('useGeneratorState', () => {
 
         expect(downloadGeneratedDocumentMock).toHaveBeenCalledWith('job-77', 'pdf');
         expect(cleanupMock).toHaveBeenCalledTimes(1);
-        expect(addToastMock).toHaveBeenCalledWith({ message: 'Download started!', type: 'success' });
+        expect(toast.success).toHaveBeenCalledWith('Download started!');
 
         clickSpy.mockRestore();
         vi.useRealTimers();

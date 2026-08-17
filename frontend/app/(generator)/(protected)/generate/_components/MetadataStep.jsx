@@ -3,6 +3,7 @@
 
 'use client';
 
+import { CheckSquare, Square, Trash2 } from 'lucide-react';
 import {
     DEFAULT_PAPER_SECTIONS,
     DEFAULT_RESUME_EDUCATION,
@@ -37,7 +38,7 @@ export default function MetadataStep({ docType, metadata, onChange }) {
         });
     };
 
-    const inputCls = 'w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-gray-600 text-sm focus:outline-none focus:border-primary transition';
+    const inputCls = 'w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-600 text-sm focus:outline-none focus:border-primary transition';
 
     if (docType === 'academic_paper' || docType === 'thesis') {
         const sections = metadata.sections || DEFAULT_PAPER_SECTIONS;
@@ -90,7 +91,7 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                                 onClick={() => toggleSection(index)}
                                 className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition min-h-[44px] ${section.include ? 'border-primary/50 bg-primary/10 text-blue-300' : 'border-white/10 bg-white/5 text-slate-500 hover:text-slate-300'}`}
                             >
-                                <span className="material-symbols-outlined text-base">{section.include ? 'check_box' : 'check_box_outline_blank'}</span>
+                                {section.include ? <CheckSquare className="text-base" /> : <Square className="text-base" />}
                                 {section.name}
                             </button>
                         ))}
@@ -133,7 +134,7 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                                 placeholder={field.placeholder}
                                 value={metadata[field.key] || ''}
                                 onChange={(event) => setValue(field.key, event.target.value)}
-                                className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-gray-600 text-sm focus:outline-none focus:border-emerald-500 transition"
+                                className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-600 text-sm focus:outline-none focus:border-emerald-500 transition"
                             />
                         </div>
                     ))}
@@ -145,7 +146,7 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                             placeholder="Brief professional summary or career objective..."
                             value={metadata.summary || ''}
                             onChange={(event) => setValue('summary', event.target.value)}
-                            className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-gray-600 text-sm focus:outline-none focus:border-emerald-500 transition resize-none"
+                            className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-600 text-sm focus:outline-none focus:border-emerald-500 transition resize-none"
                         />
                     </div>
                     <div className="md:col-span-2">
@@ -156,7 +157,7 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                             placeholder="e.g. Python, Machine Learning, React"
                             value={metadata.skills_raw || ''}
                             onChange={(event) => setValue('skills_raw', event.target.value)}
-                            className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-gray-600 text-sm focus:outline-none focus:border-emerald-500 transition"
+                            className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-600 text-sm focus:outline-none focus:border-emerald-500 transition"
                         />
                     </div>
                     <div className="md:col-span-2">
@@ -167,7 +168,7 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                             placeholder="e.g. AWS Certified Developer, PMP"
                             value={metadata.certifications_raw || ''}
                             onChange={(event) => setValue('certifications_raw', event.target.value)}
-                            className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-gray-600 text-sm focus:outline-none focus:border-emerald-500 transition"
+                            className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-600 text-sm focus:outline-none focus:border-emerald-500 transition"
                         />
                     </div>
                 </div>
@@ -184,7 +185,7 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                                 <input type="text" placeholder="Year" value={item.year || ''} onChange={(event) => updateArrayItem('education', index, 'year', event.target.value)} className={`${resumeInputCls} flex-1`} />
                                 {education.length > 1 && (
                                     <button type="button" onClick={() => removeArrayItem('education', index)} className="px-2 rounded-lg bg-red-500/20 text-red-300 hover:bg-red-500/30 transition" aria-label="Remove education entry">
-                                        <span className="material-symbols-outlined text-base">delete</span>
+                                        <Trash2 className="text-base" />
                                     </button>
                                 )}
                             </div>
@@ -205,7 +206,7 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                                 <input type="text" placeholder="Bullets (comma separated)" value={item.bullets_raw || ''} onChange={(event) => updateArrayItem('experience', index, 'bullets_raw', event.target.value)} className={`${resumeInputCls} flex-1`} />
                                 {experience.length > 1 && (
                                     <button type="button" onClick={() => removeArrayItem('experience', index)} className="px-2 rounded-lg bg-red-500/20 text-red-300 hover:bg-red-500/30 transition" aria-label="Remove experience entry">
-                                        <span className="material-symbols-outlined text-base">delete</span>
+                                        <Trash2 className="text-base" />
                                     </button>
                                 )}
                             </div>

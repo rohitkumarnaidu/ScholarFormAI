@@ -2,6 +2,7 @@
 // Copyright (c) 2026 ScholarForm AI
 
 import { useRef, useCallback } from 'react';
+import { AlertTriangle, CheckCircle, Clock, CloudUpload, RefreshCw, X } from 'lucide-react';
 
 const ACCEPTED_FORMATS = '.docx,.pdf,.tex,.txt,.html,.htm,.md,.markdown,.doc';
 
@@ -31,13 +32,13 @@ export default function BatchUploadPanel({ files, onFilesSelected, onRemove, onR
     const statusIcon = (status) => {
         switch (status) {
             case 'done':
-                return <span className="material-symbols-outlined text-green-500 text-lg">check_circle</span>;
+                return <CheckCircle className="text-green-500 text-lg" />;
             case 'error':
-                return <span className="material-symbols-outlined text-red-500 text-lg">error</span>;
+                return <AlertTriangle className="text-red-500 text-lg" />;
             case 'uploading':
                 return <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />;
             default:
-                return <span className="material-symbols-outlined text-slate-400 text-lg">schedule</span>;
+                return <Clock className="text-muted-foreground text-lg" />;
         }
     };
 
@@ -56,8 +57,8 @@ export default function BatchUploadPanel({ files, onFilesSelected, onRemove, onR
                 className={`px-2 py-0.5 rounded-full ${
                 status === 'done' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
                 status === 'error' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
-                status === 'uploading' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
-                'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                status === 'uploading' ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary' :
+                'bg-muted text-muted-foreground'
             } text-[10px] font-bold uppercase tracking-wider shrink-0`}>
                 {labels[status] || 'Pending'}
             </span>
@@ -65,7 +66,7 @@ export default function BatchUploadPanel({ files, onFilesSelected, onRemove, onR
     };
 
     return (
-        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div className="bg-card text-card-foreground rounded-xl border border-border shadow-sm overflow-hidden">
             {/* Drop Zone */}
             <div
                 role="button"
@@ -81,15 +82,15 @@ export default function BatchUploadPanel({ files, onFilesSelected, onRemove, onR
                     }
                 }}
                 className={`border-2 border-dashed rounded-xl m-4 p-8 text-center cursor-pointer transition-colors focus:ring-2 focus:ring-primary focus:outline-none ${disabled
-                    ? 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 opacity-50 cursor-not-allowed'
-                    : 'border-slate-300 dark:border-slate-600 hover:border-primary dark:hover:border-primary bg-slate-50 dark:bg-slate-800/30'
+                    ? 'border-border bg-muted/50 opacity-50 cursor-not-allowed'
+                    : 'border-border hover:border-primary bg-muted/30'
                     }`}
             >
-                <span className="material-symbols-outlined text-4xl text-slate-400 dark:text-slate-500 mb-2" aria-hidden="true">cloud_upload</span>
-                <p className="text-slate-600 dark:text-slate-400 font-medium">
+                <CloudUpload className="text-4xl text-muted-foreground mb-2" />
+                <p className="text-muted-foreground font-medium">
                     Drag & drop files here, or <span className="text-primary font-semibold">browse</span>
                 </p>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                     Accepts DOCX, PDF, TEX, TXT, HTML, MD files (up to 50MB each)
                 </p>
                 <input
@@ -104,29 +105,29 @@ export default function BatchUploadPanel({ files, onFilesSelected, onRemove, onR
 
             {/* File List */}
             {files.length > 0 && (
-                <div className="border-t border-slate-200 dark:border-slate-700">
-                    <div className="px-4 py-2 bg-slate-50 dark:bg-slate-800/50">
-                        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
+                <div className="border-t border-border">
+                    <div className="px-4 py-2 bg-muted/50">
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                             Files ({files.length})
                         </p>
                     </div>
-                    <ul className="divide-y divide-slate-100 dark:divide-slate-800 max-h-80 overflow-y-auto">
+                    <ul className="divide-y divide-border max-h-80 overflow-y-auto">
                         {files.map((entry) => (
                             <li
                                 key={entry.id}
-                                className="flex items-center gap-4 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group"
+                                className="flex items-center gap-4 px-5 py-4 hover:bg-muted/30 transition-colors group"
                             >
                                 <div className="shrink-0 mt-0.5">
                                     {statusIcon(entry.status)}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex justify-between items-center mb-1 gap-3">
-                                        <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                                        <p className="text-sm font-bold text-foreground truncate">
                                             {entry.file.name}
                                         </p>
                                         <StatusBadge status={entry.status} />
                                     </div>
-                                    <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
                                         <span className="shrink-0">{formatSize(entry.file.size)}</span>
                                         {entry.error && (
                                             <span className="text-red-500 truncate max-w-xs" title={entry.error}>• {entry.error}</span>
@@ -136,7 +137,7 @@ export default function BatchUploadPanel({ files, onFilesSelected, onRemove, onR
                                         )}
                                     </div>
                                     {entry.status === 'uploading' && (
-                                        <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full mt-2.5 overflow-hidden">
+                                        <div className="w-full h-1.5 bg-muted rounded-full mt-2.5 overflow-hidden">
                                             <div
                                                 className="h-full bg-primary rounded-full transition-all duration-300 relative"
                                                 style={{ width: `${Math.max(2, entry.progress)}%` }}
@@ -151,11 +152,11 @@ export default function BatchUploadPanel({ files, onFilesSelected, onRemove, onR
                                         <button
                                             onClick={(e) => { e.stopPropagation(); onRemove(entry.id); }}
                                             disabled={disabled}
-                                            className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors disabled:opacity-50"
+                                            className="p-1.5 text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors disabled:opacity-50"
                                             title="Remove File"
                                             aria-label="Remove File"
                                         >
-                                            <span className="material-symbols-outlined text-lg" aria-hidden="true">close</span>
+                                            <X className="text-lg" />
                                         </button>
                                     )}
                                     {entry.status === 'error' && onRetry && (
@@ -164,7 +165,7 @@ export default function BatchUploadPanel({ files, onFilesSelected, onRemove, onR
                                             disabled={disabled}
                                             className="px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg text-xs font-bold transition-colors disabled:opacity-50 flex items-center gap-1.5"
                                         >
-                                            <span className="material-symbols-outlined text-[16px]">refresh</span>
+                                            <RefreshCw className="text-[16px]" />
                                             Retry
                                         </button>
                                     )}

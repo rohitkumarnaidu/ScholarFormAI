@@ -37,6 +37,6 @@ describe('EmptyState', () => {
 
     it('renders with icon', () => {
         const { container } = render(<EmptyState icon="search" />);
-        expect(container.querySelector('.material-symbols-outlined')).toHaveTextContent('search');
+        expect(container.querySelector('.lucide-search')).toBeInTheDocument();
     });
 });

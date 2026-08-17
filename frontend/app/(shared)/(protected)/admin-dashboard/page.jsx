@@ -10,6 +10,7 @@ import HealthStatusIndicator from '@/src/components/HealthStatusIndicator';
 import Skeleton from '@/src/components/ui/Skeleton';
 import { getMetricsDb, getMetricsHealth, getMetricsDashboard } from '@/src/services/api';
 import { useAuth } from '@/src/context/AuthContext';
+import { Activity, Badge, Bot, Info, Key, LineChart, RefreshCw, Server, Shield, User, Users } from 'lucide-react';
 
 // ── Role Telemetry helpers ───────────────────────────────────
 function TelemetryRow({ label, value, mono = false, highlight = false }) {
@@ -30,7 +31,7 @@ function RoleBadge({ role }) {
             ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-800'
             : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700'
             }`}>
-            <span className="material-symbols-outlined text-[14px]">{isAdmin ? 'shield' : 'person'}</span>
+            {isAdmin ? <Shield className="text-[14px]" /> : <User className="text-[14px]" />}
             {role || 'user'}
         </span>
     );
@@ -105,7 +106,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between mb-8">
                     <div>
                         <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-                            <span className="material-symbols-outlined text-primary text-4xl">monitoring</span>
+                            <Activity className="text-primary text-4xl" />
                             Admin Dashboard
                         </h1>
                         <p className="text-slate-600 dark:text-slate-400 mt-1">System health, metrics, and AI performance monitoring</p>
@@ -117,7 +118,7 @@ export default function AdminDashboard() {
                     </div>
                     <button onClick={refreshMetrics} disabled={loading}
                         className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg font-medium transition-colors disabled:opacity-50 shadow-md shadow-primary/20 active:scale-95 min-h-[44px]">
-                        <span className={`material-symbols-outlined text-sm ${loading ? 'animate-spin' : ''}`}>refresh</span>
+                        <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                         Refresh
                     </button>
                 </div>
@@ -131,7 +132,7 @@ export default function AdminDashboard() {
                 {/* ── Service Health ─────────────────────── */}
                 <section className="mb-8">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                        <span className="material-symbols-outlined text-green-500">dns</span>
+                        <Server className="text-green-500" />
                         Service Health
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -161,7 +162,7 @@ export default function AdminDashboard() {
                 {/* ── Key Metrics ────────────────────────── */}
                 <section className="mb-8">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                        <span className="material-symbols-outlined text-primary">analytics</span>
+                        <LineChart className="text-primary" />
                         Key Metrics
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 stagger-children">
@@ -176,7 +177,7 @@ export default function AdminDashboard() {
                 {dashboardData && (
                     <section className="mb-8">
                         <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                            <span className="material-symbols-outlined text-purple-500">smart_toy</span>
+                            <Bot className="text-purple-500" />
                             AI Performance
                         </h2>
                         <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
@@ -228,7 +229,7 @@ export default function AdminDashboard() {
                 {/* ── Role Telemetry ─────────────────────── */}
                 <section className="mb-8">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                        <span className="material-symbols-outlined text-purple-500">manage_accounts</span>
+                        <Users className="text-purple-500" />
                         Admin Role Telemetry
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -236,7 +237,7 @@ export default function AdminDashboard() {
                         <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="p-2.5 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
-                                    <span className="material-symbols-outlined text-purple-600 dark:text-purple-400">badge</span>
+                                    <Badge className="text-purple-600 dark:text-purple-400" />
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-slate-900 dark:text-white text-sm">Identity &amp; Role</h3>
@@ -259,7 +260,7 @@ export default function AdminDashboard() {
                         <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="p-2.5 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-                                    <span className="material-symbols-outlined text-blue-600 dark:text-blue-400">key</span>
+                                    <Key className="text-blue-600 dark:text-blue-400" />
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-slate-900 dark:text-white text-sm">Session &amp; Auth</h3>
@@ -278,7 +279,7 @@ export default function AdminDashboard() {
 
                     {/* Access log notice */}
                     <div className="mt-4 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/30 flex items-start gap-3">
-                        <span className="material-symbols-outlined text-amber-500 text-xl shrink-0 mt-0.5">info</span>
+                        <Info className="text-amber-500 text-xl shrink-0 mt-0.5" />
                         <p className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed">
                             <strong>Audit notice:</strong> This page is restricted to <code className="font-mono bg-amber-100 dark:bg-amber-900/40 px-1 rounded">admin</code>-role accounts.
                             All access attempts are blocked client-side via role guard. Ensure server-side route protection is also enforced at the API layer.

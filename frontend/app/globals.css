@@ -76,8 +76,7 @@ html {
 }
 /* Shared focus treatment for keyboard navigation */
 :focus-visible {
-    outline: 2px solid #136dec;
-    outline-offset: 2px;
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
 }
 
 /* Animation utilities used across pages without external plugin dependency */
@@ -382,17 +381,15 @@ html {
 @layer components {
     .toggle-checkbox:checked {
         right: 0;
-        border-color: #136dec;
+        @apply border-primary;
     }
 
     .toggle-checkbox:checked+.toggle-label {
-        background-color: #136dec;
+        @apply bg-primary;
     }
 }
 
-.material-symbols-outlined {
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-}
+
 
 .manuscript-paper {
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);

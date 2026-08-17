@@ -12,9 +12,7 @@ vi.mock('@/context/AuthContext', () => ({
     useAuth: () => ({ session: null, user: null }),
 }));
 
-vi.mock('@/context/ToastContext', () => ({
-    ToastProvider: ({ children }) => <div data-testid="toast">{children}</div>,
-}));
+
 
 vi.mock('@/context/DocumentContext', () => ({
     DocumentProvider: ({ children }) => <div data-testid="document">{children}</div>,
@@ -37,7 +35,7 @@ describe('ClientProviders', () => {
         render(<ClientProviders><p>Content</p></ClientProviders>);
         expect(screen.getByTestId('theme')).toBeInTheDocument();
         expect(screen.getByTestId('auth')).toBeInTheDocument();
-        expect(screen.getByTestId('toast')).toBeInTheDocument();
+
         expect(screen.getByTestId('document')).toBeInTheDocument();
         expect(screen.getByTestId('prefs')).toBeInTheDocument();
         expect(screen.getByTestId('focus')).toBeInTheDocument();

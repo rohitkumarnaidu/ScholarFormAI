@@ -7,6 +7,8 @@ import { useConfirm } from '@/src/components/ConfirmDialog';
 import { useDebounce } from '@/src/hooks/useDebounce';
 import { fetchWithRetry } from '@/src/utils/fetchWithRetry';
 import ErrorBoundary from '@/src/components/ErrorBoundary';
+import { Key, Lock, Trash2 } from 'lucide-react';
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -210,7 +212,7 @@ function ApiKeysPageInner() {
                 <div className="space-y-3">
                     {filteredKeys.length === 0 ? (
                         <div className="p-12 text-center bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <span className="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-4">key_off</span>
+                            <Key className="text-5xl text-slate-300 dark:text-slate-600 mb-4" />
                             <p className="text-slate-500 dark:text-slate-400">
                                 {keys.length === 0 ? 'No API keys configured yet.' : 'No keys match your search.'}
                             </p>
@@ -227,7 +229,7 @@ function ApiKeysPageInner() {
                                 <div className="flex items-start justify-between gap-4">
                                     <div className="flex items-center gap-3 min-w-0">
                                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white text-lg shrink-0 ${meta.color}`}>
-                                            <span className="material-symbols-outlined text-[22px]">{meta.icon}</span>
+                                            <DynamicIcon name={meta.icon} className="w-5.5 h-5.5" />
                                         </div>
                                         <div className="min-w-0">
                                             <h3 className="font-semibold text-slate-900 dark:text-white truncate">{k.key_label || meta.name}</h3>
@@ -248,7 +250,7 @@ function ApiKeysPageInner() {
                                         <span className="text-[10px] text-slate-400 hidden sm:inline">{k.rate_limit_per_minute}/min</span>
                                         <button onClick={() => handleDelete(k.id, k.key_label || meta.name)}
                                             className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition" title="Delete key">
-                                            <span className="material-symbols-outlined text-[18px]">delete</span>
+                                            <Trash2 className="text-[18px]" />
                                         </button>
                                     </div>
                                 </div>
@@ -260,7 +262,7 @@ function ApiKeysPageInner() {
                 <div className="mt-8 p-6 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 rounded-xl border border-indigo-200 dark:border-indigo-800">
                     <div className="flex items-start gap-4">
                         <div className="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center shrink-0">
-                            <span className="material-symbols-outlined text-2xl text-indigo-600 dark:text-indigo-400">lock</span>
+                            <Lock className="text-2xl text-indigo-600 dark:text-indigo-400" />
                         </div>
                         <div>
                             <h3 className="font-semibold text-lg text-slate-900 dark:text-white mb-1">Enterprise-Grade Security</h3>

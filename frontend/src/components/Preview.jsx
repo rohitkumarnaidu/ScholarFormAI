@@ -4,6 +4,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { isCompleted } from '../constants/status';
 import { getPreview } from '@/services/api';
+import { CheckCircle, Download, Info, LineChart, Loader2, ZoomIn, ZoomOut } from 'lucide-react';
 
 function buildSectionChunks(structuredData) {
     if (!structuredData?.sections || typeof structuredData.sections !== 'object') {
@@ -170,14 +171,12 @@ export default function Preview({
                 <div className="flex items-center gap-3 w-full lg:w-auto">
                     {isIncrementalLoadActive ? (
                         <span className="text-xs text-slate-500 mr-2 flex items-center gap-1 flex-1">
-                            <span className="material-symbols-outlined text-[14px] animate-spin">
-                                progress_activity
-                            </span>
+                            <Loader2 className="text-[14px] animate-spin" />
                             Preview loading {loadProgress}%
                         </span>
                     ) : (
                         <span className="text-xs text-slate-400 mr-2 flex items-center gap-1">
-                            <span className="material-symbols-outlined text-[14px]">info</span>
+                            <Info className="text-[14px]" />
                             This is a read-only final inspection
                         </span>
                     )}
@@ -190,7 +189,7 @@ export default function Preview({
                             title="Zoom Out"
                             aria-label="Zoom Out"
                         >
-                            <span className="material-symbols-outlined text-[16px]" aria-hidden="true">zoom_out</span>
+                            <ZoomOut className="text-[16px]" />
                         </button>
                         <span className="text-xs font-semibold w-10 text-center text-slate-700 dark:text-slate-300">
                             {Math.round(zoomLevel * 100)}%
@@ -201,7 +200,7 @@ export default function Preview({
                             title="Zoom In"
                             aria-label="Zoom In"
                         >
-                            <span className="material-symbols-outlined text-[16px]" aria-hidden="true">zoom_in</span>
+                            <ZoomIn className="text-[16px]" />
                         </button>
                     </div>
 
@@ -210,7 +209,7 @@ export default function Preview({
                         disabled={!isCompleted(job?.status)}
                         className="flex items-center justify-center gap-1.5 px-4 py-1.5 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-400 w-full sm:w-auto"
                     >
-                        <span className="material-symbols-outlined text-[18px]">download</span>
+                        <Download className="text-[18px]" />
                         <span className="text-sm font-bold">Download Final</span>
                     </button>
                 </div>
@@ -247,14 +246,14 @@ export default function Preview({
                 <aside className="w-full xl:w-80 border-t xl:border-t-0 xl:border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col xl:max-h-none max-h-[360px]">
                     <div className="p-4 border-b border-slate-200 dark:border-slate-800">
                         <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                            <span className="material-symbols-outlined text-primary">analytics</span>
+                            <LineChart className="text-primary" />
                             Final Formatting Report
                         </h3>
                     </div>
                     <div className="flex-1 overflow-y-auto p-4 space-y-4">
                         <div className="p-4 bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-900/30 rounded-xl">
                             <div className="flex gap-2 mb-1">
-                                <span className="material-symbols-outlined text-green-500 text-sm">check_circle</span>
+                                <CheckCircle className="text-green-500 text-sm" />
                                 <h4 className="text-sm font-bold text-green-900 dark:text-green-400">Template Compliant</h4>
                             </div>
                             <p className="text-xs text-green-700 dark:text-green-300">

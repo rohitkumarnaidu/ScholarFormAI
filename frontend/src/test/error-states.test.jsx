@@ -202,7 +202,7 @@ describe('ErrorBoundary', () => {
                 <ThrowError />
             </ErrorBoundary>
         );
-        expect(screen.getByText('error')).toBeInTheDocument();
+        expect(document.querySelector('.lucide-triangle-alert')).toBeInTheDocument();
     });
 
     it('preserves non-error children untouched', () => {

@@ -6,7 +6,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AuthProvider } from '@/context/AuthContext';
-import { ToastProvider } from '@/context/ToastContext';
 import { DocumentProvider } from '@/context/DocumentContext';
 import { UserPreferencesProvider } from '@/context/UserPreferencesContext';
 import { NotificationProvider } from '@/context/NotificationContext';
@@ -27,8 +26,7 @@ export default function ClientProviders({ children }) {
     return (
         <QueryClientProvider client={queryClient}>
             <ThemeProvider>
-                <ToastProvider>
-                    <AuthProvider>
+                <AuthProvider>
                         <UserPreferencesProvider>
                             <NotificationProvider>
                                 <DocumentProvider>
@@ -38,8 +36,7 @@ export default function ClientProviders({ children }) {
                                 </DocumentProvider>
                             </NotificationProvider>
                         </UserPreferencesProvider>
-                    </AuthProvider>
-                </ToastProvider>
+                </AuthProvider>
             </ThemeProvider>
         </QueryClientProvider>
     );

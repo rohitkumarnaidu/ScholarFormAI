@@ -7,6 +7,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { getCustomTemplates, saveCustomTemplate } from '@/src/services/api';
 import { toast } from 'sonner';
 import { useAuth } from '@/src/context/AuthContext';
+import { Download } from 'lucide-react';
 
 const CUSTOM_TEMPLATES_KEY = 'scholarform_custom_templates';
 
@@ -349,7 +350,7 @@ export default function TemplateEditor() {
                                             onClick={() => exportTemplateYaml(savedTemplate)}
                                             className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline"
                                         >
-                                            <span className="material-symbols-outlined text-[14px]">download</span>
+                                            <Download className="text-[14px]" />
                                             Export YAML
                                         </button>
                                     </div>

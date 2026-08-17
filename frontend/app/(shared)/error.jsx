@@ -3,6 +3,7 @@
 
 'use client';
 import { useEffect } from 'react';
+import { AlertTriangle } from 'lucide-react';
 
 export default function SharedError({ error, reset }) {
     useEffect(() => {
@@ -13,7 +14,7 @@ export default function SharedError({ error, reset }) {
         <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4">
             <div className="max-w-lg w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xl">
                 <div className="flex items-start gap-3">
-                    <span className="material-symbols-outlined text-red-600">error</span>
+                    <AlertTriangle className="text-red-600" />
                     <div>
                         <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Something went wrong</h2>
                         <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">

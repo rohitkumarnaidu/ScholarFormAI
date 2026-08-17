@@ -2,6 +2,8 @@
 // Copyright (c) 2026 ScholarForm AI
 
 import React, { memo } from 'react';
+import { Map } from 'lucide-react';
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 function ValidationCard({ type = "error", title, description, badge, onAction, onIgnore }) {
     // Styles based on type
@@ -38,7 +40,7 @@ function ValidationCard({ type = "error", title, description, badge, onAction, o
         <div className={`bg-white dark:bg-slate-900 border-l-4 ${s.borderClass} rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow group`}>
             <div className="flex gap-4">
                 <div className={`${s.iconBg} ${s.iconText} h-10 w-10 rounded-lg flex items-center justify-center shrink-0`}>
-                    <span className="material-symbols-outlined">{s.icon}</span>
+                    <DynamicIcon name={s.icon} />
                 </div>
                 <div className="flex-1">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-1">
@@ -48,7 +50,7 @@ function ValidationCard({ type = "error", title, description, badge, onAction, o
                     <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{description}</p>
                     <div className="mt-4 flex flex-wrap items-center gap-3 sm:gap-4">
                         <button className="text-primary text-xs font-bold hover:underline flex items-center gap-1" onClick={onAction}>
-                            <span className="material-symbols-outlined text-xs">map</span>
+                            <Map className="text-xs" />
                             Locate in doc
                         </button>
                         <button

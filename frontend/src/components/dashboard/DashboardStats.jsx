@@ -3,6 +3,8 @@
 
 import React, { memo } from 'react';
 import Link from 'next/link';
+import { Plus } from 'lucide-react';
+import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 export const StatsCard = memo(function StatsCard({ 
     title, 
@@ -20,7 +22,7 @@ export const StatsCard = memo(function StatsCard({
     const Content = (
         <>
             <div className={`h-48 w-full ${bgColor} flex items-center justify-center ${hoverBgColor} transition-colors`}>
-                <span className={`material-symbols-outlined ${iconColor} text-5xl`}>{icon}</span>
+                <DynamicIcon name={icon} className={`w-12 h-12 ${iconColor}`} />
             </div>
             <div className="p-6">
                 <div className="flex justify-between items-start mb-2">
@@ -32,7 +34,7 @@ export const StatsCard = memo(function StatsCard({
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-4">{description}</p>
                 {href ? (
                     <div className="w-full bg-primary text-white py-2.5 px-4 rounded-lg font-bold text-sm hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-center">
-                        <span className="material-symbols-outlined text-sm">add</span>
+                        <Plus className="text-sm" />
                         {btnText}
                     </div>
                 ) : (

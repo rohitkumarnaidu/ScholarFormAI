@@ -11,6 +11,7 @@ import { useDocument } from '@/src/context/DocumentContext';
 import { isCompleted, isFailed } from '@/src/constants/status';
 import ConfirmDialog from '@/src/components/ui/ConfirmDialog';
 import { deleteDocument, useDocuments } from '@/src/services/api';
+import { AlertTriangle, CheckCircle, Download, FileText, Loader2, Trash2, Upload, XCircle } from 'lucide-react';
 
 const Checkbox = ({ checked, onChange, disabled, label }) => (
     <label className="inline-flex items-center justify-center cursor-pointer">
@@ -120,7 +121,7 @@ const HistoryRow = memo(function HistoryRow({
             </td>
             <td className="px-6 py-5">
                 <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">description</span>
+                    <FileText className="text-slate-400 group-hover:text-primary transition-colors" />
                     <span className="text-slate-900 dark:text-white font-bold text-sm truncate max-w-[200px]">{resolveFilename(item)}</span>
                 </div>
             </td>
@@ -149,12 +150,12 @@ const HistoryRow = memo(function HistoryRow({
             <td className="px-6 py-5">
                 {isCompleted(item.status) ? (
                     <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full w-fit ${item.result?.errors?.length > 0 ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'}`}>
-                        <span className="material-symbols-outlined !text-sm">{item.result?.errors?.length > 0 ? 'error' : 'check_circle'}</span>
+                        {item.result?.errors?.length > 0 ? <AlertTriangle className="!text-sm" /> : <CheckCircle className="!text-sm" />}
                         <span className="text-xs font-bold">{item.result?.errors?.length > 0 ? 'Issue Detect' : 'Passed'}</span>
                     </div>
                 ) : (
                     <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 w-fit">
-                        <span className="material-symbols-outlined !text-sm">cancel</span>
+                        <XCircle className="!text-sm" />
                         <span className="text-xs font-bold">Failed</span>
                     </div>
                 )}
@@ -170,7 +171,7 @@ const HistoryRow = memo(function HistoryRow({
                         title="Download"
                         aria-label={`Download ${resolveFilename(item)}`}
                     >
-                        <span className="material-symbols-outlined" aria-hidden="true">download</span>
+                        <Download />
                     </button>
                     <button
                         onClick={() => onRequestDelete(item)}
@@ -178,7 +179,7 @@ const HistoryRow = memo(function HistoryRow({
                         title="Delete"
                         aria-label={`Delete ${resolveFilename(item)}`}
                     >
-                        <span className="material-symbols-outlined" aria-hidden="true">delete</span>
+                        <Trash2 />
                     </button>
                 </div>
             </td>
@@ -314,7 +315,7 @@ export default function History() {
                         </div>
                         <div className="flex gap-3">
                             <Link href="/upload" className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-bold text-sm hover:bg-blue-700 transition-colors shadow-lg shadow-primary/20 w-full sm:w-auto justify-center">
-                                <span className="material-symbols-outlined">file_upload</span>
+                                <Upload />
                                 <span>Process New Manuscript</span>
                             </Link>
                         </div>
@@ -419,7 +420,7 @@ export default function History() {
                 <div className="fixed bottom-0 left-0 right-0 z-40 p-4 animate-in slide-in-from-bottom-full duration-300">
                     <div className="max-w-3xl mx-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl rounded-2xl p-4 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <span className="material-symbols-outlined text-primary bg-primary/10 p-2 rounded-full">check_circle</span>
+                            <CheckCircle className="text-primary bg-primary/10 p-2 rounded-full" />
                             <div>
                                 <p className="text-slate-900 dark:text-white font-bold">{selectedIds.size} item{selectedIds.size > 1 ? 's' : ''} selected</p>
                                 <button onClick={() => setSelectedIds(new Set())} className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-sm hover:underline">Clear selection</button>
@@ -431,9 +432,9 @@ export default function History() {
                             className="bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 text-red-600 border border-red-200 dark:border-red-900/50 font-bold py-2 px-6 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
                         >
                             {isDeletingBulk ? (
-                                <><span className="material-symbols-outlined animate-spin text-[18px]">progress_activity</span> Deleting...</>
+                                <><Loader2 className="animate-spin text-[18px]" /> Deleting...</>
                             ) : (
-                                <><span className="material-symbols-outlined text-[18px]">delete</span> Delete Selected</>
+                                <><Trash2 className="text-[18px]" /> Delete Selected</>
                             )}
                         </button>
                     </div>
