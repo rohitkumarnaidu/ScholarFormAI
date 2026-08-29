@@ -321,7 +321,7 @@ semver==3.0.4
 sentence-transformers==5.6.1
 sentencepiece==0.2.2
 sentry-sdk[fastapi]==2.66.1
-setuptools==83.0.0
+setuptools==84.0.0
 shapely==2.1.2
 shellingham==1.5.4
 simsimd==6.5.16
