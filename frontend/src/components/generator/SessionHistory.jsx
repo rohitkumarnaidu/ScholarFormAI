@@ -5,6 +5,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Clock, Trash2, ChevronRight, File, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabaseClient';
 import { getGeneratorSessions, deleteGeneratorSession } from '../../services/api.v1';
+import Button from '@/src/components/ui/Button';
 
 const SessionHistory = React.memo(({ activeSessionId, onSelectSession }) => {
   const [sessions, setSessions] = useState([]);
@@ -109,10 +110,10 @@ const SessionHistory = React.memo(({ activeSessionId, onSelectSession }) => {
         ) : (
           <div className="space-y-1">
             {sessions.map(session => (
-              <div 
+              <button 
                 key={session.id}
                 onClick={() => onSelectSession(session.id)}
-                className={`group flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all ${
+                className={`w-full text-left group flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all ${
                   activeSessionId === session.id 
                     ? 'bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20' 
                     : 'hover:bg-zinc-100 dark:hover:bg-zinc-800/50 border border-transparent'
@@ -150,15 +151,16 @@ const SessionHistory = React.memo(({ activeSessionId, onSelectSession }) => {
                 </div>
 
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity pl-2">
-                  <button 
+                  <Button 
+                    size="icon" variant="ghost"
                     onClick={(e) => handleDelete(e, session.id)}
-                    className="p-1.5 text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-md transition-colors"
+                    className="text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 w-7 h-7"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                  </Button>
                   <ChevronRight className="w-4 h-4 text-zinc-400 shrink-0" />
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         )}

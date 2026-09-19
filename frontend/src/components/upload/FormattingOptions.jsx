@@ -3,6 +3,7 @@
 
 import React, { memo } from 'react';
 import { FileText, LayoutTemplate, ListOrdered, ListTree, RefreshCw, Rocket, Scaling, Sliders } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 const FormattingOptions = memo(function FormattingOptions({
     addPageNumbers,
@@ -135,14 +136,15 @@ const FormattingOptions = memo(function FormattingOptions({
                 </div>
             </div>
 
-            <button
+            <Button
+                variant="primary"
                 onClick={onProcess}
                 disabled={!file || isProcessing}
-                className={`w-full mt-8 bg-primary hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/25 flex items-center justify-center gap-3 transition-all transform ${(!file || isProcessing) ? 'opacity-50 cursor-not-allowed' : 'hover:-translate-y-0.5'}`}
+                className={`w-full mt-8 py-4 ${(!file || isProcessing) ? '' : 'hover:-translate-y-0.5 transform'}`}
+                icon={progress === 100 ? undefined : isProcessing ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}
             >
-                {progress === 100 ? 'replay' : isProcessing ? <RefreshCw /> : <Rocket />}
                 {isProcessing ? 'Processing Manuscript...' : progress === 100 ? 'Re-process Manuscript' : 'Process Document'}
-            </button>
+            </Button>
         </div>
     );
 });

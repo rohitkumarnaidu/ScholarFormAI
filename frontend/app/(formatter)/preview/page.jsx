@@ -9,6 +9,7 @@ import PreviewView from '@/src/components/Preview';
 import ErrorBoundary from '@/src/components/ErrorBoundary';
 import useJobFromUrl from '@/src/hooks/useJobFromUrl';
 import Skeleton from '@/src/components/ui/Skeleton';
+import Button from '@/src/components/ui/Button';
 import { FileUp, Receipt } from 'lucide-react';
 
 export default function Preview() {
@@ -49,9 +50,9 @@ export default function Preview() {
             <div className="min-h-screen flex flex-col bg-background-light dark:bg-background-dark">
                 <main className="flex-1 flex flex-col items-center justify-center px-4 text-center">
                     <p className="text-red-600 dark:text-red-400 mb-3">{jobLoadError}</p>
-                    <button onClick={() => navigate('/history')} className="text-primary font-bold hover:underline">
+                    <Button variant="link" onClick={() => navigate('/history')}>
                         Return to History
-                    </button>
+                    </Button>
                 </main>
             </div>
         );
@@ -67,13 +68,13 @@ export default function Preview() {
                     <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm leading-relaxed">
                         Please upload and process a manuscript first to see the final formatted preview.
                     </p>
-                    <button
+                    <Button
                         onClick={() => navigate('/upload')}
-                        className="w-full bg-primary text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+                        className="w-full py-3 px-6 h-12 shadow-lg shadow-primary/20"
                     >
                         <FileUp />
                         Return to Upload
-                    </button>
+                    </Button>
                 </div>
             </div>
         );

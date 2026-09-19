@@ -6,8 +6,8 @@ import usePageTitle from '@/src/hooks/usePageTitle';
 import { useState } from 'react';
 import FeedbackForm from '@/src/components/FeedbackForm';
 import { getFeedbackSummary } from '@/src/services/api';
-import { MessageSquare } from 'lucide-react';
-import DynamicIcon from '@/src/components/ui/DynamicIcon';
+import { MessageSquare, FileEdit, FileText } from 'lucide-react';
+import { Button } from '@/src/components/ui';
 
 export default function FeedbackPage() {
     usePageTitle('Feedback');
@@ -46,21 +46,21 @@ export default function FeedbackPage() {
                 {/* Tab Navigation */}
                 <div className="flex gap-2 mb-6">
                     {[
-                        { id: 'submit', label: 'Submit Feedback', icon: 'edit_note' },
-                        { id: 'summary', label: 'View Summary', icon: 'summarize' },
-                    ].map((tab) => (
-                        <button
+                        { id: 'submit', label: 'Submit Feedback', icon: FileEdit },
+                        { id: 'summary', label: 'View Summary', icon: FileText },
+                    ].map((tab) => {
+                        const IconComponent = tab.icon;
+                        return (
+                        <Button
                             key={tab.id}
+                            variant={activeTab === tab.id ? 'primary' : 'outline'}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-1.5 min-h-[44px] ${activeTab === tab.id
-                                ? 'bg-primary text-white'
-                                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'
-                                }`}
+                            className="min-h-[44px]"
                         >
-                            <DynamicIcon name={tab.icon} className="w-3.5 h-3.5" />
+                            <IconComponent className="w-3.5 h-3.5 mr-1.5" />
                             {tab.label}
-                        </button>
-                    ))}
+                        </Button>
+                    )})}
                 </div>
 
                 {activeTab === 'submit' ? (
@@ -79,13 +79,15 @@ export default function FeedbackPage() {
                                 onKeyDown={(e) => e.key === 'Enter' && loadSummary()}
                                 className="flex-1 p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary outline-none"
                             />
-                            <button
+                            <Button
                                 onClick={loadSummary}
                                 disabled={!documentId.trim() || summaryLoading}
-                                className="px-6 py-3 bg-primary hover:bg-primary-hover text-white rounded-lg font-medium transition-colors disabled:opacity-50 shadow-md shadow-primary/20 active:scale-95 min-h-[44px]"
+                                loading={summaryLoading}
+                                variant="primary"
+                                className="min-h-[44px]"
                             >
-                                {summaryLoading ? 'Loading...' : 'Load'}
-                            </button>
+                                Load
+                            </Button>
                         </div>
 
                         {summaryData ? (

@@ -11,6 +11,7 @@ import Skeleton from '@/src/components/ui/Skeleton';
 import { getMetricsDb, getMetricsHealth, getMetricsDashboard } from '@/src/services/api';
 import { useAuth } from '@/src/context/AuthContext';
 import { Activity, Badge, Bot, Info, Key, LineChart, RefreshCw, Server, Shield, User, Users } from 'lucide-react';
+import Button from '@/src/components/ui/Button';
 
 // ── Role Telemetry helpers ───────────────────────────────────
 function TelemetryRow({ label, value, mono = false, highlight = false }) {
@@ -116,11 +117,11 @@ export default function AdminDashboard() {
                             </p>
                         )}
                     </div>
-                    <button onClick={refreshMetrics} disabled={loading}
-                        className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-lg font-medium transition-colors disabled:opacity-50 shadow-md shadow-primary/20 active:scale-95 min-h-[44px]">
+                    <Button onClick={refreshMetrics} disabled={loading}
+                        className="flex items-center gap-2 font-medium shadow-md shadow-primary/20 min-h-[44px]">
                         <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                         Refresh
-                    </button>
+                    </Button>
                 </div>
 
                 {error && (

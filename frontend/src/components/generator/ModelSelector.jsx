@@ -1,22 +1,22 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { fetchWithRetry } from '@/utils/fetchWithRetry';
-import { Brain, Check, ChevronDown, Loader2 } from 'lucide-react';
-import DynamicIcon from '@/src/components/ui/DynamicIcon';
+import { Brain, Check, ChevronDown, Loader2, BrainCircuit, Network, Zap, Globe, Cpu, Wind, Route, Gauge, ServerIcon, Puzzle, Cloud } from 'lucide-react';
+import Button from '@/src/components/ui/Button';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
 const PROVIDER_ICONS = {
-    openai: 'psychiatry',
-    anthropic: 'psychology',
-    groq: 'bolt',
-    deepseek: 'neurology',
-    openrouter: 'alt_route',
-    google: 'google',
-    cohere: 'cohere',
-    mistral: 'air',
-    ollama: 'dns',
-    nvidia: 'speed',
+    openai: Brain,
+    anthropic: BrainCircuit,
+    groq: Zap,
+    deepseek: Network,
+    openrouter: Route,
+    google: Globe,
+    cohere: Cpu,
+    mistral: Wind,
+    ollama: ServerIcon,
+    nvidia: Gauge,
 };
 
 const ModelSelector = ({ selectedModel, onModelChange, userToken }) => {
@@ -56,7 +56,7 @@ const ModelSelector = ({ selectedModel, onModelChange, userToken }) => {
             providerName: p.name,
             providerId: p.provider_id,
             isConfigured: p.key_configured || p.is_custom,
-            icon: p.is_custom ? 'extension' : (PROVIDER_ICONS[p.provider_id] || 'cloud'),
+            icon: p.is_custom ? Puzzle : (PROVIDER_ICONS[p.provider_id] || Cloud),
         }))
     );
 
@@ -72,9 +72,11 @@ const ModelSelector = ({ selectedModel, onModelChange, userToken }) => {
 
     return (
         <div className="relative" ref={dropdownRef}>
-            <button
+            <Button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-1.5 px-2 py-1 text-xs rounded-md bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 transition-colors"
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-1.5 px-2 py-1 text-xs bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 transition-colors"
                 title={selectedModel ? `Using: ${selectedModel}` : 'Select model'}
             >
                 <Brain className="text-[16px]" />
@@ -84,7 +86,7 @@ const ModelSelector = ({ selectedModel, onModelChange, userToken }) => {
                 ) : (
                     <ChevronDown className="text-[16px]" />
                 )}
-            </button>
+            </Button>
 
             {isOpen && (
                 <div className="absolute right-0 top-full mt-1 w-72 bg-white dark:bg-zinc-900 rounded-xl shadow-xl border border-zinc-200 dark:border-zinc-700 z-50 max-h-80 overflow-y-auto">
@@ -104,7 +106,7 @@ const ModelSelector = ({ selectedModel, onModelChange, userToken }) => {
                                     <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${m.isConfigured ? 'bg-emerald-500' : 'bg-slate-300'}`} />
                                     <span className="flex-1 truncate">{m.model}</span>
                                     <span className="flex items-center gap-1 text-[10px] text-zinc-400 shrink-0">
-                                        <DynamicIcon name={m.icon} className="w-3 h-3" />
+                                        {m.icon && typeof m.icon === 'function' ? m.icon({ className: 'w-3 h-3' }) : (m.icon && typeof m.icon === 'object' && 'render' in m.icon) ? React.createElement(m.icon, { className: 'w-3 h-3' }) : null}
                                         {m.providerName}
                                     </span>
                                     {selectedModel === m.model && (
@@ -128,7 +130,7 @@ const ModelSelector = ({ selectedModel, onModelChange, userToken }) => {
                                     <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-slate-300" />
                                     <span className="flex-1 truncate">{m.model}</span>
                                     <span className="flex items-center gap-1 text-[10px]">
-                                        <DynamicIcon name={m.icon} className="w-3 h-3" />
+                                        {m.icon && typeof m.icon === 'function' ? m.icon({ className: 'w-3 h-3' }) : (m.icon && typeof m.icon === 'object' && 'render' in m.icon) ? React.createElement(m.icon, { className: 'w-3 h-3' }) : null}
                                         {m.providerName}
                                     </span>
                                 </button>

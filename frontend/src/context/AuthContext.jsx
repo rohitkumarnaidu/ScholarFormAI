@@ -2,7 +2,7 @@
 // Copyright (c) 2026 ScholarForm AI
 
 'use client';
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import {
     signup as apiSignup,
@@ -16,7 +16,7 @@ const AuthContext = createContext();
 
 export const useAuth = () => {
     const context = useContext(AuthContext);
-    if (typeof document !== 'undefined' && document.cookie.includes('playwright-bypass-auth=true')) {
+    if (typeof document !== 'undefined' && process.env.NODE_ENV !== 'production' && document.cookie.includes('playwright-bypass-auth=true')) {
         return {
             ...context,
             isLoggedIn: true,
@@ -42,19 +42,19 @@ export const AuthProvider = ({ children }) => {
     // while signIn/signUp is in progress (setSession fires SIGNED_OUT before SIGNED_IN)
     const signingInRef = useRef(false);
 
-    const clearAppSessionStorage = () => {
+    const clearAppSessionStorage = useCallback(() => {
         [
             'scholarform_currentJob',
             'scholarform_job',
             'scholarform_active_job',
             E2E_USER_STORAGE_KEY,
         ].forEach((key) => sessionStorage.removeItem(key));
-    };
+    }, []);
 
-    const readE2EUser = () => {
+    const readE2EUser = useCallback(() => {
         if (typeof window === 'undefined') return null;
         try {
-            if (document.cookie.includes('playwright-bypass-auth=true')) {
+            if (process.env.NODE_ENV !== 'production' && document.cookie.includes('playwright-bypass-auth=true')) {
                 return { 
                     id: 'playwright-user', 
                     email: 'test@example.com',
@@ -69,9 +69,9 @@ export const AuthProvider = ({ children }) => {
         } catch {
             return null;
         }
-    };
+    }, []);
 
-    const clearSupabaseAuthStorage = () => {
+    const clearSupabaseAuthStorage = useCallback(() => {
         if (typeof window === 'undefined') return;
 
         const clearStorageKeys = (storage) => {
@@ -89,19 +89,19 @@ export const AuthProvider = ({ children }) => {
 
         clearStorageKeys(window.localStorage);
         clearStorageKeys(window.sessionStorage);
-    };
+    }, []);
 
-    const debugAuthLog = (...args) => {
+    const debugAuthLog = useCallback((...args) => {
         if (process.env.NODE_ENV !== 'production') {
             if(process.env.NODE_ENV === "development") console.log(...args);
         }
-    };
+    }, []);
 
-    const sanitizeRedirectPath = (path) => {
+    const sanitizeRedirectPath = useCallback((path) => {
         if (typeof path !== 'string') return '/dashboard';
         if (!path.startsWith('/') || path.startsWith('//')) return '/dashboard';
         return path;
-    };
+    }, []);
 
     useEffect(() => {
         let mounted = true;
@@ -217,9 +217,9 @@ export const AuthProvider = ({ children }) => {
             mounted = false;
             if (subscription) subscription.unsubscribe();
         };
-    }, []);
+    }, [clearAppSessionStorage, clearSupabaseAuthStorage, debugAuthLog, readE2EUser]);
 
-    const signUp = async (signupData) => {
+    const signUp = useCallback(async (signupData) => {
         try {
             setLoading(true);
             signingInRef.current = true;
@@ -251,9 +251,9 @@ export const AuthProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const signIn = async (email, password) => {
+    const signIn = useCallback(async (email, password) => {
         try {
             signingInRef.current = true;
             const data = await apiLogin({ email, password });
@@ -288,9 +288,9 @@ export const AuthProvider = ({ children }) => {
             signingInRef.current = false;
             return { data: null, error: error.message };
         }
-    };
+    }, []);
 
-    const signInWithGoogle = async (redirectPath = '/dashboard') => {
+    const signInWithGoogle = useCallback(async (redirectPath = '/dashboard') => {
         if (!supabase) throw new Error('Supabase client is not initialized');
         const safeRedirectPath = sanitizeRedirectPath(redirectPath);
         return await supabase.auth.signInWithOAuth({
@@ -299,9 +299,9 @@ export const AuthProvider = ({ children }) => {
                 redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(safeRedirectPath)}`,
             },
         });
-    };
+    }, [sanitizeRedirectPath]);
 
-    const signOut = async ({ redirectToLogin = false } = {}) => {
+    const signOut = useCallback(async ({ redirectToLogin = false } = {}) => {
         try {
             if (supabase) await supabase.auth.signOut({ scope: 'local' });
         } catch (error) {
@@ -317,9 +317,9 @@ export const AuthProvider = ({ children }) => {
                 window.location.replace('/login');
             }
         }
-    };
+    }, [clearAppSessionStorage, clearSupabaseAuthStorage]);
 
-    const refreshSession = async () => {
+    const refreshSession = useCallback(async () => {
         if (!supabase) return;
         const { data: { user: refreshedUser }, error } = await supabase.auth.getUser();
         if (refreshedUser && !error) {
@@ -330,36 +330,36 @@ export const AuthProvider = ({ children }) => {
             setUser(null);
             setIsLoggedIn(false);
         }
-    };
+    }, [clearSupabaseAuthStorage]);
 
-    const forgotPassword = async (email) => {
+    const forgotPassword = useCallback(async (email) => {
         try {
             const data = await apiForgotPassword({ email });
             return { data, error: null };
         } catch (error) {
             return { data: null, error: error.message };
         }
-    };
+    }, []);
 
-    const verifyOtp = async (email, otp) => {
+    const verifyOtp = useCallback(async (email, otp) => {
         try {
             const data = await apiVerifyOtp({ email, otp });
             return { data, error: null };
         } catch (error) {
             return { data: null, error: error.message };
         }
-    };
+    }, []);
 
-    const resetPassword = async (email, otp, newPassword) => {
+    const resetPassword = useCallback(async (email, otp, newPassword) => {
         try {
             const data = await apiResetPassword({ email, otp, new_password: newPassword });
             return { data, error: null };
         } catch (error) {
             return { data: null, error: error.message };
         }
-    };
+    }, []);
 
-    const value = {
+    const value = useMemo(() => ({
         user,
         isLoggedIn,
         signUp,
@@ -371,7 +371,7 @@ export const AuthProvider = ({ children }) => {
         verifyOtp,
         resetPassword,
         loading,
-    };
+    }), [user, isLoggedIn, signUp, signIn, signInWithGoogle, signOut, refreshSession, forgotPassword, verifyOtp, resetPassword, loading]);
 
     return (
         <AuthContext.Provider value={value}>

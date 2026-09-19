@@ -7,10 +7,8 @@ const nextConfig = {
     reactStrictMode: true,
     compress: true,
     poweredByHeader: false,
-    swcMinify: true,
     transpilePackages: ['react-resizable-panels'],
     experimental: {
-        instrumentationHook: true,
         optimizePackageImports: ['lucide-react', 'framer-motion', '@tanstack/react-query'],
     },
     allowedDevOrigins: ['127.0.0.1', 'localhost'],
@@ -46,12 +44,6 @@ const nextConfig = {
                             "form-action 'self'",
                         ].join("; "),
                     },
-                ],
-            },
-            {
-                source: "/_next/static/(.*)",
-                headers: [
-                    { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
                 ],
             },
             {

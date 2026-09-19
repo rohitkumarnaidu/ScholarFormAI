@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 ScholarForm AI
 
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback, useMemo } from 'react';
 
 
 const DocumentContext = createContext();
@@ -39,16 +39,16 @@ export const DocumentProvider = ({ children }) => {
         }
     }, [job]);
 
-    const addToHistory = (newJob) => {
+    const addToHistory = useCallback((newJob) => {
         setJob(newJob);
-    };
+    }, []);
 
-    const startProcessing = () => {
+    const startProcessing = useCallback(() => {
         setProcessing(true);
         setJob(null);
-    };
+    }, []);
 
-    const finishProcessing = (result, file, template, options) => {
+    const finishProcessing = useCallback((result, file, template, options) => {
         setProcessing(false);
         const fileMetadata = toFileMetadata(file);
         const newJob = {
@@ -64,22 +64,24 @@ export const DocumentProvider = ({ children }) => {
         };
         setJob(newJob);
         addToHistory(newJob);
-    };
+    }, [addToHistory]);
 
-    const failProcessing = (error) => {
+    const failProcessing = useCallback((error) => {
         setProcessing(false);
         setJob({ status: 'failed', error: error.message });
-    };
+    }, []);
+
+    const value = useMemo(() => ({
+        job,
+        setJob,
+        processing,
+        startProcessing,
+        finishProcessing,
+        failProcessing
+    }), [job, processing, startProcessing, finishProcessing, failProcessing]);
 
     return (
-        <DocumentContext.Provider value={{
-            job,
-            setJob,
-            processing,
-            startProcessing,
-            finishProcessing,
-            failProcessing
-        }}>
+        <DocumentContext.Provider value={value}>
             {children}
         </DocumentContext.Provider>
     );

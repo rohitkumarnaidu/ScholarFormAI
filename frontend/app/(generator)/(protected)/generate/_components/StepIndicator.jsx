@@ -4,7 +4,6 @@
 'use client';
 
 import { CheckCircle } from 'lucide-react';
-import DynamicIcon from '@/src/components/ui/DynamicIcon';
 
 export default function StepIndicator({ steps, currentStep }) {
     return (
@@ -13,11 +12,12 @@ export default function StepIndicator({ steps, currentStep }) {
                 const number = index + 1;
                 const isDone = number < currentStep;
                 const isCurrent = number === currentStep;
+                const IconComponent = stepItem.icon;
 
                 return (
                     <div key={stepItem.label} className="flex items-center">
                         <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition ${isDone ? 'text-green-400' : isCurrent ? 'text-primary-light bg-primary/10' : 'text-slate-600'}`}>
-                            {isDone ? <CheckCircle className="w-3.5 h-3.5" /> : <DynamicIcon name={stepItem.icon} className="w-3.5 h-3.5" />}
+                            {isDone ? <CheckCircle className="w-3.5 h-3.5" /> : <IconComponent className="w-3.5 h-3.5" />}
                             <span className="hidden sm:inline">{stepItem.label}</span>
                         </div>
                         {index < steps.length - 1 && (

@@ -42,7 +42,7 @@ describe('ExportDialog', () => {
         render(<ExportDialog isOpen={true} isDownloading={true} />);
         expect(screen.getByText('Downloading...')).toBeInTheDocument();
         expect(screen.getByTestId('export-download-button')).toBeDisabled();
-        expect(screen.getByText('Cancel')).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Cancel' })).toBeDisabled();
     });
 
     it('shows error message when error prop is provided', () => {

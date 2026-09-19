@@ -2,7 +2,7 @@
 // Copyright (c) 2026 ScholarForm AI
 
 // @ts-check
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 
 const LCP_THRESHOLD_MS = 2500;
 const LCP_UPLOAD_THRESHOLD_MS = 3000;

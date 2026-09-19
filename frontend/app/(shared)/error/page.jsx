@@ -27,6 +27,7 @@ function normalizeError(errorValue) {
 
 import { Suspense } from 'react';
 import { AlertTriangle, FileUp, Headset } from 'lucide-react';
+import Button from '@/src/components/ui/Button';
 
 function ErrorContent() {
     usePageTitle('Error');
@@ -98,13 +99,14 @@ function ErrorContent() {
                             <span className="truncate">Open Upload</span>
                         </Link>
                     ) : (
-                        <button
+                        <Button
+                            variant="outline"
                             onClick={() => window.open('mailto:support@scholarform.ai', '_self')}
-                            className="flex-1 flex min-w-[160px] cursor-pointer items-center justify-center rounded-lg h-12 px-6 bg-white dark:bg-slate-800 border border-[#cfd9e7] dark:border-slate-700 text-[#0d131b] dark:text-white text-sm font-bold leading-normal tracking-wide transition-all hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-95 duration-150"
+                            className="flex-1 min-w-[160px] h-12 px-6 border-[#cfd9e7] dark:border-slate-700"
                         >
                             <Headset className="mr-2" />
                             <span className="truncate">Contact Support</span>
-                        </button>
+                        </Button>
                     )}
                 </div>
             </div>

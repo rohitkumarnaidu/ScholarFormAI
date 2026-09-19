@@ -2,92 +2,9 @@
 // Copyright (c) 2026 ScholarForm AI
 
 'use client';
-import { useRef, useEffect, useLayoutEffect } from 'react';
+import { useRef, useEffect, useLayoutEffect, useState } from 'react';
 import { FileText } from 'lucide-react';
-
-const ALLOWED_TAGS = new Set([
-    'p', 'div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-    'a', 'img', 'ul', 'ol', 'li', 'table', 'tr', 'td', 'th',
-    'thead', 'tbody', 'strong', 'em', 'u', 's', 'br', 'hr',
-    'pre', 'code', 'blockquote', 'section', 'article',
-]);
-
-const ALLOWED_ATTRS = new Set([
-    'href', 'src', 'alt', 'title', 'class', 'id', 'style', 'target', 'rel',
-]);
-
-const BAD_URI_SCHEMES = /^javascript\s*:|^data\s*:|^vbscript\s*:/i;
-
-function sanitizeNode(node, doc) {
-    // Text node — keep as-is
-    if (node.nodeType === 3) return doc.createTextNode(node.nodeValue);
-
-    // Only process element nodes
-    if (node.nodeType !== 1) return null;
-
-    const tag = node.tagName.toLowerCase();
-
-    // Strip dangerous elements entirely
-    if (/^(script|iframe|object|embed|applet|style|link|meta|base|noscript|frame|frameset|svg|math)$/.test(tag)) {
-        return null;
-    }
-
-    // For disallowed tags, strip the tag but keep children
-    if (!ALLOWED_TAGS.has(tag)) {
-        const fragment = doc.createDocumentFragment();
-        for (const child of node.childNodes) {
-            const sanitized = sanitizeNode(child, doc);
-            if (sanitized) fragment.appendChild(sanitized);
-        }
-        return fragment;
-    }
-
-    // Allowed tag — create clean element and filter attributes
-    const newEl = doc.createElement(tag);
-
-    for (const attr of node.attributes) {
-        const name = attr.name.toLowerCase();
-
-        // Strip event handlers (on*)
-        if (/^on\w+$/.test(name) || name === 'on') continue;
-
-        // Only allow whitelisted attributes
-        if (!ALLOWED_ATTRS.has(name)) continue;
-
-        // Strip dangerous URI schemes in link-type attributes
-        if (/^(href|src|action)$/.test(name) && BAD_URI_SCHEMES.test(attr.value.trim())) continue;
-
-        newEl.setAttribute(name, attr.value);
-    }
-
-    // Recurse into children
-    for (const child of node.childNodes) {
-        const sanitized = sanitizeNode(child, doc);
-        if (sanitized) newEl.appendChild(sanitized);
-    }
-
-    return newEl;
-}
-
-function sanitizeHtml(rawHtml) {
-    if (!rawHtml || typeof rawHtml !== 'string') return '';
-
-    // Wrap in a known root so DOMParser always produces a valid tree
-    const parser = new DOMParser();
-    const doc = parser.parseFromString('<div id="__sf_sanitize_root">' + rawHtml + '</div>', 'text/html');
-    const root = doc.getElementById('__sf_sanitize_root');
-    if (!root) return '';
-
-    const fragment = doc.createDocumentFragment();
-    for (const child of root.childNodes) {
-        const sanitized = sanitizeNode(child, doc);
-        if (sanitized) fragment.appendChild(sanitized);
-    }
-
-    const wrapper = doc.createElement('div');
-    wrapper.appendChild(fragment);
-    return wrapper.innerHTML;
-}
+import { sanitizeHtml } from '@/src/lib/sanitizeHtml';
 
 /**
  * PreviewPane – renders backend-supplied HTML in a sandboxed document-style container.
@@ -99,6 +16,7 @@ function sanitizeHtml(rawHtml) {
 export default function PreviewPane({ html, isLoading }) {
     const containerRef = useRef(null);
     const scrollTopRef = useRef(0);
+    const [sanitized, setSanitized] = useState('');
 
     // Save scroll position before html update
     useEffect(() => {
@@ -110,9 +28,12 @@ export default function PreviewPane({ html, isLoading }) {
     useLayoutEffect(() => {
         const el = containerRef.current;
         if (el) el.scrollTop = scrollTopRef.current;
-    }, [html]);
+    }, [sanitized]);
 
-    const sanitized = sanitizeHtml(html);
+    // Sanitize on the client to avoid SSR crashes with DOMParser
+    useEffect(() => {
+        setSanitized(sanitizeHtml(html));
+    }, [html]);
 
     return (
         <div className="relative h-full flex flex-col bg-slate-100 dark:bg-slate-950 overflow-hidden">

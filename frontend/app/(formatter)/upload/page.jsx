@@ -18,6 +18,7 @@ import FormattingOptions from '@/src/components/upload/FormattingOptions';
 import ProcessingStepper from '@/src/components/upload/ProcessingStepper';
 import FastModeToggle from '@/src/components/FastModeToggle';
 import { AlertTriangle, CloudUpload, FileUp, RefreshCw, X, XCircle } from 'lucide-react';
+import Button from '@/src/components/ui/Button';
 
 const ACCEPTED_FORMATS = '.docx,.pdf,.tex,.txt,.html,.htm,.md,.markdown,.doc';
 const MAX_UPLOAD_SIZE_BYTES = 50 * 1024 * 1024;
@@ -192,12 +193,14 @@ function UploadContent() {
                                                 <div className="flex items-center gap-2 px-3 py-1 bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm">
                                                     <span className="truncate max-w-[200px]">{file.name}</span>
                                                     <span className="text-slate-400 text-xs">({formatFileSize(file.size)})</span>
-                                                    <button 
+                                                    <Button 
+                                                        variant="ghost"
+                                                        size="sm"
                                                         onClick={(e) => { e.stopPropagation(); setFile(null); setFileError(null); }} 
-                                                        className="hover:text-red-500 dark:hover:text-red-400 transition-colors flex items-center p-0.5" 
+                                                        className="hover:text-red-500 dark:hover:text-red-400 p-1 h-auto" 
                                                     >
                                                         <X className="text-sm" />
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             ) : 'Supported formats: DOCX, PDF, TEX, TXT, HTML, MD, DOC (Max 50MB)'}
                                         </div>
@@ -250,13 +253,14 @@ function UploadContent() {
                         </div>
 
                         {isProcessing && (
-                            <button
+                            <Button
+                                variant="danger"
                                 onClick={cancelUpload}
-                                className="w-full mt-3 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 font-bold py-3 rounded-xl border border-red-200 dark:border-red-800 flex items-center justify-center gap-2 transition-all"
+                                className="w-full mt-3"
                             >
                                 <XCircle className="text-lg" />
                                 Cancel Processing
-                            </button>
+                            </Button>
                         )}
                     </div>
 

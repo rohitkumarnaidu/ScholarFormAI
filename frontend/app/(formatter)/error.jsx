@@ -4,6 +4,7 @@
 'use client';
 import { useEffect } from 'react';
 import { AlertTriangle } from 'lucide-react';
+import Button from '@/src/components/ui/Button';
 
 export default function FormatterError({ error, reset }) {
     useEffect(() => {
@@ -23,13 +24,14 @@ export default function FormatterError({ error, reset }) {
                     </div>
                 </div>
                 <div className="mt-6">
-                    <button
+                    <Button
                         type="button"
                         onClick={() => reset()}
-                        className="w-full rounded-lg bg-primary text-white px-4 py-2.5 text-sm font-bold hover:bg-blue-700 transition-colors"
+                        variant="primary"
+                        className="w-full"
                     >
                         Try Again
-                    </button>
+                    </Button>
                 </div>
                 {process.env.NODE_ENV !== 'production' ? (
                     <p className="mt-4 text-xs text-slate-500 break-words">

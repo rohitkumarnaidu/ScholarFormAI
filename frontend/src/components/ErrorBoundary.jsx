@@ -1,6 +1,7 @@
 'use client';
 import { Component } from 'react';
 import { AlertTriangle } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 export default class ErrorBoundary extends Component {
     constructor(props) {
@@ -26,12 +27,12 @@ export default class ErrorBoundary extends Component {
                         <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm">
                             {this.state.error?.message || 'An unexpected error occurred while loading providers.'}
                         </p>
-                        <button
+                        <Button
+                            variant="primary"
                             onClick={() => { this.setState({ hasError: false, error: null }); window.location.reload(); }}
-                            className="px-6 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium"
                         >
                             Reload Page
-                        </button>
+                        </Button>
                     </div>
                 </div>
             );

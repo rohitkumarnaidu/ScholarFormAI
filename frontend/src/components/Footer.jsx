@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useMetricsHealth } from '@/services/api.hooks';
 import { subscribeNewsletter } from '@/services/api.core';
+import Button from '@/components/ui/Button';
 import { BadgeCheck, BookOpen, Check, Mail, RefreshCw, Send, Share2, Shield } from 'lucide-react';
 
 export default function Footer({ variant = 'app' }) {
@@ -110,11 +111,12 @@ export default function Footer({ variant = 'app' }) {
                                         className={`w-full bg-slate-50 dark:bg-slate-800/50 border ${status === 'error' ? 'border-red-400 focus:ring-red-400' : status === 'success' ? 'border-green-400 text-green-600' : 'border-slate-200 dark:border-slate-700/50 focus:ring-primary/50'} rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 text-slate-900 dark:text-white transition-all shadow-sm disabled:opacity-70`}
                                         suppressHydrationWarning
                                     />
-                                    <button 
+                                    <Button
                                         type="submit" 
                                         disabled={status === 'loading' || status === 'success' || !email}
-                                        className="bg-primary hover:bg-primary-hover text-white px-5 rounded-xl transition-all shadow-md shadow-primary/20 flex items-center justify-center hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:hover:translate-y-0 disabled:cursor-not-allowed"
+                                        className="px-5 w-auto"
                                         suppressHydrationWarning
+                                        aria-label="Subscribe to newsletter"
                                     >
                                         {status === 'loading' ? (
                                             <RefreshCw className="text-[20px] animate-spin" />
@@ -123,7 +125,7 @@ export default function Footer({ variant = 'app' }) {
                                         ) : (
                                             <Send className="text-[20px]" />
                                         )}
-                                    </button>
+                                    </Button>
                                 </form>
                                 {status === 'error' && (
                                     <p className="text-xs text-red-500 mt-2 absolute">Something went wrong. Please try again.</p>

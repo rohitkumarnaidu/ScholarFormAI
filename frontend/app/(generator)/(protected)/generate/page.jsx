@@ -11,7 +11,8 @@ import MetadataStep from './_components/MetadataStep';
 import StepIndicator from './_components/StepIndicator';
 import TemplateStep from './_components/TemplateStep';
 import { useGeneratorState } from './_components/useGeneratorState';
-import { ArrowLeft, ArrowRight, Loader2, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
+import Button from '@/src/components/ui/Button';
 
 export default function DocumentGeneratorPage() {
     usePageTitle('Generate Document - ScholarForm AI');
@@ -82,46 +83,41 @@ export default function DocumentGeneratorPage() {
 
                     {step < 4 && (
                         <div className="flex justify-between mt-10 pt-6 border-t border-slate-200 dark:border-white/10">
-                            <button
+                            <Button
                                 id="btn-back"
                                 onClick={goBack}
                                 disabled={step === 1}
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-200 dark:hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition min-h-[44px]"
+                                variant="secondary"
+                                className="min-w-[100px]"
                             >
                                 <ArrowLeft className="text-base" />
                                 Back
-                            </button>
+                            </Button>
                             {step === 3 ? (
-                                <button
+                                <Button
                                     id="btn-generate"
                                     onClick={handleGenerate}
                                     disabled={!canAdvance || isSubmitting}
                                     title="Generate (Ctrl+Enter)"
-                                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-hover shadow-lg shadow-primary/30 hover:shadow-primary/50 text-white text-sm font-semibold hover:scale-[1.02] disabled:opacity-40 disabled:cursor-not-allowed transition min-h-[44px] active:scale-95"
+                                    loading={isSubmitting}
                                 >
-                                    {isSubmitting ? (
-                                        <>
-                                            <Loader2 className="text-base animate-spin" />
-                                            Starting...
-                                        </>
-                                    ) : (
+                                    {isSubmitting ? 'Starting...' : (
                                         <>
                                             <Sparkles className="text-base" />
                                             Generate Document
                                         </>
                                     )}
-                                </button>
+                                </Button>
                             ) : (
-                                <button
+                                <Button
                                     id="btn-next"
                                     onClick={goNext}
                                     disabled={!canAdvance}
                                     title="Continue (Ctrl+Enter)"
-                                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-hover shadow-lg shadow-primary/30 hover:shadow-primary/50 text-white text-sm font-semibold hover:scale-[1.02] disabled:opacity-40 disabled:cursor-not-allowed transition min-h-[44px] active:scale-95"
                                 >
                                     Continue
                                     <ArrowRight className="text-base" />
-                                </button>
+                                </Button>
                             )}
                         </div>
                     )}

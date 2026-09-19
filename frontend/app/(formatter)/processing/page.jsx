@@ -6,6 +6,7 @@ import usePageTitle from '@/src/hooks/usePageTitle';
 import { useCallback, useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
+import Button from '@/src/components/ui/Button';
 
 import Stepper from '@/src/components/Stepper';
 import StatusBadge from '@/src/components/StatusBadge';
@@ -216,23 +217,27 @@ export default function Processing() {
                         <div className="p-6 bg-slate-50 dark:bg-slate-800/30">
                             <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3">Recovery Options</h3>
                             <div className="flex flex-col sm:flex-row gap-3">
-                                <button
+                                <Button
                                     onClick={() => {
                                         setJob({ ...job, status: 'UPLOADED', error: null, progress: 0, phase: 'UPLOADED' });
                                         queryClient.refetchQueries({ queryKey: ['document-status', job?.id] });
                                     }}
-                                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-hover transition-all active:scale-[0.98]"
+                                    variant="primary"
+                                    size="lg"
+                                    className="flex-1"
                                 >
                                     <RefreshCw className="text-lg" />
                                     Retry Processing
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     onClick={() => navigate(job?.type === 'generator' ? '/generate' : '/upload')}
-                                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all active:scale-[0.98]"
+                                    variant="secondary"
+                                    size="lg"
+                                    className="flex-1"
                                 >
                                     <History className="text-lg" />
                                     Restore Draft & Edit
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     </div>
@@ -284,22 +289,26 @@ export default function Processing() {
 
                 {/* Action Buttons */}
                 <div className="mt-6 flex flex-col sm:flex-row items-center gap-3">
-                    <button
+                    <Button
                         onClick={handleCancelProcessing}
                         disabled={isCancelling}
-                        className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 border border-red-200 dark:border-red-800/50 text-red-600 rounded-xl font-bold text-sm hover:bg-red-50 dark:hover:bg-red-900/20 transition-all disabled:opacity-50"
+                        loading={isCancelling}
+                        variant="outline"
+                        size="lg"
+                        className="border-red-200 dark:border-red-800/50 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                     >
-                        <XCircle className="text-lg" />
+                        {!isCancelling && <XCircle className="text-lg" />}
                         {isCancelling ? 'Cancelling...' : 'Cancel Processing'}
-                    </button>
+                    </Button>
                     {!isCancelling && (
-                        <button
+                        <Button
                             onClick={handleCancelProcessing}
-                            className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
+                            variant="secondary"
+                            size="lg"
                         >
                             <FileUp className="text-lg" />
                             Upload Another Document
-                        </button>
+                        </Button>
                     )}
                 </div>
 

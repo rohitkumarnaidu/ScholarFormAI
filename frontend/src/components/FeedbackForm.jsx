@@ -5,6 +5,7 @@ import { useRef, useState } from 'react';
 import { submitFeedback } from '@/services/api';
 import { FeedbackSubmissionSchema, getFirstZodError } from '@/lib/schemas';
 import { CheckCircle, Send } from 'lucide-react';
+import { Button } from './ui';
 
 export default function FeedbackForm({ documentId: propDocId, onSubmitted }) {
     const formRef = useRef(null);
@@ -161,24 +162,17 @@ export default function FeedbackForm({ documentId: propDocId, onSubmitted }) {
                 </div>
             )}
 
-            <button
+            <Button
                 type="submit"
                 disabled={submitting}
+                loading={submitting}
+                variant="primary"
                 title="Submit Correction (Ctrl+Enter)"
-                className="w-full py-3 bg-primary hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-primary/25 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full"
+                icon={<Send className="w-4 h-4" />}
             >
-                {submitting ? (
-                    <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        Submitting...
-                    </>
-                ) : (
-                    <>
-                        <Send />
-                        Submit Correction
-                    </>
-                )}
-            </button>
+                {submitting ? "Submitting..." : "Submit Correction"}
+            </Button>
         </form>
     );
 }

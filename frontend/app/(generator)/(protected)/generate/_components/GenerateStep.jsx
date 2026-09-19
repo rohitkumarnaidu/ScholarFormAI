@@ -1,15 +1,14 @@
 'use client';
 
-import { FileDown, FileJson, Plus, RefreshCw, Check } from 'lucide-react';
-import DynamicIcon from '@/src/components/ui/DynamicIcon';
+import { FileDown, FileJson, Plus, RefreshCw, Check, Sparkles, Layers, Paintbrush, Download, CheckCircle } from 'lucide-react';
 
 export default function GenerateStep({ status, progress, stage, message, error, outline, onDownload, onReset }) {
     const stages = [
-        { key: 'generating', label: 'Generating content', icon: 'auto_awesome' },
-        { key: 'structuring', label: 'Structuring blocks', icon: 'schema' },
-        { key: 'formatting', label: 'Applying template', icon: 'format_paint' },
-        { key: 'exporting', label: 'Exporting document', icon: 'file_download' },
-        { key: 'done', label: 'Document ready', icon: 'check_circle' },
+        { key: 'generating', label: 'Generating content', icon: Sparkles },
+        { key: 'structuring', label: 'Structuring blocks', icon: Layers },
+        { key: 'formatting', label: 'Applying template', icon: Paintbrush },
+        { key: 'exporting', label: 'Exporting document', icon: Download },
+        { key: 'done', label: 'Document ready', icon: CheckCircle },
     ];
 
     const activeIndex = stages.findIndex((entry) => entry.key === stage);
@@ -39,11 +38,12 @@ export default function GenerateStep({ status, progress, stage, message, error, 
                 {stages.map((entry, index) => {
                     const isDone = index < activeIndex || status === 'done';
                     const isActive = entry.key === stage && status !== 'done';
+                    const IconComponent = entry.icon;
 
                     return (
                         <div key={entry.key} className={`flex items-center gap-3 p-3 rounded-xl transition ${isDone ? 'bg-green-500/10' : isActive ? 'bg-primary/10' : 'bg-white/3'}`}>
                             <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${isDone ? 'bg-green-500' : isActive ? 'bg-primary' : 'bg-white/10'}`}>
-                                {isDone ? <Check className="text-white w-3.5 h-3.5" /> : <DynamicIcon name={entry.icon} className="text-white w-3.5 h-3.5" />}
+                                {isDone ? <Check className="text-white w-3.5 h-3.5" /> : <IconComponent className="text-white w-3.5 h-3.5" />}
                             </div>
                             <span className={`text-sm ${isDone ? 'text-green-300' : isActive ? 'text-blue-300' : 'text-slate-600'}`}>{entry.label}</span>
                             {isActive && <span className="ml-auto text-xs text-primary-light animate-pulse">In progress...</span>}

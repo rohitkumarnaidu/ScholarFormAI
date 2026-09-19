@@ -4,6 +4,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Edit2, Trash2, Plus, GripVertical, Check, X, RefreshCw, ArrowRight } from 'lucide-react';
 import { motion, Reorder } from 'framer-motion';
+import Button from '@/src/components/ui/Button';
 
 const OutlineApproval = React.memo(({ outline, onApprove, onEdit, onRegenerate }) => {
   const [sections, setSections] = useState([]);
@@ -252,31 +253,33 @@ const OutlineApproval = React.memo(({ outline, onApprove, onEdit, onRegenerate }
           ))}
         </Reorder.Group>
 
-        <button
+        <Button
           onClick={handleAddSection}
-          className="mt-4 w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-lg text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all"
+          variant="outline"
+          className="mt-4 w-full border-dashed"
         >
           <Plus className="w-4 h-4" />
           Add Section
-        </button>
+        </Button>
       </div>
 
       <div className="p-4 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 flex flex-col sm:flex-row gap-3">
-        <button
+        <Button
           onClick={handleRegenerate}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-lg text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-sm"
+          variant="secondary"
+          className="flex-1 font-medium shadow-sm"
         >
           <RefreshCw className="w-4 h-4" />
           Regenerate Outline
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={handleApprove}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
+          className="flex-1 font-medium shadow-sm"
           title="Proceed (Ctrl+Enter)"
         >
           Proceed to Write
           <ArrowRight className="w-4 h-4" />
-        </button>
+        </Button>
       </div>
     </div>
   );

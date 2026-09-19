@@ -12,6 +12,7 @@ import { useDocument } from '@/src/context/DocumentContext';
 import { getPreview, getJobSummary } from '@/src/services/api.documents';
 import useJobFromUrl from '@/src/hooks/useJobFromUrl';
 import Skeleton from '@/src/components/ui/Skeleton';
+import Button from '@/src/components/ui/Button';
 import { AlertTriangle, ArrowLeftRight, Bot, CheckCircle, ChevronRight, Download, FileEdit, FileSearch, FileText, FileUp, LineChart, Quote, Sparkles } from 'lucide-react';
 
 function ValidationResults() {
@@ -127,9 +128,9 @@ function ValidationResults() {
             <div className="min-h-screen flex flex-col bg-background-light dark:bg-background-dark">
                 <main className="flex-1 flex flex-col items-center justify-center px-4 text-center">
                     <p className="text-red-600 dark:text-red-400 mb-3">{jobLoadError}</p>
-                    <button onClick={() => navigate('/history')} className="text-primary font-bold hover:underline">
+                    <Button variant="link" onClick={() => navigate('/history')}>
                         Return to History
-                    </button>
+                    </Button>
                 </main>
             </div>
         );
@@ -144,7 +145,7 @@ function ValidationResults() {
                         <FileSearch className="text-slate-400 text-3xl" />
                     </div>
                     <p className="text-slate-500 dark:text-slate-400 mb-4">No validation results found. Your document may not have been processed yet.</p>
-                    <button onClick={() => navigate('/upload')} className="text-primary font-bold hover:underline">Return to Upload</button>
+                    <Button variant="link" onClick={() => navigate('/upload')}>Return to Upload</Button>
                 </main>
             </div>
         );
@@ -194,7 +195,7 @@ function ValidationResults() {
                     </div>
                     <p className="text-slate-500 dark:text-slate-400 mb-2">Failed to load validation results.</p>
                     {resultLoadError ? <p className="text-red-500 text-sm mb-4">{resultLoadError}</p> : null}
-                    <button onClick={() => navigate('/upload')} className="text-primary font-bold hover:underline">Return to Upload</button>
+                    <Button variant="link" onClick={() => navigate('/upload')}>Return to Upload</Button>
                 </main>
             </div>
         );
@@ -266,14 +267,14 @@ function ValidationResults() {
                         </p>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-                        <button onClick={() => navigate('/upload')} className="flex w-full sm:w-auto items-center justify-center rounded-lg h-11 px-6 bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm font-bold hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors">
-                            <FileUp className="mr-2 text-lg" />
+                        <Button variant="secondary" onClick={() => navigate('/upload')} className="h-11 px-6 w-full sm:w-auto">
+                            <FileUp />
                             Re-upload
-                        </button>
-                        <button onClick={() => navigate('/download')} className="flex w-full sm:w-auto items-center justify-center rounded-lg h-11 px-6 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
-                            <Download className="mr-2 text-lg" />
+                        </Button>
+                        <Button onClick={() => navigate('/download')} className="h-11 px-6 w-full sm:w-auto shadow-lg shadow-primary/20">
+                            <Download />
                             Verify & Download
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
@@ -316,7 +317,7 @@ function ValidationResults() {
                         <FileText className="text-3xl group-hover:scale-110 transition-transform" />
                         <span className="text-[10px] mt-2 font-mono">DOCUMENT PREVIEW</span>
                         <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <button onClick={() => navigate('/compare')} className="text-[10px] font-bold bg-white text-primary px-3 py-1 rounded shadow-sm">VIEW DIFF</button>
+                            <Button variant="secondary" onClick={() => navigate('/compare')} className="h-auto text-[10px] px-3 py-1 bg-white text-primary hover:bg-slate-100 shadow-sm">VIEW DIFF</Button>
                         </div>
                     </div>
                 </div>
@@ -539,14 +540,14 @@ function ValidationResults() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 pt-8">
-                    <button onClick={() => navigate('/compare')} className="flex-1 flex items-center justify-center gap-2 py-4 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl font-bold text-slate-700 dark:text-slate-200 hover:border-primary transition-all shadow-sm">
+                    <Button variant="outline" onClick={() => navigate('/compare')} className="flex-1 py-6 border-2 rounded-xl text-slate-700 dark:text-slate-200">
                         <ArrowLeftRight />
                         Compare with Original
-                    </button>
-                    <button onClick={() => navigate('/edit')} className="flex-1 flex items-center justify-center gap-2 py-4 bg-primary text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-primary/20">
+                    </Button>
+                    <Button onClick={() => navigate('/edit')} className="flex-1 py-6 rounded-xl shadow-lg shadow-primary/20">
                         <FileEdit />
                         Edit Processed Version
-                    </button>
+                    </Button>
                 </div>
 
             </main>

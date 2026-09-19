@@ -6,33 +6,33 @@
 import React, { memo, useMemo, useCallback } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { AlignLeft, LogOut, Wand2, X } from 'lucide-react';
-import DynamicIcon from '@/src/components/ui/DynamicIcon';
+import { AlignLeft, LogOut, Wand2, X, Upload, LayoutGrid, FileEdit, LayoutDashboard, History, ClipboardCheck, Cloud, Key, MessageSquare, Shield, Rocket, PenSquare, PlusCircle, Settings, Code } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 const APP_GUEST_LINKS = [
-  { href: '/upload', label: 'Upload', icon: 'upload_file' },
-  { href: '/templates', label: 'Templates', icon: 'grid_view' },
-  { href: '/template-editor', label: 'Template Editor', icon: 'edit_document' },
+  { href: '/upload', label: 'Upload', icon: Upload },
+  { href: '/templates', label: 'Templates', icon: LayoutGrid },
+  { href: '/template-editor', label: 'Template Editor', icon: FileEdit },
 ];
 
 const SHARED_USER_LINKS = [
-  { href: '/dashboard', label: 'Dashboard', icon: 'space_dashboard' },
-  { href: '/history', label: 'History', icon: 'history' },
-  { href: '/templates', label: 'Templates', icon: 'grid_view' },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/history', label: 'History', icon: History },
+  { href: '/templates', label: 'Templates', icon: LayoutGrid },
 ];
 
 const MODE_SPECIFIC_LINKS = {
-  formatter: { href: '/upload', label: 'Upload', icon: 'upload_file' },
-  generator: { href: '/generate', label: 'Generator', icon: 'magic_button' },
+  formatter: { href: '/upload', label: 'Upload', icon: Upload },
+  generator: { href: '/generate', label: 'Generator', icon: Wand2 },
 };
 
 const USER_SECONDARY_LINKS = [
-  { href: '/batch-upload', label: 'Batch Upload', icon: 'upload' },
-  { href: '/template-editor', label: 'Template Editor', icon: 'edit_document' },
-  { href: '/results', label: 'Validation Results', icon: 'fact_check' },
-  { href: '/providers', label: 'Providers', icon: 'cloud' },
-  { href: '/api-keys', label: 'API Keys', icon: 'key' },
-  { href: '/feedback', label: 'Feedback', icon: 'chat' },
+  { href: '/batch-upload', label: 'Batch Upload', icon: Upload },
+  { href: '/template-editor', label: 'Template Editor', icon: FileEdit },
+  { href: '/results', label: 'Validation Results', icon: ClipboardCheck },
+  { href: '/providers', label: 'Providers', icon: Cloud },
+  { href: '/api-keys', label: 'API Keys', icon: Key },
+  { href: '/feedback', label: 'Feedback', icon: MessageSquare },
 ];
 
 const RESULTS_ALIAS_PREFIXES = ['/compare', '/preview', '/edit', '/download'];
@@ -50,12 +50,13 @@ const isLinkActive = (pathname, href) => {
 const NavItem = memo(function NavItem({ href, label, icon, active, isCollapsed, onNavigate }) {
   return (
     <button
+      type="button"
       onClick={() => onNavigate(href)}
       title={isCollapsed ? label : undefined}
       aria-label={label}
       className={`active-nav-link flex items-center gap-3 py-2.5 rounded-xl text-[15px] font-semibold active:scale-[0.98] transition-all ${isCollapsed ? 'px-0 justify-center w-11 h-11 mx-auto' : 'px-3 w-full'} ${active ? 'bg-primary/10 text-primary dark:bg-primary/25 dark:text-blue-400 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`}
     >
-      <DynamicIcon name={icon} className={`shrink-0 w-5 h-5 ${active ? 'fill-current text-current' : ''}`} aria-hidden="true" />
+      {icon && typeof icon === 'function' ? icon({ className: `shrink-0 w-5 h-5 ${active ? 'fill-current text-current' : ''}`, 'aria-hidden': 'true' }) : (icon && typeof icon === 'object' && 'render' in icon) ? React.createElement(icon, { className: `shrink-0 w-5 h-5 ${active ? 'fill-current text-current' : ''}`, 'aria-hidden': 'true' }) : null}
       {!isCollapsed && <span className="truncate">{label}</span>}
     </button>
   );
@@ -98,15 +99,15 @@ const Sidebar = memo(function Sidebar({ section = 'shared', onClose, isCollapsed
   const secondaryNavLinks = useMemo(() => {
     if (uiUser === null) return [];
     const links = [...USER_SECONDARY_LINKS];
-    if (isAdminUser) links.push({ href: '/admin-dashboard', label: 'Admin Dashboard', icon: 'admin_panel_settings' });
+    if (isAdminUser) links.push({ href: '/admin-dashboard', label: 'Admin Dashboard', icon: Shield });
     return links;
   }, [uiUser, isAdminUser]);
 
   const actionData = useMemo(() => {
-    if (uiUser === null) return { href: '/signup', label: 'Get Started', icon: 'rocket_launch' };
+    if (uiUser === null) return { href: '/signup', label: 'Get Started', icon: Rocket };
     return activeMode === 'generator'
-      ? { href: '/generate', label: 'New Draft', icon: 'edit_square' }
-      : { href: '/upload', label: 'New Format', icon: 'add_circle' };
+      ? { href: '/generate', label: 'New Draft', icon: PenSquare }
+      : { href: '/upload', label: 'New Format', icon: PlusCircle };
   }, [uiUser, activeMode]);
 
   const handleNavigation = useCallback((href) => {
@@ -132,9 +133,9 @@ const Sidebar = memo(function Sidebar({ section = 'shared', onClose, isCollapsed
     <div className={`flex flex-col h-full py-4 w-full ${isCollapsed ? 'px-2' : 'px-3'}`}>
       {onClose && (
         <div className="flex justify-end mb-4 pr-1">
-          <button onClick={onClose} className="lg:hidden p-1 text-slate-500 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 " aria-label="Close Sidebar">
+          <Button variant="ghost" size="icon" onClick={onClose} className="lg:hidden size-8 text-slate-500 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10" aria-label="Close Sidebar">
             <X />
-          </button>
+          </Button>
         </div>
       )}
 
@@ -142,6 +143,7 @@ const Sidebar = memo(function Sidebar({ section = 'shared', onClose, isCollapsed
         <div className={`flex flex-col gap-1 rounded-xl bg-[#f0f1f3] dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10 ${isCollapsed ? 'p-1' : 'p-1.5'}`}>
           {['formatter', 'generator'].map(m => (
             <button
+              type="button"
               key={m}
               onClick={() => handleModeChange(m)}
               title={isCollapsed ? (m.charAt(0).toUpperCase() + m.slice(1)) : undefined}
@@ -183,27 +185,30 @@ const Sidebar = memo(function Sidebar({ section = 'shared', onClose, isCollapsed
       <div className={`pt-4 flex flex-col gap-2 ${isCollapsed ? 'items-center' : ''}`}>
         {uiUser && (
           <>
-            <NavItem href="/settings" label="Settings" icon="settings" active={isLinkActive(pathname, "/settings")} isCollapsed={isCollapsed} onNavigate={handleNavigation} />
-            <NavItem href="/contributing" label="Contributing" icon="code" active={isLinkActive(pathname, "/contributing")} isCollapsed={isCollapsed} onNavigate={handleNavigation} />
+            <NavItem href="/settings" label="Settings" icon={Settings} active={isLinkActive(pathname, "/settings")} isCollapsed={isCollapsed} onNavigate={handleNavigation} />
+            <NavItem href="/contributing" label="Contributing" icon={Code} active={isLinkActive(pathname, "/contributing")} isCollapsed={isCollapsed} onNavigate={handleNavigation} />
           </>
         )}
-        <button
+        <Button
           onClick={() => handleNavigation(actionData.href)}
           title={isCollapsed ? actionData.label : undefined}
-          className={`h-11 flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-[15px] font-bold active:scale-[0.98] transition-all shadow-lg shadow-primary/20 shrink-0 overflow-hidden ${isCollapsed ? 'w-11 px-0' : 'w-full px-4'}`}
+          aria-label={actionData.label}
+          className={`h-11 shadow-lg shadow-primary/20 shrink-0 overflow-hidden ${isCollapsed ? 'w-11 px-0' : 'w-full px-4'}`}
         >
-          <DynamicIcon name={actionData.icon} className="shrink-0 w-5 h-5" />
+          {actionData.icon && typeof actionData.icon === 'function' ? actionData.icon({ className: "shrink-0 w-5 h-5" }) : (actionData.icon && typeof actionData.icon === 'object' && 'render' in actionData.icon) ? React.createElement(actionData.icon, { className: "shrink-0 w-5 h-5" }) : null}
           {!isCollapsed && <span className="truncate">{actionData.label}</span>}
-        </button>
+        </Button>
         {uiUser && (
-          <button
+          <Button
+            variant="outline"
             onClick={handleSignOut}
             title={isCollapsed ? 'Sign Out' : undefined}
-            className={`h-10 flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 active:scale-[0.98] transition-all ${isCollapsed ? 'w-11 px-0' : 'w-full px-4'}`}
+            aria-label="Sign Out"
+            className={`h-10 border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 ${isCollapsed ? 'w-11 px-0' : 'w-full px-4'}`}
           >
             <LogOut className="shrink-0 text-[20px]" />
             {!isCollapsed && <span className="truncate font-semibold">Sign Out</span>}
-          </button>
+          </Button>
         )}
       </div>
     </div>

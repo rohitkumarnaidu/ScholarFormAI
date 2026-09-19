@@ -2,7 +2,7 @@
 // Copyright (c) 2026 ScholarForm AI
 
 'use client';
-import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useAuth } from './AuthContext';
 import { supabase } from '../lib/supabaseClient';
 
@@ -65,7 +65,7 @@ export const UserPreferencesProvider = ({ children }) => {
         };
     }, [flushPendingChanges]);
 
-    const setPreference = (key, value) => {
+    const setPreference = useCallback((key, value) => {
         setPreferencesState((prev) => {
             const next = { ...prev, [key]: value };
 
@@ -84,10 +84,12 @@ export const UserPreferencesProvider = ({ children }) => {
 
             return next;
         });
-    };
+    }, [isLoggedIn, flushPendingChanges]);
+
+    const value = useMemo(() => ({ preferences, setPreference }), [preferences, setPreference]);
 
     return (
-        <UserPreferencesContext.Provider value={{ preferences, setPreference }}>
+        <UserPreferencesContext.Provider value={value}>
             {children}
         </UserPreferencesContext.Provider>
     );

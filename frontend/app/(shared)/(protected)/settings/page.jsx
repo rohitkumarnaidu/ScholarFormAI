@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { ConfirmDialog } from '@/src/components/ui';
 import { fetchWithAuth } from '@/src/services/api.core';
 import { AlertTriangle, CheckCircle, FileUp, Key, Loader2, Mail, Moon, Save, Settings, User, Zap } from 'lucide-react';
+import Button from '@/src/components/ui/Button';
 
 const SETTINGS_KEY = 'scholarform_settings';
 
@@ -313,17 +314,17 @@ export default function SettingsPage() {
                 )}
 
                 <div className="flex items-center justify-between">
-                    <button onClick={handleReset}
-                        className="px-4 py-2 text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors active:scale-95">
+                    <Button onClick={handleReset} variant="ghost"
+                        className="text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                         Reset to Defaults
-                    </button>
-                    <button onClick={handleSave}
+                    </Button>
+                    <Button onClick={handleSave}
                         disabled={saved}
                         title="Save Changes (Ctrl+S or Ctrl+Enter)"
-                        className="px-6 py-3 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl shadow-lg shadow-primary/25 transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50">
+                        className="font-bold shadow-lg shadow-primary/25 transition-all flex items-center gap-2">
                         <Save />
                         Save Settings
-                    </button>
+                    </Button>
                 </div>
                 </div>
                 ) : (
@@ -356,33 +357,34 @@ export default function SettingsPage() {
 
                         {tier === 'free' ? (
                             <div className="flex flex-col gap-3">
-                                <button 
+                                <Button 
                                     onClick={handleCheckout} 
                                     disabled={billingLoading}
-                                    className="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-md transition-all disabled:opacity-70 flex justify-center items-center"
+                                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold shadow-md flex justify-center items-center border-0 hover:border-0"
                                 >
                                     {billingLoading ? <Loader2 className="animate-spin mr-2" /> : null}
                                     Upgrade to Pro
-                                </button>
+                                </Button>
                                 <p className="text-xs text-center text-slate-500">You will be redirected to Stripe for secure checkout.</p>
                             </div>
                         ) : (
                             <div className="flex flex-col sm:flex-row gap-3">
-                                <button 
+                                <Button 
                                     onClick={handleCustomerPortal} 
                                     disabled={billingLoading}
-                                    className="flex-1 py-3 bg-primary hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition-all disabled:opacity-70 flex justify-center items-center"
+                                    className="flex-1 font-bold shadow-md flex justify-center items-center"
                                 >
                                     {billingLoading ? <Loader2 className="animate-spin mr-2" /> : null}
                                     Manage Subscription
-                                </button>
-                                <button 
+                                </Button>
+                                <Button 
                                     onClick={handleCancelSubscriptionClick} 
                                     disabled={billingLoading}
-                                    className="flex-1 py-3 bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 font-bold rounded-xl border border-red-200 dark:border-red-800 transition-all disabled:opacity-70 flex justify-center items-center"
+                                    variant="danger"
+                                    className="flex-1 font-bold flex justify-center items-center"
                                 >
                                     Cancel Subscription
-                                </button>
+                                </Button>
                             </div>
                         )}
                     </section>

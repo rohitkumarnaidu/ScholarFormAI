@@ -12,6 +12,7 @@ import { useAuth } from '@/src/context/AuthContext';
 import { downloadExport } from '@/src/services/api';
 import { isCompleted, isFailed, isProcessing } from '@/src/constants/status';
 import useJobFromUrl from '@/src/hooks/useJobFromUrl';
+import Button from '@/src/components/ui/Button';
 import { AlertTriangle, CheckCircle, ClipboardCheck, Clock, Code, Download as DownloadIcon, FileText, FileUp, History, Loader2, Lock, Sparkles } from 'lucide-react';
 
 // Feature flag: enable LaTeX export once Agent Alpha ships Module 2 Step 5
@@ -61,9 +62,9 @@ export default function Download() {
             <div className="min-h-screen flex flex-col bg-background-light dark:bg-background-dark">
                                 <main className="flex-1 flex flex-col items-center justify-center px-4 text-center">
                     <p className="text-red-600 dark:text-red-400 mb-3">{jobLoadError}</p>
-                    <button onClick={() => navigate('/history')} className="text-primary font-bold hover:underline">
+                    <Button variant="link" onClick={() => navigate('/history')}>
                         Return to History
-                    </button>
+                    </Button>
                 </main>
             </div>
         );
@@ -74,7 +75,7 @@ export default function Download() {
             <div className="min-h-screen flex flex-col bg-background-light dark:bg-background-dark">
                                 <main className="flex-1 flex flex-col items-center justify-center">
                     <p className="text-slate-500 dark:text-slate-400 mb-4">No completed job found.</p>
-                    <button onClick={() => navigate('/upload')} className="text-primary font-bold hover:underline">Return to Upload</button>
+                    <Button variant="link" onClick={() => navigate('/upload')}>Return to Upload</Button>
                 </main>
             </div>
         );
@@ -91,7 +92,7 @@ export default function Download() {
                     <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
                     <h2 className="text-xl font-bold text-slate-900 dark:text-white">Processing Document...</h2>
                     <p className="text-slate-500 dark:text-slate-400">Please wait while we format your manuscript.</p>
-                    <button onClick={() => navigate('/upload')} className="text-primary font-bold hover:underline mt-4">View Progress</button>
+                    <Button variant="link" onClick={() => navigate('/upload')} className="mt-4">View Progress</Button>
                 </div>
             </div>
         );
@@ -107,7 +108,7 @@ export default function Download() {
                     </div>
                     <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Formatting Failed</h2>
                     <p className="text-slate-500 dark:text-slate-400 mb-6">{job.error || "An unexpected error occurred during processing."}</p>
-                    <button onClick={handleUploadAnother} className="bg-primary text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors">Try Again</button>
+                    <Button onClick={handleUploadAnother} className="px-6 py-2">Try Again</Button>
                 </div>
             </div>
         );
@@ -121,9 +122,9 @@ export default function Download() {
                     <p className="text-slate-500 dark:text-slate-400 mb-6">
                         This manuscript is still being prepared. Return to Upload to continue.
                     </p>
-                    <button onClick={() => navigate('/upload')} className="bg-primary text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors">
+                    <Button onClick={() => navigate('/upload')} className="px-6 py-2">
                         Return to Upload
-                    </button>
+                    </Button>
                 </div>
             </div>
         );
@@ -238,10 +239,10 @@ export default function Download() {
                                     </div>
                                 </div>
                                 <div className="flex flex-col gap-3">
-                                    <button
+                                    <Button
                                         onClick={openExportDialog}
                                         disabled={isDownloading}
-                                        className="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-6 bg-primary text-white text-base font-bold leading-normal transition-all hover:bg-blue-700 active:scale-[0.98] shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="w-full h-12 shadow-lg shadow-primary/20"
                                     >
                                         {isDownloading ? (
                                             <>
@@ -254,13 +255,14 @@ export default function Download() {
                                                 <span className="truncate">Choose Export Format</span>
                                             </>
                                         )}
-                                    </button>
+                                    </Button>
                                     {/* TODO: Add "tex" option after Module 2 LaTeX export is built */}
                                     {LATEX_EXPORT_ENABLED && (
-                                        <button
+                                        <Button
+                                            variant="secondary"
                                             onClick={() => handleDownload('tex')}
                                             disabled={isDownloading}
-                                            className="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-6 bg-slate-800 dark:bg-slate-700 text-white text-base font-bold leading-normal transition-all hover:bg-slate-700 dark:hover:bg-slate-600 active:scale-[0.98] shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                            className="w-full h-12 bg-slate-800 dark:bg-slate-700 text-white hover:bg-slate-700 dark:hover:bg-slate-600"
                                         >
                                             {isDownloading ? (
                                                 <>
@@ -273,7 +275,7 @@ export default function Download() {
                                                     <span className="truncate">Download as LaTeX (.tex)</span>
                                                 </>
                                             )}
-                                        </button>
+                                        </Button>
                                     )}
                                     <p className="text-xs text-slate-500 text-center">
                                         Available formats: DOCX, PDF{LATEX_EXPORT_ENABLED ? ', TEX' : ''}
@@ -311,21 +313,22 @@ export default function Download() {
                     {/* Secondary Action Button Group */}
                     <div className="mt-10 mb-16 sm:mb-20 flex justify-center">
                         <div className="flex flex-col sm:flex-row gap-4 px-4 py-3 w-full max-w-full max-w-[800px] justify-center flex-wrap">
-                            <button onClick={handleUploadAnother} className="flex w-full sm:w-auto min-w-[160px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-6 bg-slate-200 dark:bg-slate-800 text-[#0d131b] dark:text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] grow transition-colors hover:bg-slate-300 dark:hover:bg-slate-700">
+                            <Button variant="secondary" onClick={handleUploadAnother} className="w-full sm:w-auto min-w-[160px] h-12">
                                 <FileUp className="text-xl" />
                                 <span className="truncate">Upload Another</span>
-                            </button>
-                            <button onClick={handleBrowseHistory} className="flex w-full sm:w-auto min-w-[160px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-6 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 text-[#0d131b] dark:text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] grow transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
+                            </Button>
+                            <Button variant="outline" onClick={handleBrowseHistory} className="w-full sm:w-auto min-w-[160px] h-12">
                                 <History className="text-xl" />
                                 <span className="truncate">Browse Documents</span>
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                                variant="outline"
                                 onClick={() => navigate(getJobRoute('results', '/results'))}
-                                className="flex w-full sm:w-auto min-w-[160px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-6 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 text-[#0d131b] dark:text-slate-50 text-sm font-bold leading-normal tracking-[0.015em] grow transition-colors hover:bg-slate-50 dark:hover:bg-slate-800"
+                                className="w-full sm:w-auto min-w-[160px] h-12"
                             >
                                 <ClipboardCheck className="text-xl" />
                                 <span className="truncate">Validation Report</span>
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -345,18 +348,19 @@ export default function Download() {
                                     </p>
                                 </div>
                                 <div className="flex gap-3 w-full mt-4">
-                                    <button
+                                    <Button
+                                        variant="outline"
                                         onClick={() => setShowLoginModal(false)}
-                                        className="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                                        className="flex-1 py-2.5"
                                     >
                                         Cancel
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         onClick={() => navigate('/login')}
-                                        className="flex-1 px-4 py-2.5 rounded-lg bg-primary text-white font-bold hover:bg-blue-600 transition-colors"
+                                        className="flex-1 py-2.5"
                                     >
                                         Login
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         </div>

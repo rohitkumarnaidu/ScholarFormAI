@@ -7,6 +7,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import ErrorBoundary from '@/src/components/ErrorBoundary';
+import Button from '@/src/components/ui/Button';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -247,9 +248,9 @@ export default function Edit() {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-background-light dark:bg-background-dark px-4 text-center">
                 <p className="text-red-600 dark:text-red-400 mb-3">{jobLoadError}</p>
-                <button onClick={() => navigate('/history')} className="text-primary font-bold hover:underline">
+                <Button variant="link" onClick={() => navigate('/history')}>
                     Return to History
-                </button>
+                </Button>
             </div>
         );
     }
@@ -259,7 +260,7 @@ export default function Edit() {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-background-light dark:bg-background-dark">
                 <p className="text-slate-500 dark:text-slate-400 mb-4">No document loaded for editing.</p>
-                <button onClick={() => navigate('/upload')} className="text-primary font-bold hover:underline">Return to Upload</button>
+                <Button variant="link" onClick={() => navigate('/upload')}>Return to Upload</Button>
             </div>
         );
     }
@@ -271,7 +272,7 @@ export default function Edit() {
                 {/* Sub-Header / Breadcrumbs & Quick Actions */}
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 px-4 sm:px-6 py-2 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 animate-in slide-in-from-top duration-300">
                     <div className="flex items-center gap-2 overflow-hidden min-w-0">
-                        <button onClick={() => navigate('/history')} className="text-slate-500 dark:text-slate-400 text-sm font-medium hover:text-primary whitespace-nowrap">My Manuscripts</button>
+                        <Button variant="link" onClick={() => navigate('/history')} className="text-slate-500 dark:text-slate-400 text-sm font-medium hover:text-primary whitespace-nowrap p-0 h-auto">My Manuscripts</Button>
                         <span className="text-slate-400">/</span>
                         <span className="text-slate-900 dark:text-white text-sm font-semibold truncate">{title}</span>
                         <span className={`ml-2 px-2 py-0.5 ${isSaving ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'} dark:bg-green-900/30 dark:text-green-400 text-[10px] font-bold uppercase rounded`}>
@@ -279,26 +280,26 @@ export default function Edit() {
                         </span>
                     </div>
                     <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                        <button onClick={handleSave} 
+                        <Button variant="ghost" onClick={handleSave} 
                             disabled={isSaving}
                             title="Save (Ctrl+S or Ctrl+Enter)"
                             className="flex items-center gap-1.5 px-3 py-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" aria-label="Save">
                             <Save className="text-[18px]" />
                             <span className="text-sm font-medium hidden sm:inline">Save</span>
-                        </button>
-                        <button onClick={handleRevalidate} className="flex items-center gap-1.5 px-3 py-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" aria-label="Local Validate">
+                        </Button>
+                        <Button variant="ghost" onClick={handleRevalidate} className="flex items-center gap-1.5 px-3 py-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" aria-label="Local Validate">
                             <RefreshCw className="text-[18px]" />
                             <span className="text-sm font-medium hidden sm:inline">Local Validate</span>
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             onClick={() => navigate('/download')}
                             disabled={!isCompleted(job?.status)}
-                            className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-slate-400"
+                            className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 shadow-sm"
                             aria-label="Export"
                         >
                             <FileText className="text-[18px]" />
                             <span className="text-sm font-bold hidden sm:inline">Export</span>
-                        </button>
+                        </Button>
                     </div>
                 </div>
 

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
+import { Search } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
 
 describe('EmptyState', () => {
@@ -36,7 +37,7 @@ describe('EmptyState', () => {
     });
 
     it('renders with icon', () => {
-        const { container } = render(<EmptyState icon="search" />);
+        const { container } = render(<EmptyState icon={Search} />);
         expect(container.querySelector('.lucide-search')).toBeInTheDocument();
     });
 });

@@ -83,7 +83,7 @@ const SuggestionHistory = memo(function SuggestionHistory({
                 {filtered.length === 0 ? (
                     <div className="py-8">
                         <EmptyState
-                            icon="history"
+                            icon={History}
                             title={activeFilter === 'all' ? 'No suggestion history' : `No ${activeFilter} suggestions`}
                             description="Past suggestions will appear here after you review them."
                         />

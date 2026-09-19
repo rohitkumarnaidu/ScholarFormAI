@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { fetchWithRetry } from '@/src/utils/fetchWithRetry';
 import ErrorBoundary from '@/src/components/ErrorBoundary';
+import Button from '@/src/components/ui/Button';
 import { BarChart, Coins, Gauge, Key, LineChart, PieChart } from 'lucide-react';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
@@ -79,9 +80,9 @@ function ApiKeysUsageInner() {
                         <p className="text-slate-600 dark:text-slate-400 mt-1">Monitor API key consumption, rate limits, and provider performance.</p>
                     </div>
                     <div className="flex gap-3">
-                        <a href="/api-keys" className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition text-sm font-medium">
+                        <Button variant="outline" onClick={() => router.push('/api-keys')} className="px-4 py-2 text-sm font-medium">
                             Manage Keys
-                        </a>
+                        </Button>
                         <select value={hours} onChange={e => setHours(Number(e.target.value))}
                             className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500">
                             {TIME_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}

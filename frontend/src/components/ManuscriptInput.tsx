@@ -1,6 +1,8 @@
 'use client';
 
+import { useRef } from 'react';
 import { FileText } from 'lucide-react';
+import Button from '@/src/components/ui/Button';
 
 interface ManuscriptInputProps {
   value: string;
@@ -8,6 +10,7 @@ interface ManuscriptInputProps {
 }
 
 export function ManuscriptInput({ value, onChange }: ManuscriptInputProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const wordCount = value ? value.split(/\s+/).filter(Boolean).length : 0;
   const charCount = value.length;
 
@@ -59,11 +62,11 @@ Summarize your contributions.`}
       </div>
 
       <div className="flex items-center gap-3">
-        <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-600 dark:text-slate-400 dark:hover:bg-slate-800">
-          <FileText className="h-4 w-4" />
+        <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="text-slate-600 dark:text-slate-400">
+          <FileText className="h-4 w-4 mr-2" />
           Upload .md / .tex / .txt
-          <input type="file" accept=".md,.tex,.txt,.text" onChange={handleFileUpload} className="hidden" />
-        </label>
+        </Button>
+        <input ref={fileInputRef} type="file" accept=".md,.tex,.txt,.text" onChange={handleFileUpload} className="hidden" />
         <span className="text-xs text-slate-400">Supports Markdown, LaTeX, and plain text</span>
       </div>
     </div>

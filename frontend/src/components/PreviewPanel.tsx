@@ -1,11 +1,23 @@
-import DOMPurify from 'dompurify';
 'use client';
+
+import { sanitizeHtml } from '@/src/lib/sanitizeHtml';
+import { useEffect, useState } from 'react';
 
 interface PreviewPanelProps {
   html: string;
 }
 
 export function PreviewPanel({ html }: PreviewPanelProps) {
+  const [sanitizedHtml, setSanitizedHtml] = useState('');
+
+  useEffect(() => {
+    if (html) {
+      setSanitizedHtml(sanitizeHtml(html));
+    } else {
+      setSanitizedHtml('');
+    }
+  }, [html]);
+
   if (!html) {
     return (
       <div className="flex min-h-[400px] items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 dark:border-slate-600 dark:bg-primary-900">
@@ -33,7 +45,7 @@ export function PreviewPanel({ html }: PreviewPanelProps) {
       <div className="max-h-[600px] overflow-y-auto p-8">
         <div
           className="prose prose-sm max-w-none"
-          dangerouslySetInnerHTML={{ __html: typeof window !== 'undefined' ? DOMPurify.sanitize(html) : html }}
+          dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
         />
       </div>
     </div>

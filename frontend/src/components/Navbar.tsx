@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FileText, Menu, X, Github } from 'lucide-react';
+import Button from './ui/Button';
 
 const links = [
   { href: '/', label: 'Home' },
@@ -46,6 +47,7 @@ export function Navbar() {
             href="https://github.com/rohitkumarnaidu/ScholarFormAI"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="GitHub Repository"
             className="ml-2 rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-primary-800"
           >
             <Github className="h-5 w-5" />
@@ -67,15 +69,17 @@ export function Navbar() {
           </div>
         </div>
 
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label="Toggle Navigation"
-          className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden dark:text-slate-400 dark:hover:bg-primary-800"
+          className="md:hidden"
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        </Button>
       </div>
 
       {open && (

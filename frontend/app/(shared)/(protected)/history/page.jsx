@@ -12,6 +12,7 @@ import { isCompleted, isFailed } from '@/src/constants/status';
 import ConfirmDialog from '@/src/components/ui/ConfirmDialog';
 import { deleteDocument, useDocuments } from '@/src/services/api';
 import { AlertTriangle, CheckCircle, Download, FileText, Loader2, Trash2, Upload, XCircle } from 'lucide-react';
+import Button from '@/src/components/ui/Button';
 
 const Checkbox = ({ checked, onChange, disabled, label }) => (
     <label className="inline-flex items-center justify-center cursor-pointer">
@@ -162,25 +163,29 @@ const HistoryRow = memo(function HistoryRow({
             </td>
             <td className="px-6 py-5">
                 <div className="flex justify-end items-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                    <button onClick={() => onRestore(item)} className="bg-primary/10 text-primary text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-primary hover:text-white transition-all">
+                    <Button onClick={() => onRestore(item)} variant="outline" size="sm" className="h-8 text-xs font-bold px-3">
                         Open Corrected
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         onClick={() => onDownload(item)}
-                        className="p-1.5 text-slate-400 hover:text-primary transition-colors"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-slate-400 hover:text-primary transition-colors"
                         title="Download"
                         aria-label={`Download ${resolveFilename(item)}`}
                     >
-                        <Download />
-                    </button>
-                    <button
+                        <Download className="w-4 h-4" />
+                    </Button>
+                    <Button
                         onClick={() => onRequestDelete(item)}
-                        className="p-1.5 text-slate-400 hover:text-red-600 transition-colors"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-slate-400 hover:text-red-600 transition-colors"
                         title="Delete"
                         aria-label={`Delete ${resolveFilename(item)}`}
                     >
-                        <Trash2 />
-                    </button>
+                        <Trash2 className="w-4 h-4" />
+                    </Button>
                 </div>
             </td>
         </tr>
@@ -426,17 +431,18 @@ export default function History() {
                                 <button onClick={() => setSelectedIds(new Set())} className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-sm hover:underline">Clear selection</button>
                             </div>
                         </div>
-                        <button
+                        <Button
                             onClick={handleBulkDelete}
                             disabled={isDeletingBulk}
-                            className="bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 text-red-600 border border-red-200 dark:border-red-900/50 font-bold py-2 px-6 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+                            variant="danger"
+                            className="font-bold py-2 px-6 flex items-center gap-2"
                         >
                             {isDeletingBulk ? (
                                 <><Loader2 className="animate-spin text-[18px]" /> Deleting...</>
                             ) : (
                                 <><Trash2 className="text-[18px]" /> Delete Selected</>
                             )}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}

@@ -3,42 +3,41 @@
 import Link from 'next/link';
 import { motion, useMotionValue, useTransform, animate, useInView, Variants, useMotionValueEvent } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
-import { ArrowRight, Book, Code, FileText, Sparkles } from 'lucide-react';
-import DynamicIcon from '@/src/components/ui/DynamicIcon';
+import { ArrowRight, Book, Code, FileText, Sparkles, Palette, Zap, Shield, BookOpen } from 'lucide-react';
 
 const features = [
   {
-    icon: 'description',
+    icon: FileText,
     title: 'Multiple Input Formats',
     description: 'Write in Markdown, LaTeX, or plain text. ScholarForm AI handles the conversion to beautifully formatted DOCX.',
     className: 'md:col-span-2 lg:col-span-2',
   },
   {
-    icon: 'palette',
+    icon: Palette,
     title: 'Academic Style Library',
     description: 'Built-in support for APA 7th, MLA 9th, Chicago 17th, IEEE, Harvard, Vancouver, and more.',
     className: 'md:col-span-1 lg:col-span-1',
   },
   {
-    icon: 'bolt',
+    icon: Zap,
     title: 'Instant Formatting',
     description: 'Format your entire manuscript in seconds. Real-time preview with iterative refinement.',
     className: 'md:col-span-1 lg:col-span-1',
   },
   {
-    icon: 'shield',
+    icon: Shield,
     title: 'Validation Engine',
     description: 'Automatic validation checks for structure, citations, references, and style compliance.',
     className: 'md:col-span-2 lg:col-span-2',
   },
   {
-    icon: 'menu_book',
+    icon: BookOpen,
     title: 'Citation Management',
     description: 'Automatic citation formatting and reference list generation in your chosen style.',
     className: 'md:col-span-2 lg:col-span-2',
   },
   {
-    icon: 'auto_awesome',
+    icon: Sparkles,
     title: 'AI-Powered Assistance',
     description: 'Smart suggestions for section structure, citation fixes, and formatting improvements.',
     className: 'md:col-span-1 lg:col-span-1',
@@ -215,7 +214,7 @@ export default function Home() {
               >
                 <div className="relative z-10">
                   <div className="mb-6 inline-flex rounded-xl bg-white p-3 text-primary border border-slate-200 shadow-sm transition-colors group-hover:bg-primary group-hover:text-white group-hover:border-primary">
-                    <DynamicIcon name={feature.icon} className="w-7 h-7" />
+                    <feature.icon className="w-7 h-7" />
                   </div>
                   <h3 className="mb-3 text-xl font-bold text-slate-900 tracking-tight">
                     {feature.title}

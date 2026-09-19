@@ -8,6 +8,7 @@ import { getCustomTemplates, saveCustomTemplate } from '@/src/services/api';
 import { toast } from 'sonner';
 import { useAuth } from '@/src/context/AuthContext';
 import { Download } from 'lucide-react';
+import Button from '@/src/components/ui/Button';
 
 const CUSTOM_TEMPLATES_KEY = 'scholarform_custom_templates';
 
@@ -325,13 +326,16 @@ export default function TemplateEditor() {
                             />
                         </div>
 
-                        <button
+                        <Button
                             onClick={handleSaveTemplate}
                             disabled={saving}
-                            className="w-full md:w-auto px-5 py-2.5 rounded-lg bg-primary text-white font-bold hover:bg-blue-700 transition-colors"
+                            loading={saving}
+                            variant="primary"
+                            className="w-full md:w-auto"
                         >
-                            {saving ? 'Saving...' : 'Save Custom Template'}
-                        </button>
+                            {!saving && 'Save Custom Template'}
+                            {saving && 'Saving...'}
+                        </Button>
                     </section>
 
                     <aside className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
@@ -346,13 +350,14 @@ export default function TemplateEditor() {
                                         <p className="text-xs text-slate-500 mt-1">
                                             {savedTemplate.settings.fontFamily}, {savedTemplate.settings.fontSize}pt, {savedTemplate.settings.lineSpacing} spacing
                                         </p>
-                                        <button
+                                        <Button
+                                            variant="ghost"
                                             onClick={() => exportTemplateYaml(savedTemplate)}
-                                            className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline"
+                                            className="mt-3 h-auto p-0 inline-flex items-center gap-1 text-xs font-bold text-primary hover:bg-transparent hover:underline"
                                         >
                                             <Download className="text-[14px]" />
                                             Export YAML
-                                        </button>
+                                        </Button>
                                     </div>
                                 ))}
                             </div>

@@ -5,13 +5,14 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import DashboardStats, { StatsCard as StatCard } from '../components/dashboard/DashboardStats';
+import { FileText } from 'lucide-react';
 
 describe('StatCard', () => {
     const baseProps = {
         title: 'Total Documents',
         value: '12',
         description: 'All manuscripts processed',
-        icon: 'description',
+        icon: FileText,
         iconColor: 'text-blue-600',
         bgColor: 'bg-blue-50',
     };
@@ -28,8 +29,10 @@ describe('StatCard', () => {
     });
 
     it('renders icon', () => {
-        render(<StatCard {...baseProps} />);
-        expect(document.querySelector('.lucide-file-text')).toBeInTheDocument();
+        const { container } = render(<StatCard {...baseProps} />);
+        const svg = container.querySelector('svg');
+        expect(svg).toBeInTheDocument();
+        expect(svg).toHaveClass('lucide', 'lucide-file-text');
     });
 });
 

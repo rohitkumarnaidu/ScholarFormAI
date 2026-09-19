@@ -23,6 +23,7 @@ import DocumentBuildPane from '@/src/components/generator/DocumentBuildPane';
 import SessionHistory from '@/src/components/generator/SessionHistory';
 import OutlineApproval from '@/src/components/generator/OutlineApproval';
 import UpgradeModal from '@/src/components/UpgradeModal';
+import Button from '@/src/components/ui/Button';
 
 import { useAgent } from '@/src/hooks/useAgent';
 import { useAgentEvents } from '@/src/hooks/useAgentEvents';
@@ -159,12 +160,12 @@ function AgentWorkspaceContent() {
         <p className="text-slate-600 dark:text-slate-400 mb-8 max-w-md">
           Upgrade to our Pro plan to interact with the AI Agent for intelligent document synthesis and drafting.
         </p>
-        <button 
+        <Button 
           onClick={() => setShowUpgradeModal(true)} 
-          className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20"
+          className="font-semibold shadow-lg shadow-indigo-600/20"
         >
           View Plans
-        </button>
+        </Button>
       </div>
     );
   }
@@ -215,14 +216,16 @@ function AgentWorkspaceContent() {
       <div className="h-12 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 bg-slate-50/50 dark:bg-slate-900/50 shrink-0">
         <div className="flex items-center gap-3">
           {!isMobile && (
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={toggleSidebar}
-              className="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-md transition-colors text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+              className="w-8 h-8 p-1.5 text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
               title={isSidebarOpen ? 'Hide History' : 'Show History'}
               aria-label={isSidebarOpen ? 'Hide history sidebar' : 'Show history sidebar'}
             >
               {isSidebarOpen ? <PanelLeftClose className="w-4 h-4" /> : <PanelLeftOpen className="w-4 h-4" />}
-            </button>
+            </Button>
           )}
           <div className="h-4 w-px bg-slate-300 dark:bg-slate-700 mx-1 hidden sm:block" />
           <div className="flex items-center gap-2">
@@ -236,17 +239,18 @@ function AgentWorkspaceContent() {
         </div>
 
         <div className="flex items-center gap-2">
-          <button
+          <Button
             onClick={handleNewSession}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition-colors shadow-sm"
+            variant="outline"
+            className="flex items-center gap-1.5 px-3 py-1.5 font-medium shadow-sm"
           >
             <Plus className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">New Project</span>
             <span className="sm:hidden">New</span>
-          </button>
-          <button className="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-md transition-colors text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40">
+          </Button>
+          <Button variant="ghost" size="icon" className="w-8 h-8 p-1.5 text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40">
             <Settings2 className="w-4 h-4" />
-          </button>
+          </Button>
         </div>
       </div>
 

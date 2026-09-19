@@ -10,6 +10,7 @@ import Link from 'next/link';
 import * as Diff from 'diff';
 import { getComparison } from '@/src/services/api';
 import useJobFromUrl from '@/src/hooks/useJobFromUrl';
+import Button from '@/src/components/ui/Button';
 import { BadgeCheck, ChevronRight, FileDown, FileEdit, FileText, History, Info, Network, Pause, Play, RefreshCw, Wand2 } from 'lucide-react';
 
 const toLineText = (value) => {
@@ -291,9 +292,9 @@ export default function Compare() {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-background-light dark:bg-background-dark px-4 text-center">
                 <p className="text-red-600 dark:text-red-400 mb-3">{jobLoadError}</p>
-                <button onClick={() => navigate('/history')} className="text-primary font-bold hover:underline">
+                <Button variant="link" onClick={() => navigate('/history')}>
                     Return to History
-                </button>
+                </Button>
             </div>
         );
     }
@@ -302,7 +303,7 @@ export default function Compare() {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-background-light dark:bg-background-dark">
                 <p className="text-slate-500 dark:text-slate-400 mb-4">No active document to compare.</p>
-                <button onClick={() => navigate('/upload')} className="text-primary font-bold hover:underline">Return to Upload</button>
+                <Button variant="link" onClick={() => navigate('/upload')}>Return to Upload</Button>
             </div>
         );
     }
@@ -329,13 +330,14 @@ export default function Compare() {
                         </div>
                     </div>
                     <div className="flex flex-wrap items-center gap-2 mt-4 md:mt-0">
-                        <button
+                        <Button
+                            variant="outline"
                             onClick={() => setIsPaused(!isPaused)}
-                            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-bold transition-all ${isPaused ? 'bg-amber-50 border-amber-200 text-amber-600' : 'bg-primary/5 border-primary/20 text-primary hover:bg-primary/10'}`}
+                            className={`h-8 ${isPaused ? 'bg-amber-50 border-amber-200 text-amber-600 hover:bg-amber-100 hover:text-amber-700' : 'bg-primary/5 border-primary/20 text-primary hover:bg-primary/10'}`}
                         >
                             {isPaused ? <Play className="text-[18px]" /> : <Pause className="text-[18px]" />}
                             {isPaused ? 'Resume Highlights' : 'Pause Highlights'}
-                        </button>
+                        </Button>
                         <span className="text-xs font-medium text-slate-500 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded uppercase">{job.template} Template Applied</span>
                     </div>
                 </div>
@@ -376,16 +378,16 @@ export default function Compare() {
                         </div>
 
                         <div className="flex items-center gap-2 self-end sm:self-auto">
-                            <button onClick={() => navigate(getJobRoute('download', '/download'))} className="p-2 text-slate-500 hover:text-primary transition-colors" title="Download">
+                            <Button variant="ghost" size="icon" onClick={() => navigate(getJobRoute('download', '/download'))} title="Download">
                                 <FileDown />
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                                 onClick={() => navigate(getJobRoute('edit', '/edit'))}
-                                className="flex items-center justify-center rounded-lg h-10 bg-primary text-white gap-2 px-4 sm:px-6 text-sm font-bold shadow-md hover:bg-blue-600 transition-all"
+                                className="shadow-md"
                             >
                                 <FileEdit />
                                 <span className="truncate">Edit Version</span>
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

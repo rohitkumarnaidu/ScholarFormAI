@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
+import { Search, FileText, History, BellOff } from 'lucide-react';
 
 vi.mock('../components/ui/Button', () => ({
     default: ({ children, onClick, variant }) => (
@@ -33,7 +34,7 @@ describe('EmptyState component', () => {
     });
 
     it('renders with icon', () => {
-        const { container } = render(<EmptyState icon="search" />);
+        const { container } = render(<EmptyState icon={Search} />);
         expect(container.querySelector('.lucide-search')).toBeInTheDocument();
     });
 
@@ -72,7 +73,7 @@ describe('Empty dashboard', () => {
 
 describe('Empty document list', () => {
     it('shows upload prompt', () => {
-        render(<EmptyState icon="description" title="No documents yet" description="Upload a manuscript to begin formatting" />);
+        render(<EmptyState icon={FileText} title="No documents yet" description="Upload a manuscript to begin formatting" />);
         expect(screen.getByText('No documents yet')).toBeInTheDocument();
         expect(screen.getByText('Upload a manuscript to begin formatting')).toBeInTheDocument();
     });
@@ -80,14 +81,14 @@ describe('Empty document list', () => {
 
 describe('Empty history', () => {
     it('shows no jobs message', () => {
-        render(<EmptyState icon="history" title="No formatting history" description="Your completed formatting jobs will appear here" />);
+        render(<EmptyState icon={History} title="No formatting history" description="Your completed formatting jobs will appear here" />);
         expect(screen.getByText('No formatting history')).toBeInTheDocument();
     });
 });
 
 describe('Empty notifications', () => {
     it('shows all clear message', () => {
-        render(<EmptyState icon="notifications_off" title="All caught up" description="You have no unread notifications" />);
+        render(<EmptyState icon={BellOff} title="All caught up" description="You have no unread notifications" />);
         expect(screen.getByText('All caught up')).toBeInTheDocument();
         expect(screen.getByText('You have no unread notifications')).toBeInTheDocument();
     });

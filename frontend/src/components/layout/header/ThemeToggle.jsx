@@ -6,6 +6,7 @@
 import { useTheme } from '@/context/ThemeContext';
 import { useEffect, useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 export default function ThemeToggle() {
     const { theme, toggleTheme, systemTheme } = useTheme();
@@ -23,13 +24,14 @@ export default function ThemeToggle() {
     const isDark = currentTheme === 'dark';
 
     return (
-        <button
+        <Button
+            variant="ghost"
+            size="icon"
             onClick={toggleTheme}
-            className="flex h-10 w-10 items-center justify-center text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary-hover transition-colors active:scale-95 focus:outline-none"
             aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
             title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
         >
             {isDark ? <Sun className="text-[20px]" /> : <Moon className="text-[20px]" />}
-        </button>
+        </Button>
     );
 }

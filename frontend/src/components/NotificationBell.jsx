@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useNotifications } from '@/context/NotificationContext';
 import { Bell } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 export default function NotificationBell() {
     const [isOpen, setIsOpen] = useState(false);
@@ -39,9 +40,11 @@ export default function NotificationBell() {
 
     return (
         <div className="relative" ref={dropdownRef}>
-            <button
+            <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setIsOpen((open) => !open)}
-                className="relative h-10 w-10 inline-flex items-center justify-center rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                className="relative focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 aria-label={unreadCount > 0 ? `Notifications – ${unreadCount} unread` : 'Notifications'}
                 aria-expanded={isOpen}
                 aria-haspopup="menu"
@@ -56,7 +59,7 @@ export default function NotificationBell() {
                         {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                 )}
-            </button>
+            </Button>
 
             {isOpen && (
                 <div
@@ -67,7 +70,7 @@ export default function NotificationBell() {
                     <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-white/10 ">
                         <p className="text-sm font-semibold text-slate-900 dark:text-white">Notifications</p>
                         {unreadCount > 0 && (
-                            <button onClick={() => markAllAsRead()} className="text-xs text-primary hover:underline">
+                            <button type="button" onClick={() => markAllAsRead()} className="text-xs text-primary hover:underline bg-transparent border-none p-0 cursor-pointer">
                                 Mark all as read
                             </button>
                         )}
@@ -87,16 +90,18 @@ export default function NotificationBell() {
                             aria-atomic="false"
                         >
                             {recentItems.map((n) => (
-                                <li
-                                    key={n.id}
-                                    role="menuitem"
-                                    onClick={() => markAsRead(n.id)}
-                                    className={`px-4 py-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-white/10 transition-colors ${!n.read_at ? 'bg-blue-50/50 dark:bg-white/5 ' : ''}`}
-                                >
-                                    <p className={`text-sm ${n.read_at ? 'text-slate-500' : 'text-slate-900 dark:text-blue-300 font-medium'} line-clamp-2`}>
-                                        {n.body || n.message}
-                                    </p>
-                                    <p className="text-xs text-slate-400 mt-1">{formatTime(n.created_at || n.timestamp)}</p>
+                                <li key={n.id} role="none">
+                                    <button
+                                        type="button"
+                                        role="menuitem"
+                                        onClick={() => markAsRead(n.id)}
+                                        className={`w-full text-left px-4 py-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-white/10 transition-colors ${!n.read_at ? 'bg-blue-50/50 dark:bg-white/5 ' : ''}`}
+                                    >
+                                        <p className={`text-sm ${n.read_at ? 'text-slate-500' : 'text-slate-900 dark:text-blue-300 font-medium'} line-clamp-2`}>
+                                            {n.body || n.message}
+                                        </p>
+                                        <p className="text-xs text-slate-400 mt-1">{formatTime(n.created_at || n.timestamp)}</p>
+                                    </button>
                                 </li>
                             ))}
                         </ul>

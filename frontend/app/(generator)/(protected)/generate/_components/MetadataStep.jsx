@@ -9,6 +9,7 @@ import {
     DEFAULT_RESUME_EDUCATION,
     DEFAULT_RESUME_EXPERIENCE,
 } from './useGeneratorState';
+import Button from '@/src/components/ui/Button';
 
 export default function MetadataStep({ docType, metadata, onChange }) {
     const setValue = (key, value) => onChange({ ...metadata, [key]: value });
@@ -85,15 +86,16 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                     <label className="text-slate-700 dark:text-slate-300 text-sm font-medium mb-3 block">Sections to Include</label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                         {sections.map((section, index) => (
-                            <button
+                            <Button
                                 key={section.name}
                                 id={`section-${section.name.toLowerCase().replace(/\s+/g, '-')}`}
                                 onClick={() => toggleSection(index)}
-                                className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition min-h-[44px] ${section.include ? 'border-primary/50 bg-primary/10 text-blue-300' : 'border-white/10 bg-white/5 text-slate-500 hover:text-slate-300'}`}
+                                variant="outline"
+                                className={`flex items-center gap-2 transition min-h-[44px] ${section.include ? 'border-primary/50 bg-primary/10 text-blue-300' : 'border-white/10 bg-white/5 text-slate-500 hover:text-slate-300'}`}
                             >
                                 {section.include ? <CheckSquare className="text-base" /> : <Square className="text-base" />}
                                 {section.name}
-                            </button>
+                            </Button>
                         ))}
                     </div>
                 </div>
@@ -175,7 +177,7 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                 <div className="space-y-3">
                     <div className="flex items-center justify-between">
                         <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">Education</h3>
-                        <button type="button" id="btn-add-education" onClick={() => addArrayItem('education', { institution: '', degree: '', year: '' })} className="text-xs px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-slate-700 dark:text-white transition min-h-[36px]">Add Education</button>
+                        <Button type="button" variant="secondary" id="btn-add-education" onClick={() => addArrayItem('education', { institution: '', degree: '', year: '' })} className="min-h-[36px]">Add Education</Button>
                     </div>
                     {education.map((item, index) => (
                         <div key={`education-${index}`} className="grid grid-cols-1 md:grid-cols-3 gap-2 bg-white/5 border border-white/10 rounded-xl p-3">
@@ -184,9 +186,9 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                             <div className="flex gap-2">
                                 <input type="text" aria-label="Year" placeholder="Year" value={item.year || ''} onChange={(event) => updateArrayItem('education', index, 'year', event.target.value)} className={`${resumeInputCls} flex-1`} />
                                 {education.length > 1 && (
-                                    <button type="button" onClick={() => removeArrayItem('education', index)} className="px-2 rounded-lg bg-red-500/20 text-red-300 hover:bg-red-500/30 transition" aria-label="Remove education entry">
+                                    <Button type="button" variant="ghost" size="icon" onClick={() => removeArrayItem('education', index)} className="bg-red-500/20 text-red-300 hover:bg-red-500/30 w-10 h-10" aria-label="Remove education entry">
                                         <Trash2 className="text-base" />
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
                         </div>
@@ -195,7 +197,7 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                 <div className="space-y-3">
                     <div className="flex items-center justify-between">
                         <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">Experience</h3>
-                        <button type="button" id="btn-add-experience" onClick={() => addArrayItem('experience', { company: '', role: '', duration: '', bullets_raw: '' })} className="text-xs px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-slate-700 dark:text-white transition min-h-[36px]">Add Experience</button>
+                        <Button type="button" variant="secondary" id="btn-add-experience" onClick={() => addArrayItem('experience', { company: '', role: '', duration: '', bullets_raw: '' })} className="min-h-[36px]">Add Experience</Button>
                     </div>
                     {experience.map((item, index) => (
                         <div key={`experience-${index}`} className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-2 bg-white/5 border border-white/10 rounded-xl p-3">
@@ -205,9 +207,9 @@ export default function MetadataStep({ docType, metadata, onChange }) {
                             <div className="flex gap-2">
                                 <input type="text" aria-label="Bullets" placeholder="Bullets (comma separated)" value={item.bullets_raw || ''} onChange={(event) => updateArrayItem('experience', index, 'bullets_raw', event.target.value)} className={`${resumeInputCls} flex-1`} />
                                 {experience.length > 1 && (
-                                    <button type="button" onClick={() => removeArrayItem('experience', index)} className="px-2 rounded-lg bg-red-500/20 text-red-300 hover:bg-red-500/30 transition" aria-label="Remove experience entry">
+                                    <Button type="button" variant="ghost" size="icon" onClick={() => removeArrayItem('experience', index)} className="bg-red-500/20 text-red-300 hover:bg-red-500/30 w-10 h-10" aria-label="Remove experience entry">
                                         <Trash2 className="text-base" />
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
                         </div>

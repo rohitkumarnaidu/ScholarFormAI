@@ -5,6 +5,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, ChevronDown, ChevronRight } from 'lucide-react';
 import { supabase } from '../../lib/supabaseClient';
+import Button from '@/src/components/ui/Button';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 const WORD_FLUSH_INTERVAL = 40;
@@ -16,9 +17,9 @@ const SectionHeader = ({ section, index, isCompleted, isExpanded, onToggle, isAc
     className="flex items-center gap-2 group cursor-pointer sticky top-0 bg-white dark:bg-zinc-950 py-2 z-10"
     onClick={onToggle}
   >
-    <button className="p-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300">
+    <Button variant="ghost" size="icon" className="w-6 h-6 p-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 bg-transparent hover:bg-transparent">
       {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-    </button>
+    </Button>
     
     <div className="flex items-center justify-center w-6 h-6 rounded-full bg-zinc-100 dark:bg-zinc-800 text-xs font-medium text-zinc-600 dark:text-zinc-400">
       {index + 1}

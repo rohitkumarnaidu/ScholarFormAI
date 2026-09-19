@@ -1,0 +1,32 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 ScholarForm AI
+
+'use client';
+
+import { forwardRef } from 'react';
+
+import { cn } from '@/src/lib/utils';
+
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+    glass?: boolean;
+}
+
+const Card = forwardRef<HTMLDivElement, CardProps>(({ className, glass = false, children, ...props }, ref) => {
+    return (
+        <div
+            ref={ref}
+            className={cn(
+                'rounded-2xl border p-4 sm:p-5',
+                glass
+                    ? 'bg-glass-surface backdrop-blur-xl border-glass-border'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800',
+                className
+            )}
+            {...props}
+        >
+            {children}
+        </div>
+    );
+});
+
+export default Card;

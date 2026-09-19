@@ -5,6 +5,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { UploadCloud, File as FileIcon, AlertCircle, CheckCircle, Trash2 } from 'lucide-react';
 import { getBuiltinTemplates } from '../../services/api.templates';
+import Button from '@/src/components/ui/Button';
 
 const ACCEPTED_FORMATS = {
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
@@ -118,9 +119,9 @@ export default function MultiUploadPanel({ onStart }) {
                     <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
                         Upload {MIN_FILES} to {MAX_FILES} files (.pdf, .docx, .md, .txt)
                     </p>
-                    <button className="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition">
+                    <Button variant="secondary" className="font-medium">
                         Browse Files
-                    </button>
+                    </Button>
                 </div>
 
                 {globalError && (
@@ -207,17 +208,13 @@ export default function MultiUploadPanel({ onStart }) {
                                 </select>
                             </div>
                             
-                            <button
+                            <Button
                                 onClick={handleStart}
                                 disabled={!canStart}
-                                className={`w-full sm:w-auto px-6 py-2.5 rounded-lg text-sm font-medium transition flex items-center justify-center ${
-                                    canStart 
-                                    ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm' 
-                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'
-                                }`}
+                                className="w-full sm:w-auto shadow-sm"
                             >
                                 Start Synthesis
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

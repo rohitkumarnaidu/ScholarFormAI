@@ -12,6 +12,7 @@ import { supabase } from '@/src/lib/supabaseClient';
 import { UserProfileSchema } from '@/src/lib/schemas';
 import { z } from 'zod';
 import { ChevronRight, CreditCard, Edit, Lock, LogOut, RefreshCw, Star, X } from 'lucide-react';
+import Button from '@/src/components/ui/Button';
 
 const NAME_MAX = 80;
 const INSTITUTION_MAX = 120;
@@ -240,14 +241,15 @@ export default function Profile() {
                                         <RefreshCw className="animate-spin text-white drop-shadow-md" />
                                     </div>
                                 )}
-                                <button
+                                <Button
                                     onClick={handleAvatarClick}
                                     disabled={uploading}
-                                    className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full shadow-lg hover:bg-primary-hover transition-all flex items-center justify-center disabled:opacity-50 min-w-[44px] min-h-[44px]"
+                                    size="icon"
+                                    className="absolute bottom-0 right-0 rounded-full shadow-lg transition-all min-w-[44px] min-h-[44px] h-[44px] w-[44px] p-0"
                                     aria-label="Change avatar"
                                 >
                                     <Edit className="text-[18px]" />
-                                </button>
+                                </Button>
                                 <input type="file" ref={fileInputRef} onChange={handleAvatarChange} accept="image/*" className="hidden" />
                             </div>
 
@@ -312,15 +314,15 @@ export default function Profile() {
                                         {editSuccess && <p className="text-sm text-green-500" role="status">{editSuccess}</p>}
 
                                         <div className="flex flex-wrap gap-3">
-                                            <button onClick={handleSaveProfile} disabled={editSaving}
+                                            <Button onClick={handleSaveProfile} disabled={editSaving}
                                                 title="Save Changes (Ctrl+S or Ctrl+Enter)"
-                                                className="px-5 py-2.5 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary-hover transition-colors disabled:opacity-50 active:scale-95">
+                                                className="px-5 font-bold transition-colors disabled:opacity-50">
                                                 {editSaving ? 'Saving…' : 'Save Changes'}
-                                            </button>
-                                            <button onClick={handleCancelEdit}
-                                                className="px-5 py-2.5 bg-white/10 dark:bg-white/10 text-slate-700 dark:text-slate-100 rounded-lg text-sm font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors active:scale-95">
+                                            </Button>
+                                            <Button onClick={handleCancelEdit} variant="secondary"
+                                                className="px-5 font-bold transition-colors">
                                                 Cancel
-                                            </button>
+                                            </Button>
                                         </div>
 
                                         <p className="text-[10px] text-slate-400 dark:text-slate-600 select-none">
@@ -346,14 +348,14 @@ export default function Profile() {
                                             </p>
                                         )}
                                         <div className="flex flex-wrap gap-3 justify-center md:justify-start mt-2">
-                                            <button onClick={handleEditProfile}
-                                                className="px-5 py-2.5 bg-white/10 dark:bg-white/10 text-slate-700 dark:text-slate-100 rounded-lg text-sm font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors active:scale-95">
+                                            <Button onClick={handleEditProfile} variant="secondary"
+                                                className="px-5 font-bold transition-colors">
                                                 Edit Profile
-                                            </button>
-                                            <button onClick={handleVerifyInstitution} disabled={verifyStatus === 'sending'}
-                                                className="px-5 py-2.5 bg-white/10 dark:bg-white/10 text-slate-700 dark:text-slate-100 rounded-lg text-sm font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 active:scale-95">
+                                            </Button>
+                                            <Button onClick={handleVerifyInstitution} disabled={verifyStatus === 'sending'} variant="secondary"
+                                                className="px-5 font-bold transition-colors disabled:opacity-50">
                                                 {verifyStatus === 'sending' ? 'Sending…' : verifyStatus === 'sent' ? '✓ Verification Requested' : verifyStatus === 'error' ? 'Failed — Retry' : 'Verify Institution'}
-                                            </button>
+                                            </Button>
                                         </div>
                                     </>
                                 )}
@@ -362,7 +364,7 @@ export default function Profile() {
                     </div>
                     <div className="bg-white/5 dark:bg-white/5 border-t border-slate-200 dark:border-slate-800 px-4 sm:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
                         <p className="text-sm text-slate-500 dark:text-slate-400">Member since <span className="font-bold text-slate-900 dark:text-slate-200">{new Date(user?.created_at || Date.now()).toLocaleDateString()}</span></p>
-                        <button onClick={() => router.push('/settings')} className="text-primary text-sm font-bold hover:underline">Upgrade Plan</button>
+                        <Button onClick={() => router.push('/settings')} variant="ghost" className="text-primary text-sm font-bold hover:underline px-0 py-0 h-auto hover:bg-transparent">Upgrade Plan</Button>
                     </div>
                 </section>
 
@@ -410,14 +412,15 @@ export default function Profile() {
                                     className="w-full px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none" />
                                 {passwordMessage && <p className={`text-sm ${passwordMessage.includes('success') ? 'text-green-500' : 'text-red-500'}`} role="alert">{passwordMessage}</p>}
                                 <div className="flex gap-3">
-                                    <button onClick={handleChangePassword} disabled={passwordSaving}
-                                        className="px-5 py-2.5 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary-hover transition-colors disabled:opacity-50 active:scale-95">
+                                    <Button onClick={handleChangePassword} disabled={passwordSaving}
+                                        className="px-5 font-bold transition-colors disabled:opacity-50">
                                         {passwordSaving ? 'Updating…' : 'Update Password'}
-                                    </button>
-                                    <button onClick={() => { setShowPasswordForm(false); setPasswordMessage(''); setNewPassword(''); setConfirmPassword(''); }}
-                                        className="px-5 py-2.5 bg-white/10 dark:bg-white/10 text-slate-700 dark:text-slate-100 rounded-lg text-sm font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors active:scale-95">
+                                    </Button>
+                                    <Button onClick={() => { setShowPasswordForm(false); setPasswordMessage(''); setNewPassword(''); setConfirmPassword(''); }}
+                                        variant="secondary"
+                                        className="px-5 font-bold transition-colors">
                                         Cancel
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -458,19 +461,19 @@ export default function Profile() {
                     <div className="bg-white dark:bg-slate-900 rounded-xl shadow-xl w-full max-w-sm overflow-hidden border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-200">
                         <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-white/5 dark:bg-white/5">
                             <h3 className="font-bold text-slate-800 dark:text-slate-100">Adjust Avatar</h3>
-                            <button onClick={() => setCropImage(null)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1" aria-label="Close">
+                            <Button onClick={() => setCropImage(null)} variant="ghost" size="icon" className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 h-8 w-8" aria-label="Close">
                                 <X className="text-xl" />
-                            </button>
+                            </Button>
                         </div>
                         <div className="p-6 flex flex-col items-center gap-4">
                             <p className="text-sm text-center text-slate-500 dark:text-slate-400">1:1 square crop from center</p>
                             <div className="rounded-full overflow-hidden border-4 border-slate-100 dark:border-slate-800 shadow-inner w-[200px] h-[200px] flex items-center justify-center bg-slate-50 dark:bg-slate-950">
                                 <canvas ref={canvasRef} className="w-full h-full object-cover" />
                             </div>
-                            <button onClick={handleCropUpload}
-                                className="w-full mt-4 py-2.5 bg-primary text-white rounded-lg font-bold hover:bg-primary-hover transition-colors active:scale-95">
+                            <Button onClick={handleCropUpload}
+                                className="w-full mt-4 font-bold transition-colors">
                                 Upload Avatar
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

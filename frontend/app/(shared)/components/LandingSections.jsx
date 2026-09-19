@@ -4,8 +4,7 @@
 'use client';
 import { useRef, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle, FileUp, Rocket, Shield, Sparkles, Users } from 'lucide-react';
-import DynamicIcon from '@/src/components/ui/DynamicIcon';
+import { ArrowRight, CheckCircle, FileUp, Rocket, Shield, Sparkles, Users, FilePlus, ScanText, ShieldCheck, List, Lock, Ruler, Dna, FileText, GraduationCap } from 'lucide-react';
 
 function useCountUp(target, duration = 1500) {
     const [count, setCount] = useState(0);
@@ -219,37 +218,37 @@ export function FeatureGrid() {
     const features = [
         {
             color: 'blue',
-            icon: 'file_open',
+            icon: FilePlus,
             title: 'Multi-format support',
             description: 'Export seamlessly to high-fidelity PDF, clean LaTeX source code, and fully editable Word formats for further collaboration.',
         },
         {
             color: 'violet',
-            icon: 'document_scanner',
+            icon: ScanText,
             title: 'OCR support',
             description: 'Advanced optical character recognition to convert scanned citations, handwritten notes, and image tables into perfectly editable text.',
         },
         {
             color: 'emerald',
-            icon: 'verified_user',
+            icon: ShieldCheck,
             title: 'Academic validation',
             description: 'Automated checks against specific journal-specific requirements including word counts, figure positioning, and reference density.',
         },
         {
             color: 'amber',
-            icon: 'format_list_bulleted',
+            icon: List,
             title: 'IEEE/Springer/APA',
             description: 'Apply 1000+ citation styles with one click. We maintain up-to-date templates for major publishers and international conferences.',
         },
         {
             color: 'rose',
-            icon: 'auto_awesome',
+            icon: Sparkles,
             title: 'AI-assisted insights',
             description: 'Structural feedback on document flow and writing clarity. Identify passive voice, repetitive phrases, and weak transitions instantly.',
         },
         {
             color: 'cyan',
-            icon: 'lock',
+            icon: Lock,
             title: 'IP Protection',
             description: 'Enterprise-grade encryption for your intellectual property. Your research stays private and securely stored.',
         },
@@ -279,7 +278,7 @@ export function FeatureGrid() {
                             <div key={f.title} className={`group p-8 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 ${c.hover} transition-all duration-300 ${c.shadow} hover:-translate-y-1.5 ${c.bg} relative overflow-hidden`}>
                                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${c.gradient} opacity-0 group-hover:opacity-100 transition-opacity`} />
                                 <div className={`size-12 rounded-xl bg-gradient-to-br ${c.from} ${c.to} text-white flex items-center justify-center mb-6 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-${f.color}-500/30 transition-all`}>
-                                    <DynamicIcon name={f.icon} />
+                                    <f.icon />
                                 </div>
                                 <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-3">{f.title}</h4>
                                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{f.description}</p>
@@ -295,7 +294,7 @@ export function FeatureGrid() {
 export function TemplatePreview() {
     const templates = [
         {
-            icon: 'architecture',
+            icon: Ruler,
             color: 'blue',
             gradient: 'from-blue-500 to-cyan-400',
             bg: 'bg-blue-50 dark:bg-blue-900/20',
@@ -308,7 +307,7 @@ export function TemplatePreview() {
             description: 'Official format for technical, electrical, and engineering research.',
         },
         {
-            icon: 'biotech',
+            icon: Dna,
             color: 'emerald',
             gradient: 'from-emerald-500 to-teal-400',
             bg: 'bg-emerald-50 dark:bg-emerald-900/20',
@@ -321,7 +320,7 @@ export function TemplatePreview() {
             description: 'Standard template for submission to all Nature Portfolio journals.',
         },
         {
-            icon: 'description',
+            icon: FileText,
             color: 'blue-dark',
             gradient: 'from-blue-700 to-blue-900',
             bg: 'bg-blue-50 dark:bg-blue-950/25',
@@ -334,7 +333,7 @@ export function TemplatePreview() {
             description: "Guidelines compatible with Elsevier's wide range of journals.",
         },
         {
-            icon: 'history_edu',
+            icon: GraduationCap,
             color: 'amber',
             gradient: 'from-amber-500 to-orange-400',
             bg: 'bg-amber-50 dark:bg-amber-900/20',
@@ -363,7 +362,7 @@ export function TemplatePreview() {
                             <div className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${t.gradient} rounded-l-xl`} />
                             <div className="flex justify-between items-start">
                                 <div className={`size-10 rounded-lg ${t.bg} flex items-center justify-center ${t.text} ${t.border}`}>
-                                    <DynamicIcon name={t.icon} className="w-6 h-6" />
+                                    <t.icon className="w-6 h-6" />
                                 </div>
                                 <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Available</span>
                             </div>

@@ -3,6 +3,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Button from '@/components/ui/Button';
 import { Download, FileText, CheckCircle2, ShieldAlert, Award } from 'lucide-react';
 import TokenStream from './TokenStream';
 
@@ -120,21 +121,23 @@ const DocumentBuildPane = React.memo(({
             {qualityScore && <QualityScoreBadge score={qualityScore} />}
             
             <div className="flex items-center gap-3 w-full">
-              <button
+              <Button
+                variant="primary"
                 onClick={() => onDownload('docx')}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium transition-colors shadow-sm shadow-indigo-600/20"
+                className="flex-1"
+                icon={<Download className="w-4 h-4" />}
               >
-                <Download className="w-4 h-4" />
                 Download DOCX
-              </button>
+              </Button>
               
-              <button
+              <Button
+                variant="outline"
                 onClick={() => onDownload('pdf')}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-xl text-sm font-medium transition-colors shadow-sm"
+                className="flex-1"
+                icon={<Download className="w-4 h-4" />}
               >
-                <Download className="w-4 h-4" />
                 Download PDF
-              </button>
+              </Button>
             </div>
             
             <div className="text-center">

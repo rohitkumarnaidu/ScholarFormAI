@@ -10,6 +10,7 @@ import UpgradeModal from '@/src/components/UpgradeModal';
 
 import BatchUploadPanel from '@/src/components/BatchUploadPanel';
 import { uploadDocumentWithProgress } from '@/src/services/api';
+import Button from '@/src/components/ui/Button';
 import { Download, FileUp, Palette, Rocket } from 'lucide-react';
 
 export default function BatchUpload() {
@@ -103,9 +104,9 @@ export default function BatchUpload() {
                     <div className="text-center">
                         <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-4">Batch Upload is a Pro Feature</h2>
                         <p className="text-slate-600 dark:text-slate-400 mb-6">Upgrade to our Pro plan to process multiple documents simultaneously and save time.</p>
-                        <button onClick={() => setShowUpgradeModal(true)} className="px-6 py-3 bg-primary text-white font-medium rounded-xl">
+                        <Button onClick={() => setShowUpgradeModal(true)} className="px-6 py-3">
                             View Plans
-                        </button>
+                        </Button>
                     </div>
                 </main>
             ) : (
@@ -165,7 +166,8 @@ export default function BatchUpload() {
                         <div className="flex items-center gap-3">
                             {/* Download All — shows when at least one file completed */}
                             {completedCount > 0 && !processing && (
-                                <button
+                                <Button
+                                    variant="success"
                                     onClick={() => {
                                         files
                                             .filter((f) => f.status === 'done' && f.jobId)
@@ -174,29 +176,20 @@ export default function BatchUpload() {
                                                 window.open(url, '_blank', 'noopener,noreferrer');
                                             });
                                     }}
-                                    className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg shadow-green-600/25 transition-all flex items-center gap-2"
                                 >
                                     <Download />
                                     Download All ({completedCount})
-                                </button>
+                                </Button>
                             )}
-                            <button
+                            <Button
                                 onClick={processAll}
-                                disabled={processing || files.filter((f) => f.status === 'pending').length === 0}
-                                className="px-6 py-3 bg-primary hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-primary/25 transition-all disabled:opacity-50 flex items-center gap-2"
+                                disabled={files.filter((f) => f.status === 'pending').length === 0}
+                                loading={processing}
+                                size="lg"
                             >
-                                {processing ? (
-                                    <>
-                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                        Processing...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Rocket />
-                                        Process All ({files.filter((f) => f.status === 'pending').length})
-                                    </>
-                                )}
-                            </button>
+                                {!processing && <Rocket />}
+                                {processing ? 'Processing...' : `Process All (${files.filter((f) => f.status === 'pending').length})`}
+                            </Button>
                         </div>
                     </div>
                 )}

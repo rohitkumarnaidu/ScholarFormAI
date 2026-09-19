@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
+import Button from '@/src/components/ui/Button';
 import { X, ChevronRight } from 'lucide-react';
 
 const TOUR_STEPS = [
@@ -157,12 +158,14 @@ export default function OnboardingTour() {
           <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">
             {currentTourStep.title}
           </h3>
-          <button 
+          <Button 
+            variant="ghost"
+            size="icon"
             onClick={completeTour}
-            className="p-1 hover:bg-slate-100 dark:hover:bg-white/10 rounded-lg text-slate-400"
+            className="h-8 w-8 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10"
           >
             <X size={18} />
-          </button>
+          </Button>
         </div>
 
         <p className="text-[15px] text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
@@ -183,20 +186,21 @@ export default function OnboardingTour() {
 
           <div className="flex items-center gap-3">
             {currentStep > 0 && (
-              <button
+              <Button
+                variant="ghost"
                 onClick={handleBack}
-                className="text-sm font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+                className="text-slate-500 hover:text-slate-900 dark:hover:text-white"
               >
                 Back
-              </button>
+              </Button>
             )}
-            <button
+            <Button
               onClick={handleNext}
-              className="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded-xl text-sm font-bold shadow-lg shadow-primary/20 transition-all flex items-center gap-1.5"
+              className="px-4 py-2 shadow-lg shadow-primary/20"
             >
               {currentStep === TOUR_STEPS.length - 1 ? 'Finish' : 'Next'}
               <ChevronRight size={16} />
-            </button>
+            </Button>
           </div>
         </div>
       </motion.div>

@@ -7,6 +7,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
+import Button from '@/src/components/ui/Button';
 
 const SplitEditor = dynamic(() => import('@/src/components/live-preview/SplitEditor'), {
     ssr: false,
@@ -135,45 +136,30 @@ function AiSidebar({ isOpen, onToggle, sessionId, templateId, editorContentRef, 
                                 <Sparkles className="text-primary text-[20px]" />
                                 <h3 className="font-bold text-slate-900 dark:text-white text-sm">AI Assistant</h3>
                             </div>
-                            <button
+                            <Button
+                                variant="ghost"
+                                size="icon"
                                 onClick={onToggle}
-                                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                className="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                                 title="Collapse sidebar"
                             >
                                 <ChevronRight className="text-[18px]" />
-                            </button>
+                            </Button>
                         </div>
 
                         {/* AI Suggest Button */}
                         <div className="p-4 border-b border-slate-200 dark:border-slate-800">
-                            <button
+                            <Button
                                 id="ai-suggest-btn"
                                 onClick={handleAiSuggest}
                                 disabled={isStreaming}
-                                className="
-                                    w-full flex items-center justify-center gap-2
-                                    px-4 py-2.5 rounded-xl
-                                    bg-gradient-to-r from-violet-600 to-indigo-600
-                                    text-white text-sm font-bold
-                                    hover:from-violet-700 hover:to-indigo-700
-                                    active:scale-[0.98]
-                                    disabled:opacity-60 disabled:cursor-not-allowed
-                                    shadow-md shadow-violet-500/20
-                                    transition-all duration-150
-                                "
+                                loading={isStreaming}
+                                variant="magic"
+                                className="w-full"
                             >
-                                {isStreaming ? (
-                                    <>
-                                        <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                        Generating…
-                                    </>
-                                ) : (
-                                    <>
-                                        <Sparkles className="text-[16px]" />
-                                        AI Suggest
-                                    </>
-                                )}
-                            </button>
+                                {!isStreaming && <Sparkles className="w-4 h-4" />}
+                                {isStreaming ? 'Generating...' : 'AI Suggest'}
+                            </Button>
                             <p className="text-[11px] text-slate-400 dark:text-slate-600 text-center mt-2 leading-tight">
                                 Suggestions are generated only when you click this button.
                             </p>
@@ -379,72 +365,41 @@ export default function LiveFormatterPage() {
                 )}
 
                 {/* Export DOCX */}
-                <button
+                <Button
                     id="export-docx-btn"
                     onClick={() => handleExport('docx')}
                     disabled={isExporting}
-                    className="
-                        flex items-center gap-1.5 px-3 py-1.5 rounded-lg
-                        bg-primary text-white text-xs font-bold
-                        hover:bg-primary-hover hover:-translate-y-0.5
-                        focus:outline-none focus:ring-2 focus:ring-primary/40
-                        active:translate-y-0
-                        shadow-md shadow-primary/20
-                        disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none
-                        transition-all duration-150
-                    "
+                    loading={isExporting}
+                    variant="primary"
+                    size="sm"
                 >
-                    {isExporting ? (
-                        <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    ) : (
-                        <Download className="text-[14px]" />
-                    )}
+                    {!isExporting && <Download className="text-[14px]" />}
                     Export DOCX
-                </button>
+                </Button>
 
                     {/* Export PDF */}
-                <button
+                <Button
                     id="export-pdf-btn"
                     onClick={() => handleExport('pdf')}
                     disabled={isExporting}
-                    className="
-                        flex items-center gap-1.5 px-3 py-1.5 rounded-lg
-                        border border-slate-200 dark:border-slate-700
-                        bg-white dark:bg-slate-800
-                        text-slate-700 dark:text-slate-300
-                        text-xs font-bold
-                        hover:bg-slate-50 dark:hover:bg-slate-700
-                        hover:-translate-y-0.5 active:translate-y-0
-                        focus:outline-none focus:ring-2 focus:ring-primary/40
-                        disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none
-                        transition-all duration-150
-                    "
+                    variant="secondary"
+                    size="sm"
                 >
                     <FileJson className="text-[14px]" />
                     Export PDF
-                </button>
+                </Button>
 
                 {/* Export TEX */}
-                <button
+                <Button
                     id="export-tex-btn"
                     onClick={() => handleExport('tex')}
                     disabled={isExporting}
-                    className="
-                        flex items-center gap-1.5 px-3 py-1.5 rounded-lg
-                        border border-slate-200 dark:border-slate-700
-                        bg-white dark:bg-slate-800
-                        text-slate-700 dark:text-slate-300
-                        text-xs font-bold
-                        hover:bg-slate-50 dark:hover:bg-slate-700
-                        hover:-translate-y-0.5 active:translate-y-0
-                        focus:outline-none focus:ring-2 focus:ring-primary/40
-                        disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none
-                        transition-all duration-150
-                    "
+                    variant="secondary"
+                    size="sm"
                 >
                     <Code className="text-[14px]" />
                     Export LaTeX
-                </button>
+                </Button>
 
                 {/* AI Toggle */}
                 <button

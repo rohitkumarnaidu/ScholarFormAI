@@ -6,6 +6,7 @@
 import React, { memo } from 'react';
 import Link from 'next/link';
 import { Download, FileText } from 'lucide-react';
+import Button from '@/src/components/ui/Button';
 
 // Constants for status (inlined to avoid missing imports in this context)
 const isCompleted = (status) => status === 'completed' || status === 'success' || status === 'ready';
@@ -63,14 +64,16 @@ const DashboardRow = memo(function DashboardRow({ item, style }) {
             <td className="px-6 py-4 text-right">
                 <div className="flex items-center justify-end gap-2">
                     {completed ? (
-                        <button 
+                        <Button 
                             onClick={() => window.open(`/api/v1/formatter/documents/${item.id}/download`)}
                             aria-label={`Download manuscript: ${item.originalFileName || item.filename}`}
-                            className="h-9 px-4 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white focus:ring-2 focus:ring-primary focus:outline-none font-bold text-xs transition-all flex items-center gap-2"
+                            variant="ghost"
+                            size="sm"
+                            className="bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold text-xs px-4"
                         >
-                            <Download className="text-[18px]" />
+                            <Download className="w-4 h-4" />
                             Download
-                        </button>
+                        </Button>
                     ) : (
                         <Link 
                             href="/upload"

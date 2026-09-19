@@ -2,6 +2,7 @@
 // Copyright (c) 2026 ScholarForm AI
 
 import { useRef, useCallback } from 'react';
+import Button from '@/src/components/ui/Button';
 import { AlertTriangle, CheckCircle, Clock, CloudUpload, RefreshCw, X } from 'lucide-react';
 
 const ACCEPTED_FORMATS = '.docx,.pdf,.tex,.txt,.html,.htm,.md,.markdown,.doc';
@@ -68,31 +69,25 @@ export default function BatchUploadPanel({ files, onFilesSelected, onRemove, onR
     return (
         <div className="bg-card text-card-foreground rounded-xl border border-border shadow-sm overflow-hidden">
             {/* Drop Zone */}
-            <div
-                role="button"
-                tabIndex={disabled ? -1 : 0}
+            <Button
+                variant="outline"
                 aria-label="Upload multiple files"
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
                 onClick={() => !disabled && inputRef.current?.click()}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        if (!disabled) inputRef.current?.click();
-                    }
-                }}
-                className={`border-2 border-dashed rounded-xl m-4 p-8 text-center cursor-pointer transition-colors focus:ring-2 focus:ring-primary focus:outline-none ${disabled
+                disabled={disabled}
+                className={`w-full h-auto flex-col border-2 border-dashed rounded-xl m-4 p-8 text-center cursor-pointer transition-colors focus:ring-2 focus:ring-primary focus:outline-none max-w-[calc(100%-2rem)] ${disabled
                     ? 'border-border bg-muted/50 opacity-50 cursor-not-allowed'
                     : 'border-border hover:border-primary bg-muted/30'
                     }`}
             >
                 <CloudUpload className="text-4xl text-muted-foreground mb-2" />
-                <p className="text-muted-foreground font-medium">
+                <span className="text-muted-foreground font-medium block">
                     Drag & drop files here, or <span className="text-primary font-semibold">browse</span>
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
+                </span>
+                <span className="text-xs text-muted-foreground mt-1 block">
                     Accepts DOCX, PDF, TEX, TXT, HTML, MD files (up to 50MB each)
-                </p>
+                </span>
                 <input
                     ref={inputRef}
                     type="file"
@@ -101,7 +96,7 @@ export default function BatchUploadPanel({ files, onFilesSelected, onRemove, onR
                     onChange={handleInputChange}
                     className="hidden"
                 />
-            </div>
+            </Button>
 
             {/* File List */}
             {files.length > 0 && (
@@ -149,25 +144,28 @@ export default function BatchUploadPanel({ files, onFilesSelected, onRemove, onR
                                 </div>
                                 <div className="shrink-0 flex items-center gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
                                     {entry.status === 'pending' && (
-                                        <button
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
                                             onClick={(e) => { e.stopPropagation(); onRemove(entry.id); }}
                                             disabled={disabled}
-                                            className="p-1.5 text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors disabled:opacity-50"
+                                            className="text-muted-foreground hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
                                             title="Remove File"
                                             aria-label="Remove File"
                                         >
                                             <X className="text-lg" />
-                                        </button>
+                                        </Button>
                                     )}
                                     {entry.status === 'error' && onRetry && (
-                                        <button
+                                        <Button
+                                            variant="secondary"
                                             onClick={(e) => { e.stopPropagation(); onRetry(entry.id); }}
                                             disabled={disabled}
-                                            className="px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg text-xs font-bold transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                                            className="h-8 px-3 text-xs bg-primary/10 text-primary hover:bg-primary hover:text-white"
                                         >
-                                            <RefreshCw className="text-[16px]" />
+                                            <RefreshCw className="text-[16px] mr-1.5" />
                                             Retry
-                                        </button>
+                                        </Button>
                                     )}
                                 </div>
                             </li>

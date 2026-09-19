@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import MetricsCard from '../components/MetricsCard';
+import { FileText } from 'lucide-react';
 
 describe('MetricsCard', () => {
     it('renders title and value', () => {
@@ -36,7 +37,9 @@ describe('MetricsCard', () => {
     });
 
     it('renders icon when provided', () => {
-        const { container } = render(<MetricsCard title="Docs" value="3" icon="description" />);
-        expect(container.querySelector('.lucide-file-text')).toBeInTheDocument();
+        const { container } = render(<MetricsCard title="Docs" value="3" icon={FileText} />);
+        const svg = container.querySelector('svg');
+        expect(svg).toBeInTheDocument();
+        expect(svg).toHaveClass('lucide', 'lucide-file-text');
     });
 });

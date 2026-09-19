@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 ScholarForm AI
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { useDocument } from '../context/DocumentContext';
 import { getJobSummary } from '@/services/api.documents';
 
@@ -29,66 +30,35 @@ export default function useJobFromUrl() {
     const searchParams = useSearchParams();
     const jobId = searchParams?.get('jobId') || null;
     const { job, setJob } = useDocument();
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
 
     const hasMatchingJobInContext = useMemo(
         () => Boolean(jobId && job?.id && String(job.id) === String(jobId)),
         [job?.id, jobId]
     );
 
-    useEffect(() => {
-        let isCancelled = false;
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['jobSummary', jobId],
+        queryFn: () => getJobSummary(jobId),
+        enabled: Boolean(jobId) && !hasMatchingJobInContext,
+        staleTime: 5 * 60 * 1000, // 5 minutes
+    });
 
-        if (!jobId) {
-            setIsLoading(false);
-            setError('');
-            return undefined;
+    // Sync fetched data to context
+    useMemo(() => {
+        if (data && !hasMatchingJobInContext) {
+            setJob(normalizeSummaryToJob(data, jobId));
         }
-
-        if (hasMatchingJobInContext) {
-            setIsLoading(false);
-            setError('');
-            return undefined;
-        }
-
-        setIsLoading(true);
-        setError('');
-
-        getJobSummary(jobId)
-            .then((summary) => {
-                if (isCancelled) {
-                    return;
-                }
-                setJob(normalizeSummaryToJob(summary, jobId));
-            })
-            .catch((fetchError) => {
-                if (isCancelled) {
-                    return;
-                }
-                const message = typeof fetchError?.message === 'string'
-                    ? fetchError.message
-                    : 'Unable to load document details.';
-                setError(message);
-            })
-            .finally(() => {
-                if (!isCancelled) {
-                    setIsLoading(false);
-                }
-            });
-
-        return () => {
-            isCancelled = true;
-        };
-    }, [hasMatchingJobInContext, jobId, setJob]);
+    }, [data, hasMatchingJobInContext, jobId, setJob]);
 
     if (!jobId) {
         return { job, isLoading: false, error: '' };
     }
 
+    const resolvedError = error ? (typeof error.message === 'string' ? error.message : 'Unable to load document details.') : '';
+
     return {
-        job: hasMatchingJobInContext ? job : null,
+        job: hasMatchingJobInContext ? job : normalizeSummaryToJob(data, jobId),
         isLoading,
-        error,
+        error: resolvedError,
     };
 }

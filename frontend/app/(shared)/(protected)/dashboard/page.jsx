@@ -12,8 +12,8 @@ import Link from 'next/link';
 
 import DashboardRow from '@/src/components/dashboard/DashboardRow';
 import { trackPageView } from '@/src/lib/rum';
-import { ArrowRight, FolderOpen, Plus } from 'lucide-react';
-import DynamicIcon from '@/src/components/ui/DynamicIcon';
+import { ArrowRight, FolderOpen, Plus, RefreshCw, UploadCloud, FileText, ClipboardCheck } from 'lucide-react';
+import Button from '@/src/components/ui/Button';
 
 const StatsCard = memo(({ 
     title, 
@@ -29,7 +29,7 @@ const StatsCard = memo(({
     const cardContent = (
         <>
             <div className="bg-slate-100/50 dark:bg-slate-800/50 h-48 flex items-center justify-center group-hover:bg-slate-200/50 dark:group-hover:bg-slate-700/50 transition-colors">
-                <DynamicIcon name={icon} className={`w-12 h-12 ${iconColor}`} />
+                {icon && React.createElement(icon, { className: `w-12 h-12 ${iconColor}` })}
             </div>
             <div className="p-6">
                 <div className="flex justify-between items-start mb-2">
@@ -45,9 +45,13 @@ const StatsCard = memo(({
                         {btnText}
                     </div>
                 ) : (
-                    <button onClick={onBtnClick} className={btnClass}>
+                    <Button 
+                        onClick={onBtnClick} 
+                        variant={btnClass.includes('bg-primary') ? 'primary' : 'secondary'}
+                        className="w-full"
+                    >
                         {btnText}
-                    </button>
+                    </Button>
                 )}
             </div>
         </>
@@ -96,9 +100,19 @@ export default function DashboardPage() {
         [history]
     );
 
-    const handleDownloadLatest = useCallback(() => {
+    const handleDownloadLatest = useCallback(async () => {
         if (history[0]?.id) {
-            window.open(`/api/v1/formatter/documents/${history[0].id}/download`);
+            try {
+                const { downloadExport } = await import('@/src/services/api.documents');
+                const { url, cleanup } = await downloadExport(history[0].id, 'docx');
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `document_${history[0].id}.docx`;
+                a.click();
+                setTimeout(cleanup, 1000);
+            } catch (e) {
+                console.error('Failed to download latest:', e);
+            }
         }
     }, [history]);
 
@@ -122,7 +136,7 @@ export default function DashboardPage() {
                     <StatsCard 
                         title="Upload New Manuscript"
                         description="Start a new submission and formatting check. Supports .docx and LaTeX files."
-                        icon="cloud_upload"
+                        icon={UploadCloud}
                         iconColor="text-indigo-600 dark:text-indigo-400"
                         href="/upload"
                         btnText="New Submission"
@@ -131,7 +145,7 @@ export default function DashboardPage() {
                     <StatsCard 
                         title="My Manuscripts"
                         description="Track progress of ongoing projects."
-                        icon="description"
+                        icon={FileText}
                         iconColor="text-slate-600 dark:text-slate-400"
                         value={`${history.length} Active`}
                         href="/history"
@@ -141,7 +155,7 @@ export default function DashboardPage() {
                     <StatsCard 
                         title="Validation Results"
                         description="Detailed compliance reports and export-ready files."
-                        icon="fact_check"
+                        icon={ClipboardCheck}
                         iconColor="text-green-600 dark:text-green-400"
                         value={`${readyCount} Ready`}
                         btnText="Download Results"
@@ -156,9 +170,9 @@ export default function DashboardPage() {
                             Recent Activity
                         </h2>
                         <div className="flex items-center gap-4">
-                            <button onClick={handleRefresh} className="text-sm font-semibold text-primary hover:text-blue-700 transition-colors flex items-center gap-1.5">
-                                <DynamicIcon name="refresh" className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} /> Refresh
-                            </button>
+                            <Button onClick={handleRefresh} variant="ghost" size="sm" className="text-primary hover:text-blue-700 px-2 h-auto text-sm font-semibold">
+                                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} /> Refresh
+                            </Button>
                             <Link href="/history" className="text-sm font-semibold text-primary hover:text-blue-700 transition-colors flex items-center gap-1">
                                 View full history <ArrowRight className="text-lg" />
                             </Link>

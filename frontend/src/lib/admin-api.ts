@@ -1,3 +1,4 @@
+import { getV1, unwrapResponse } from '../services/api.v1';
 
 export interface AdminApplication {
   id: string;
@@ -27,17 +28,13 @@ export interface AdminRelease {
   created_at: string;
 }
 
-const API_BASE = "/api/v1/admin/updates";
-
 export async function getAdminApplications(): Promise<AdminApplication[]> {
-  const res = await fetch(`${API_BASE}/applications`);
-  if (!res.ok) throw new Error("Failed to fetch applications");
-  return res.json();
+  const envelope = await getV1('/admin/updates/applications');
+  return unwrapResponse(envelope) as AdminApplication[];
 }
 
 export async function getAdminReleases(appId?: string): Promise<AdminRelease[]> {
-  const url = appId ? `${API_BASE}/releases?app_id=${appId}` : `${API_BASE}/releases`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("Failed to fetch releases");
-  return res.json();
+  const query = appId ? `?app_id=${encodeURIComponent(appId)}` : '';
+  const envelope = await getV1(`/admin/updates/releases${query}`);
+  return unwrapResponse(envelope) as AdminRelease[];
 }

@@ -54,12 +54,13 @@ const TEMPLATES = [
     { id: 'cover_letter', name: 'Cover Letter', category: 'Letter' },
 ];
 
-// ── Step definitions ────────────────────────────────────────────────────
+import { FileText, LayoutTemplate, FileEdit, Sparkles } from 'lucide-react';
+
 const STEPS = [
-    { label: 'Document Type', icon: 'description' },
-    { label: 'Template', icon: 'dashboard_customize' },
-    { label: 'Details', icon: 'edit_note' },
-    { label: 'Generate', icon: 'auto_awesome' },
+    { label: 'Document Type', icon: FileText },
+    { label: 'Template', icon: LayoutTemplate },
+    { label: 'Details', icon: FileEdit },
+    { label: 'Generate', icon: Sparkles },
 ];
 
 // ── Hook ────────────────────────────────────────────────────────────────

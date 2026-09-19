@@ -3,7 +3,7 @@
 
 import React, { memo } from 'react';
 import { TrendingDown, TrendingUp } from 'lucide-react';
-import DynamicIcon from '@/src/components/ui/DynamicIcon';
+
 
 function MetricsCard({ title, value, icon, subtitle, color = 'primary', trend, isLoading = false }) {
     const colorMap = {
@@ -46,7 +46,7 @@ function MetricsCard({ title, value, icon, subtitle, color = 'primary', trend, i
                 </div>
                 {icon && (
                     <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${iconColorMap[color] || iconColorMap.primary}`}>
-                        <DynamicIcon name={icon} />
+                        {icon && typeof icon === 'function' ? icon({ className: 'w-6 h-6' }) : (icon && typeof icon === 'object' && 'render' in icon) ? React.createElement(icon, { className: 'w-6 h-6' }) : null}
                     </div>
                 )}
             </div>

@@ -181,3 +181,14 @@ export const deleteGeneratorSession = async (sessionId) => {
     const envelope = await deleteV1(`/generator/sessions/${encodeURIComponent(sessionId)}`);
     return unwrapResponse(envelope);
 };
+
+/**
+ * Fetch styling definitions
+ */
+export const getStyles = async (options = {}) => {
+    const envelope = await getV1('/styles', {
+        suppressConsoleError: true,
+        ...options,
+    });
+    return unwrapResponse(envelope);
+};

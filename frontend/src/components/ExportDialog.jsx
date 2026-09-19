@@ -4,6 +4,8 @@
 import { useEffect, useState, useRef } from 'react';
 import ProcessingOptions from './ProcessingOptions';
 
+import { Button } from './ui';
+
 export default function ExportDialog({
     isOpen,
     defaultFormat = 'docx',
@@ -110,23 +112,26 @@ export default function ExportDialog({
                 )}
 
                 <div className="mt-6 flex gap-3">
-                    <button
+                    <Button
                         type="button"
+                        variant="outline"
                         onClick={onClose}
                         disabled={isDownloading}
-                        className="flex-1 rounded-lg border border-slate-300 dark:border-slate-700 px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-60"
+                        className="flex-1"
                     >
                         Cancel
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         type="button"
+                        variant="primary"
                         onClick={handleDownloadClick}
                         disabled={isDownloading}
+                        loading={isDownloading}
                         data-testid="export-download-button"
-                        className="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+                        className="flex-1"
                     >
                         {isDownloading ? 'Downloading...' : 'Download'}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

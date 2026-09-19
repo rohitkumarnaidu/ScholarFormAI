@@ -3,8 +3,8 @@
 
 import React, { memo } from 'react';
 import Link from 'next/link';
-import { Plus } from 'lucide-react';
-import DynamicIcon from '@/src/components/ui/DynamicIcon';
+import { Plus, FileText, Sparkles, CheckCircle, Timer, Database } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 export const StatsCard = memo(function StatsCard({ 
     title, 
@@ -22,7 +22,7 @@ export const StatsCard = memo(function StatsCard({
     const Content = (
         <>
             <div className={`h-48 w-full ${bgColor} flex items-center justify-center ${hoverBgColor} transition-colors`}>
-                <DynamicIcon name={icon} className={`w-12 h-12 ${iconColor}`} />
+                {icon && typeof icon === 'function' ? icon({ className: `w-12 h-12 ${iconColor}` }) : (icon && typeof icon === 'object' && 'render' in icon) ? React.createElement(icon, { className: `w-12 h-12 ${iconColor}` }) : null}
             </div>
             <div className="p-6">
                 <div className="flex justify-between items-start mb-2">
@@ -38,13 +38,14 @@ export const StatsCard = memo(function StatsCard({
                         {btnText}
                     </div>
                 ) : (
-                    <button
+                    <Button
+                        variant="secondary"
                         onClick={onBtnClick}
                         disabled={isDisabled}
-                        className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white py-2.5 px-4 rounded-lg font-bold text-sm hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full"
                     >
                         {btnText}
-                    </button>
+                    </Button>
                 )}
             </div>
         </>
@@ -90,11 +91,11 @@ function DashboardStats({ stats, loading }) {
     return (
         <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <StatsCard title="Total Documents" value={String(s.totalDocuments ?? 0)} description="All manuscripts processed" icon="description" iconColor="text-blue-600" bgColor="bg-blue-50 dark:bg-blue-950/30" />
-                <StatsCard title="Formatted This Month" value={String(s.formattedThisMonth ?? 0)} description="Documents formatted this month" icon="auto_awesome" iconColor="text-green-600" bgColor="bg-green-50 dark:bg-green-950/30" />
-                <StatsCard title="Success Rate" value={successRate} description="Percentage of successful formatting jobs" icon="check_circle" iconColor="text-emerald-600" bgColor="bg-emerald-50 dark:bg-emerald-950/30" />
-                <StatsCard title="Avg Processing Time" value={s.avgProcessingTime || '0s'} description="Average time to format a document" icon="timer" iconColor="text-purple-600" bgColor="bg-purple-50 dark:bg-purple-950/30" />
-                <StatsCard title="Storage Used" value={s.storageUsed || '0 MB'} description="Total storage used for documents" icon="storage" iconColor="text-amber-600" bgColor="bg-amber-50 dark:bg-amber-950/30" />
+                <StatsCard title="Total Documents" value={String(s.totalDocuments ?? 0)} description="All manuscripts processed" icon={FileText} iconColor="text-blue-600" bgColor="bg-blue-50 dark:bg-blue-950/30" />
+                <StatsCard title="Formatted This Month" value={String(s.formattedThisMonth ?? 0)} description="Documents formatted this month" icon={Sparkles} iconColor="text-green-600" bgColor="bg-green-50 dark:bg-green-950/30" />
+                <StatsCard title="Success Rate" value={successRate} description="Percentage of successful formatting jobs" icon={CheckCircle} iconColor="text-emerald-600" bgColor="bg-emerald-50 dark:bg-emerald-950/30" />
+                <StatsCard title="Avg Processing Time" value={s.avgProcessingTime || '0s'} description="Average time to format a document" icon={Timer} iconColor="text-purple-600" bgColor="bg-purple-50 dark:bg-purple-950/30" />
+                <StatsCard title="Storage Used" value={s.storageUsed || '0 MB'} description="Total storage used for documents" icon={Database} iconColor="text-amber-600" bgColor="bg-amber-50 dark:bg-amber-950/30" />
             </div>
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6">
                 <h3 className="text-slate-900 dark:text-white text-lg font-bold mb-4">Activity (Last 7 Days)</h3>
