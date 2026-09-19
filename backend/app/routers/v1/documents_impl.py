@@ -22,6 +22,7 @@ from fastapi import BackgroundTasks, Depends, File, Form, Query, Request, Upload
 
 import app.services.document_pipeline_service as _ps
 from app.config.settings import settings
+from app.schemas.document_edit import DocumentEditRequest
 from app.schemas.user import User
 from app.services import (
     DocumentCrudService,
@@ -260,7 +261,7 @@ async def get_status(
 
 async def get_document_summary(
     job_id: str,
-    current_user: User | None = Depends(get_optional_user),
+    current_user: User = Depends(get_current_user),
 ):
     """Lightweight job summary for URL-based page hydration."""
     return await _pipeline_service.get_document_summary(job_id=job_id, current_user=current_user)
@@ -269,15 +270,15 @@ async def get_document_summary(
 async def edit_document(
     request: Request,
     job_id: str,
-    data: dict[str, Any],
+    data: DocumentEditRequest,
     background_tasks: BackgroundTasks,
-    current_user: User | None = Depends(get_optional_user),
+    current_user: User = Depends(get_current_user),
 ):
     """Handle user edits and trigger non-destructive re-formatting."""
     return await _pipeline_service.edit_document(
         request=request,
         job_id=job_id,
-        data=data,
+        data=data.to_safe_dict(),
         background_tasks=background_tasks,
         current_user=current_user,
     )
@@ -285,7 +286,7 @@ async def edit_document(
 
 async def get_preview(
     job_id: str,
-    current_user: User | None = Depends(get_optional_user),
+    current_user: User = Depends(get_current_user),
 ):
     """Get the structured preview data for a document."""
     return await _pipeline_service.get_preview(job_id=job_id, current_user=current_user)
@@ -293,7 +294,7 @@ async def get_preview(
 
 async def get_comparison_data(
     job_id: str,
-    current_user: User | None = Depends(get_optional_user),
+    current_user: User = Depends(get_current_user),
 ):
     """Get data for side-by-side comparison with HTML diff."""
     return await _export_service.get_comparison_data(job_id=job_id, current_user=current_user)
@@ -305,7 +306,7 @@ async def download_document(
     format: str = "docx",
     token: str | None = Query(None),
     expires: int | None = Query(None),
-    current_user: User | None = Depends(get_optional_user),
+    current_user: User = Depends(get_current_user),
 ):
     """Download the processed document in DOCX, PDF, or TeX format."""
     return await _export_service.download_document(

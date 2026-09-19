@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from typing import Any
 
 from fastapi import (
     APIRouter,
@@ -20,6 +19,7 @@ from fastapi import (
 
 from app.config.settings import settings
 from app.routers.v1 import documents_impl
+from app.schemas.document_edit import DocumentEditRequest
 from app.schemas.user import User
 from app.utils.dependencies import get_current_user, get_optional_user
 from app.utils.logging_context import bind_request_context
@@ -189,7 +189,7 @@ async def get_status(
 async def get_document_summary(
     request: Request,
     jobId: str,
-    current_user: User | None = Depends(get_optional_user),
+    current_user: User = Depends(get_current_user),
 ):
     async def operation():
         return await documents_impl.get_document_summary(job_id=jobId, current_user=current_user)
@@ -210,9 +210,9 @@ async def get_document_summary(
 async def edit_document(
     request: Request,
     jobId: str,
-    data: dict[str, Any],
+    data: DocumentEditRequest,
     background_tasks: BackgroundTasks,
-    current_user: User | None = Depends(get_optional_user),
+    current_user: User = Depends(get_current_user),
 ):
     async def operation():
         return await documents_impl.edit_document(
@@ -240,7 +240,7 @@ async def edit_document(
 async def get_preview(
     request: Request,
     jobId: str,
-    current_user: User | None = Depends(get_optional_user),
+    current_user: User = Depends(get_current_user),
 ):
     async def operation():
         return await documents_impl.get_preview(job_id=jobId, current_user=current_user)
@@ -261,7 +261,7 @@ async def get_preview(
 async def get_comparison_data(
     request: Request,
     jobId: str,
-    current_user: User | None = Depends(get_optional_user),
+    current_user: User = Depends(get_current_user),
 ):
     async def operation():
         return await documents_impl.get_comparison_data(job_id=jobId, current_user=current_user)
@@ -286,7 +286,7 @@ async def download_document(
     format: str = Query("docx"),
     token: str | None = Query(None),
     expires: int | None = Query(None),
-    current_user: User | None = Depends(get_optional_user),
+    current_user: User = Depends(get_current_user),
 ):
     async def operation():
         return await documents_impl.download_document(

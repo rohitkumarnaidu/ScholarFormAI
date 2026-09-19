@@ -25,15 +25,19 @@ class MonitoringMiddleware(BaseHTTPMiddleware):
         request_id = getattr(request.state, "request_id", "unknown")
         start_time = time.time()
 
-        logger.info(f"Request started: {request.method} {request.url.path} [ID: {request_id}]")
+        logger.info("Request started: %s %s [ID: %s]", request.method, request.url.path, request_id)
 
         try:
             response = await call_next(request)
             duration = time.time() - start_time
 
             logger.info(
-                f"Request completed: {request.method} {request.url.path} "
-                f"Status: {response.status_code} Duration: {duration:.3f}s [ID: {request_id}]"
+                "Request completed: %s %s Status: %s Duration: %.3fs [ID: %s]",
+                request.method,
+                request.url.path,
+                response.status_code,
+                duration,
+                request_id,
             )
 
             response.headers["X-Processing-Time"] = str(duration)
@@ -42,7 +46,11 @@ class MonitoringMiddleware(BaseHTTPMiddleware):
         except Exception as e:
             duration = time.time() - start_time
             logger.error(
-                f"Request failed: {request.method} {request.url.path} "
-                f"Error: {str(e)} Duration: {duration:.3f}s [ID: {request_id}]"
+                "Request failed: %s %s Error: %s Duration: %.3fs [ID: %s]",
+                request.method,
+                request.url.path,
+                str(e),
+                duration,
+                request_id,
             )
             raise e

@@ -161,3 +161,40 @@ class RequireRole:
                 status_code=status.HTTP_403_FORBIDDEN, detail=f"Access forbidden: requires one of {self.allowed_roles}"
             )
         return user
+
+
+async def verify_document_access(document_id: str, user: User) -> bool:
+    """
+    Verify that a user has access to a specific document.
+
+    Access is granted if the user is:
+    1. The document owner
+    2. A shared recipient (via document_shares table)
+    3. An admin or service_role user
+
+    Raises HTTP 403 if access is denied.
+    """
+    # Admins bypass access checks
+    if _has_admin_scope(user):
+        return True
+
+    try:
+        from app.services.document_share_service import DocumentShareService
+
+        share_service = DocumentShareService()
+        has_access = await share_service.check_document_access(document_id, user.id)
+        if not has_access:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You do not have access to this document.",
+            )
+        return True
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.warning("Document access check failed for doc=%s user=%s: %s", document_id, user.id, exc)
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Unable to verify document access.",
+        ) from exc
+
