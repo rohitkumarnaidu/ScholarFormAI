@@ -37,43 +37,56 @@ markdown_extensions:
 - tables
 - toc
 nav:
-- Home: README.md
+- Home: index.md
+- Getting Started:
+  - Quickstart: user-guide/quickstart.md
+  - User Guide: user-guide/Getting Started.md
+  - LLM Setup: user-guide/LLM_PROVIDER_GUIDE.md
+  - Developer Onboarding: developer-guide/DEVELOPER_ONBOARDING.md
 - Guides:
-  - Developer Guide: guides/DEVELOPER_GUIDE.md
-- Examples:
-  - React Integration: examples/sample-projects/react-integration/README.md
-  - Python CLI Starter: examples/starter-kits/python-cli/README.md
-  - Cookbook: examples/cookbook/README.md
-  - Best Practices: examples/best-practices/README.md
-- Reference:
-  - Contributing: CONTRIBUTING.md
-  - Code of Conduct: CODE_OF_CONDUCT.md
-  - Security: SECURITY.md
-  - Support: SUPPORT.md
-  - Roadmap: ROADMAP.md
-  - Changelog: CHANGELOG.md
-  - Governance: GOVERNANCE.md
-  - Maintainers: MAINTAINERS.md
-  - License: LICENSE
-  - Privacy: PRIVACY.md
-  - Terms: TERMS.md
-  - Accessibility: ACCESSIBILITY.md
+  - Custom Templates: guides/creating-a-custom-template.md
+  - Production Deployment: guides/deploying-to-production.md
+  - Monitoring Setup: guides/setting-up-monitoring.md
+  - Style Guide: guides/STYLE_GUIDE.md
+  - Testing Guide: guides/TESTING.md
+  - Python SDK: sdk/SDK_GUIDE.md
+  - Plugin Guide: sdk/PLUGIN_GUIDE.md
+- Tutorials:
+  - Format Your First Paper: tutorials/format-your-first-paper.md
+  - Generate Document with AI: tutorials/generate-document-with-ai.md
+  - Multi-Document Synthesis: tutorials/multi-doc-synthesis.md
 - Architecture:
   - Architecture Overview: architecture/ARCHITECTURE.md
   - System Design: architecture/SYSTEM_DESIGN.md
-  - AI Architecture: ai/AI.md
-  - Agents: ai/AGENTS.md
-  - Memory: ai/MEMORY.md
-  - RAG: ai/RAG.md
-  - Database: database/DATABASE.md
-  - Authentication: security/AUTHENTICATION.md
-  - Authorization: security/AUTHORIZATION.md
-- API Docs:
-  - API Reference: api/API_REFERENCE.md
-- Deployment:
-  - Deployment Guide: operations/DEPLOYMENT.md
-  - Operations: operations/OPERATIONS.md
-  - Monitoring: operations/MONITORING.md
+  - AI Architecture: architecture/AI_ARCHITECTURE.md
+  - RAG Architecture: architecture/CHROMA_RAG_ARCHITECTURE.md
+  - Frontend Architecture: architecture/FRONTEND_ARCHITECTURE.md
+  - Realtime Architecture: architecture/REALTIME_ARCHITECTURE.md
+  - Security Architecture: architecture/SECURITY_ARCHITECTURE.md
+  - Database Architecture: architecture/DATABASE_ARCHITECTURE.md
+  - Data Flow: architecture/Data Flow Architecture.md
+- Backend:
+  - Overview: backend/Backend Development.md
+  - FastAPI Structure: backend/FastAPI Application Structure.md
+  - Service Layer: backend/Service Layer Architecture.md
+  - Pipeline Processing: backend/Pipeline Processing System.md
+  - Database & ORM: backend/Database & ORM Design.md
+- Frontend:
+  - Overview: frontend/Frontend Development.md
+  - Next.js Structure: frontend/Next.js Application Structure.md
+  - Routing & Navigation: frontend/Routing and Navigation.md
+  - UI/UX Guidelines: frontend/ui-ux-guidelines.md
+- Operations:
+  - Operations Handbook: operations/README.md
+  - Deployment: operations/Deployment & Operations.md
+  - Monitoring: operations/Monitoring & Alerting.md
   - Observability: operations/OBSERVABILITY.md
-  - Performance: operations/PERFORMANCE.md
-  - Benchmarks: operations/BENCHMARKS.md
+  - Incident Response: runbooks/incident-response.md
+  - Rollback: runbooks/rollback.md
+  - Service Down: runbooks/service-down.md
+- Reference:
+  - Configuration Reference: reference/CONFIGURATION_REFERENCE.md
+  - CLI Reference: reference/CLI_REFERENCE.md
+  - Error Codes: reference/ERROR_CODES.md
+  - Glossary: reference/GLOSSARY.md
+  - FAQ: reference/FAQ.md

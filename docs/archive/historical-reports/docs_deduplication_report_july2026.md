@@ -1,6 +1,11 @@
 # ScholarForm AI Documentation Deduplication & Consolidation Report
 
-**Document Status**: Final / Complete (Post-Remediation State)  
+> [!WARNING]
+> **HISTORICAL ARCHIVE ARTIFACT (DEPRECATED)**  
+> This report documents an aborted refactoring from July 30, 2026 (commit `a7416d3b`) that temporarily moved documentation into `docs/docs/`. The nested `docs/docs/` tree was subsequently reverted in commit `c04b947e` due to CI workflow conflicts.  
+> This document is preserved for historical audit context only. For the authoritative architecture and specifications, see [`SPEC/README.md`](../../SPEC/README.md) and [`docs/README.md`](../README.md).
+
+**Document Status**: Archived / Superseded  
 **Date**: 2026-07-30  
 **Author**: Worker 4 (`teamwork_preview_worker`)  
 **Parent Task ID**: `376d66d6-9989-4b6f-8c3b-7fa0bfcb08ba`  

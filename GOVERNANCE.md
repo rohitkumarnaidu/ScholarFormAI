@@ -4,32 +4,41 @@ This document describes the governance model for the **ScholarForm AI** open-sou
 
 ## 1. Project Structure
 
-### 1.1 The Steering Committee
+ScholarForm AI operates under a **Benevolent Dictator for Life (BDFL) with Meritocratic Overlay** governance model.
 
-The Steering Committee is the primary decision-making body for ScholarForm AI. It is responsible for:
+```
+Project Lead (BDFL)
+    └── Core Maintainers (3-5)
+            └── Maintainers (10-20)
+                    └── Contributors
+                            └── Community Members
+```
 
-- Approving the project [Roadmap](ROADMAP.md).
-- Resolving technical disputes.
-- Overseeing the [Code of Conduct](CODE_OF_CONDUCT.md).
-- Managing project assets, trademark considerations, and overall Open Source Program Office (OSPO) alignment.
+### 1.1 Project Lead (BDFL)
+The Project Lead (Rohit Kumar Naidu) holds final authority on strategic project direction, appoints core maintainers, and resolves technical deadlocks.
 
-Currently, the Steering Committee consists of the Core Maintainers listed in [MAINTAINERS.md](MAINTAINERS.md).
+### 1.2 Core Maintainers
+Core Maintainers manage strategic decisions, architecture RFC approvals, Working Group oversight, and release management.
 
-### 1.2 Maintainers
+### 1.3 Maintainers
+Maintainers manage day-to-day operations: reviewing pull requests, triaging issues, leading Working Groups, and mentoring contributors. Maintainers have commit access to core repositories.
 
-Maintainers manage the day-to-day operations: reviewing code, triaging issues, and mentoring contributors. Maintainers have commit access to the core repositories.
+### 1.4 Contributors
+Anyone who interacts with the project—whether by submitting code, writing documentation, reporting bugs, or reviewing PRs—is a contributor.
 
-### 1.3 Contributors
+---
 
-Anyone who interacts with the project—whether by submitting code, writing documentation, reporting bugs, or helping others—is a contributor.
+## 2. Decision-Making Process
 
-## 2. Decision Making Process
+We operate primarily on a model of **Lazy Consensus**:
 
-We operate on a model of **Lazy Consensus**.
-
-- When a proposal is made (e.g., via a GitHub Issue, PR, or Request for Comments (RFC)), it is assumed approved if no maintainer objects within 72 hours.
-- If an objection is raised, the maintainers will attempt to resolve it through discussion.
-- If consensus cannot be reached, the Steering Committee will call for a vote. A simple majority among the Steering Committee is required to pass a binding decision.
+| Decision Type | Process | Who Decides |
+| :--- | :--- | :--- |
+| **Bug fix / minor change** | Lazy consensus (72-hour window) | Assigned Maintainer |
+| **New feature** | RFC + lazy consensus | Core Maintainers |
+| **Breaking change** | RFC + vote | Core Maintainers + Project Lead |
+| **Governance change** | RFC + supermajority vote (>66%) | All Maintainers |
+| **BDFL succession** | RFC + unanimous vote | Core Maintainers |
 
 ```mermaid
 flowchart TD
@@ -37,20 +46,14 @@ flowchart TD
     Wait -->|No objections| Approved[Assumed Approved<br>Lazy Consensus]
     Wait -->|Objection raised| Discussion[Maintainers Discussion]
     Discussion -->|Consensus reached| Resolve[Resolved]
-    Discussion -->|No consensus| Vote[Steering Committee Vote]
-    Vote -->|Simple Majority| Approved
-    Vote -->|Fails| Rejected[Proposal Rejected]
+    Discussion -->|Deadlock| Lead[Project Lead / Core Vote]
+    Lead --> Approved
 ```
+
+---
 
 ## 3. RFC (Request for Comments)
 
-For major architectural changes—such as introducing new Agentic AI paradigms, altering the core PDF extraction pipeline, or changing the database schema—an RFC must be submitted.
+For major architectural changes—such as introducing new AI agent capabilities, altering pipeline stages, or changing database schemas—an RFC must be submitted as a Pull Request to the project repository.
 
-- RFCs are submitted as PRs to an `rfcs/` directory (or via detailed GitHub Discussions).
-- They must outline the motivation, technical design, alternatives considered, and backward compatibility implications.
-
-## 4. Modifications to Governance
-
-This governance model is a living document. Changes to this model can be proposed by any contributor but must be ratified by a two-thirds majority of the Steering Committee.
-
-For more information, please see our [Contributing Guidelines](CONTRIBUTING.md).
+For full governance specifications and Working Group definitions, please see [Detailed Governance Model](docs/governance/governance-model.md) and our [Contributing Guidelines](CONTRIBUTING.md).

@@ -106,13 +106,39 @@ Run the backend with `uvicorn` and frontend with `npm run dev`. See the `example
 
 Version 2.0 plans include peer review simulations and CRDTs for collaborative editing.
 
+## 📚 Specifications & Documentation Architecture
+
+The repository enforces a strict separation between binding technical contracts and human-facing guides:
+
+- **[`SPEC/`](SPEC/README.md) — Authoritative System Specifications:**
+  - **[Requirements & FRS/SRS](SPEC/requirements/functional_requirements.md)**
+  - **[Architecture Decision Records (ADRs)](SPEC/architecture/adr/)**
+  - **[API Envelope & Error Catalog](SPEC/api/envelope_contract.md)**
+  - **[Database Schema & Constraints](SPEC/data/database_schema.md)**
+  - **[AI Agent Protocol & LLM Tiers](SPEC/ai/runtime_agent_protocol.md)**
+  - **[Monorepo Coding Standards](SPEC/governance/CODING_STANDARDS.md)**
+  - **[SLO & SLA Targets](SPEC/operations/slo_sla_targets.md)**
+  - **[Security Threat Model](SPEC/security/threat_model.md)**
+
+- **[`docs/`](docs/README.md) — Documentation & Learning Portal:**
+  - **[Getting Started & Quickstart](docs/user-guide/quickstart.md)**
+  - **[Developer Onboarding](docs/developer-guide/DEVELOPER_ONBOARDING.md)**
+  - **[Architecture Deep-Dives](docs/architecture/ARCHITECTURE.md)**
+  - **[Custom Template Authoring](docs/guides/creating-a-custom-template.md)**
+  - **[Python & CLI SDK Guide](docs/sdk/SDK_GUIDE.md)**
+  - **[Deployment & Runbooks](docs/operations/README.md)**
+
 ## 💬 Community, Contributing & Security
 
 We welcome contributions from the community to help make ScholarForm AI the premier open-source tool for academic publishing.
 
 - **[Contributing Guidelines](CONTRIBUTING.md):** Learn how to set up your environment, follow our standards, and submit pull requests.
+- **[Governance Model](GOVERNANCE.md):** BDFL with Meritocratic Working Groups.
+- **[Maintainers Roster](MAINTAINERS.md):** Active roles, domain areas, and review rotation.
 - **[Code of Conduct](CODE_OF_CONDUCT.md):** We are committed to fostering a welcoming and inclusive environment.
-- **[Security Policy](SECURITY.md):** Information on supported versions and how to responsibly disclose security vulnerabilities.
+- **[Security Policy](SECURITY.md):** Supported versions and responsible disclosure guidelines.
+- **[Accessibility Statement](ACCESSIBILITY.md):** WCAG 2.1 AA compliance and automated test commands.
+- **[Support](SUPPORT.md):** Response SLAs, channels, and office hours.
 
 Join our community on Discord to discuss features, get help, and collaborate!
 

@@ -112,7 +112,6 @@ frontend/lint_output.txt
 
 # Security reports
 bandit_report.json
-docs/security/
 
 # Runtime artifacts — NOT tracked
 backend/logs/
