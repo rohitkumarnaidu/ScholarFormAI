@@ -156,7 +156,6 @@ docs/wiki/
 /ALL_PHASES_COMPLETE.md
 /AGENTS.md
 /IMPLEMENTATION_COMPLETE.md
-/SECURITY.md
 /FINAL_RECOMMENDATIONS.md
 /ENTERPRISE_IMPLEMENTATION_FINAL.md
 
@@ -170,4 +169,25 @@ frontend/.env.template
 # MkDocs generated site
 site/
 *.db
+
+# Scratch and temporary patch scripts
+scratch/
+scratch.py
+fix_*.py
+!fix_excepts.py
+patch_*.py
+remove_*.py
+skip_*.py
+simulate_ci.py
+strip_remote.py
+clean_dup.py
+check_paths.py
+build_report.py
+revert_skips.py
+test_gr.py
+backend/scratch/
+backend/.agent_memory/
+frontend/scratch/
+frontend/scratch-*.js
+
 
