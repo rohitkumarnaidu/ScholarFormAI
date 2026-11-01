@@ -8,7 +8,9 @@ on:
 
 jobs:
   a11y:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    env:
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
     defaults:
       run:
         working-directory: frontend
