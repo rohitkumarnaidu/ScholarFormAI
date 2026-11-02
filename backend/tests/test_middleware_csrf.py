@@ -29,7 +29,7 @@ class TestGetCsrfSecret:
             from app.middleware.csrf import _get_csrf_secret
 
             secret = _get_csrf_secret()
-            assert b"csrf-fallback" in secret
+            assert secret is None
 
 
 class TestGenerateCsrfToken:
