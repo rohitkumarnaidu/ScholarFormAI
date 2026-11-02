@@ -290,6 +290,48 @@ class DocumentService:
             raise DatabaseUnavailableError(f"Failed to list documents: {e}") from e
 
     @classmethod
+    async def search_documents(
+        cls,
+        query: str,
+        user_id: str,
+        limit: int = 50,
+        offset: int = 0,
+    ) -> list[dict[str, Any]]:
+        """Search documents by filename or content matching query string."""
+        user_id = str(user_id)
+        sb = get_supabase_client()
+        if sb is None:
+            logger.error("search_documents: Supabase client not available.", extra=log_extra())
+            raise DatabaseUnavailableError("Supabase client is not configured.")
+
+        def run_query():
+            client = get_supabase_client()
+            q = (
+                client.table("documents")
+                .select("*")
+                .eq("user_id", str(user_id))
+                .ilike("filename", f"%{query}%")
+                .order("created_at", desc=True)
+                .range(offset, offset + limit - 1)
+            )
+            return q.execute()
+
+        try:
+            result = await asyncio.to_thread(run_query)
+            if result is None:
+                return []
+            data = (
+                result.data if hasattr(result, "data") else (result.get("data") if isinstance(result, dict) else result)
+            )
+            return data or []
+        except APIError as e:
+            logger.error("search_documents(user=%s, query=%s) failed: %s", user_id, query, e, extra=log_extra())
+            raise DatabaseUnavailableError(f"Failed to search documents: {e}") from e
+        except Exception as e:
+            logger.error("search_documents(user=%s, query=%s) failed: %s", user_id, query, e, extra=log_extra())
+            raise DatabaseUnavailableError(f"Failed to search documents: {e}") from e
+
+    @classmethod
     async def count_documents(
         cls,
         user_id: str,
