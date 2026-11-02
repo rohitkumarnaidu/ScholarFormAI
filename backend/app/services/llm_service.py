@@ -72,6 +72,11 @@ from app.services.llm_provider_service import (
 logger = logging.getLogger(__name__)
 
 try:
+    from litellm import completion  # noqa: F401
+except ImportError:
+    completion = None
+
+try:
     import pybreaker  # noqa: F401
 except ImportError:
     pybreaker = None
@@ -93,6 +98,7 @@ __all__ = [
     "MAX_LLM_INPUT_LENGTH",
     "settings",
     "pybreaker",
+    "completion",
     "_call_with_provider_circuit",
     "_breaker_enabled",
     "_breaker_fail_max",
