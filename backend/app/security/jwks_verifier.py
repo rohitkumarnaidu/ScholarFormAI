@@ -147,7 +147,7 @@ def verify_jwt(token: str) -> dict:
             if _resolve_jwks_url() is not None:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="HS256 tokens not allowed when JWKS is configured",
+                    detail="Invalid token: HS256 tokens not allowed when JWKS is configured",
                     headers={"WWW-Authenticate": "Bearer"},
                 )
             return _decode_with_secret(token, expected_issuer=expected_issuer)
