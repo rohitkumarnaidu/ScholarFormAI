@@ -964,7 +964,7 @@ class TestMonitoringMiddlewareExtra:
 
         with patch("app.middleware.monitoring.logger") as mock_log:
             asyncio.run(mw.dispatch(request, call_next))
-            assert "custom-id-123" in mock_log.info.call_args_list[0][0][0]
+            assert any("custom-id-123" in str(arg) for arg in mock_log.info.call_args_list[0][0])
 
     def test_dispatch_handles_missing_request_id(self):
         from app.middleware.monitoring import MonitoringMiddleware
@@ -979,7 +979,7 @@ class TestMonitoringMiddlewareExtra:
 
         with patch("app.middleware.monitoring.logger") as mock_log:
             asyncio.run(mw.dispatch(request, call_next))
-            assert "unknown" in mock_log.info.call_args_list[0][0][0]
+            assert any("unknown" in str(arg) for arg in mock_log.info.call_args_list[0][0])
 
     def test_dispatch_sets_timing_headers(self):
         from app.middleware.monitoring import MonitoringMiddleware
