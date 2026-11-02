@@ -184,10 +184,12 @@ class TestNvidiaClientValidateTemplateComplianceBranches:
 
 class TestNvidiaClientGetClientDeep:
     def test_reuses_instance(self):
-        from app.services.nvidia_client import _nvidia_client, get_nvidia_client
+        from app.services.nvidia_client import get_nvidia_client
 
-        _nvidia_client = None
         mock_instance = MagicMock()
-        with patch("app.services.nvidia_client.NvidiaClient", return_value=mock_instance):
-            c1 = get_nvidia_client()
-        assert c1 is mock_instance
+        with patch("app.services.nvidia_client._nvidia_client", None):
+            with patch("app.services.nvidia_client.NvidiaClient", return_value=mock_instance):
+                c1 = get_nvidia_client()
+                assert c1 is mock_instance
+                c2 = get_nvidia_client()
+                assert c2 is c1
