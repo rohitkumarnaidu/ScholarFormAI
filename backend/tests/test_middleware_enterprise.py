@@ -619,7 +619,7 @@ class TestJWKSVerifier:
         with (
             patch("app.security.jwks_verifier.settings.SUPABASE_JWT_SECRET", "test-secret"),
             patch("app.security.jwks_verifier.settings.ALGORITHM", "HS256"),
-            patch("app.security.jwks_verifier.settings.SUPABASE_URL", "https://project.supabase.co"),
+            patch("app.security.jwks_verifier.settings.SUPABASE_URL", None),
             patch("jwt.get_unverified_header", return_value={"alg": "HS256"}),
             patch("jwt.decode", return_value={"sub": "user-123"}),
         ):
