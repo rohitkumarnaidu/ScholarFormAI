@@ -8,6 +8,7 @@ General monitoring middleware for logging and tracing.
 import logging
 import time
 from collections.abc import Callable
+from uuid import uuid4
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -22,7 +23,17 @@ class MonitoringMiddleware(BaseHTTPMiddleware):
     """
 
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
-        request_id = getattr(request.state, "request_id", "unknown")
+        request_id = getattr(request.state, "request_id", None)
+        if not request_id:
+            headers = getattr(request, "headers", None)
+            if headers is not None:
+                request_id = headers.get("x-request-id") or headers.get("X-Request-Id") or str(uuid4())
+                try:
+                    request.state.request_id = request_id
+                except Exception:
+                    pass
+            else:
+                request_id = "unknown"
         start_time = time.time()
 
         logger.info("Request started: %s %s [ID: %s]", request.method, request.url.path, request_id)
@@ -41,6 +52,12 @@ class MonitoringMiddleware(BaseHTTPMiddleware):
             )
 
             response.headers["X-Processing-Time"] = str(duration)
+            if (
+                request_id != "unknown"
+                and "x-request-id" not in response.headers
+                and "X-Request-Id" not in response.headers
+            ):
+                response.headers["X-Request-Id"] = request_id
             return response
 
         except Exception as e:
