@@ -44,13 +44,10 @@ EXEMPT_PATH_PREFIXES = (
 
 
 def _get_csrf_secret() -> bytes | None:
-    secret = (
-        getattr(settings, "CSRF_SECRET", None)
-        or getattr(settings, "SIGNED_URL_SECRET", None)
-        or getattr(settings, "SUPABASE_JWT_SECRET", None)
-    )
-    if secret:
-        return secret.encode("utf-8")
+    for attr in ("CSRF_SECRET", "SIGNED_URL_SECRET", "SUPABASE_JWT_SECRET"):
+        val = getattr(settings, attr, None)
+        if isinstance(val, (str, bytes)) and val:
+            return val.encode("utf-8") if isinstance(val, str) else val
     logger.critical(
         "CSRF secret not configured. Set SIGNED_URL_SECRET or SUPABASE_JWT_SECRET. CSRF validation will be skipped."
     )
