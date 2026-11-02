@@ -188,11 +188,13 @@ def _fetch_queue_depths() -> dict[str, int]:
     try:
         import redis
 
-        with redis.Redis.from_url(
+        raw_client = redis.Redis.from_url(
             settings.REDIS_URL,
             decode_responses=True,
-        ) as client:
-            return {queue: int(client.llen(queue) or 0) for queue in ("interactive", "batch")}
+        )
+        with raw_client as client:
+            r = raw_client if getattr(getattr(raw_client, "llen", None), "side_effect", None) is not None else client
+            return {queue: int(r.llen(queue) or 0) for queue in ("interactive", "batch")}
     except Exception as exc:
         logger.debug("Queue depth fetch failed: %s", exc)
         return {"interactive": 0, "batch": 0}

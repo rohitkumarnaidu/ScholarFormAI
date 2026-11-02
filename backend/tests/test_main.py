@@ -277,6 +277,7 @@ class TestFetchQueueDepths:
 
         _m._queue_depth_redis_client = None
         mock_redis = MagicMock()
+        mock_redis.__enter__.return_value = mock_redis
         mock_redis.llen.side_effect = [3, 7]
         with (
             patch("app.main.settings.REDIS_ENABLED", True),
