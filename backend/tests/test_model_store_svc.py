@@ -26,6 +26,7 @@ class TestModelStore:
         from app.services.model_store import ModelStore
 
         store = ModelStore()
+        store._models.pop("y", None)
         store.set_model("x", 1)
         assert store.is_loaded("x") is True
         assert store.is_loaded("y") is False
