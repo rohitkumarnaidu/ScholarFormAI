@@ -64,6 +64,47 @@ except Exception:
     get_remote_address = None  # type: ignore[assignment]
     SLOWAPI_AVAILABLE = False
 
+try:
+    import sentry_sdk
+
+    SENTRY_AVAILABLE = True
+except ImportError:
+    sentry_sdk = None  # type: ignore[assignment]
+    SENTRY_AVAILABLE = False
+
+
+def _sentry_before_send(event: dict, hint: dict) -> dict | None:
+    if "exc_info" in hint and hint["exc_info"]:
+        exc_type = hint["exc_info"][0]
+        if exc_type is not None:
+            from asyncio import CancelledError
+
+            try:
+                if issubclass(exc_type, (CancelledError, KeyboardInterrupt)):
+                    return None
+            except TypeError:
+                pass
+    if "exception" in event and "values" in event["exception"]:
+        for exc in event["exception"]["values"]:
+            if exc.get("type") in ("CancelledError", "KeyboardInterrupt"):
+                return None
+    return event
+
+
+def _init_sentry() -> None:
+    if not SENTRY_AVAILABLE or sentry_sdk is None:
+        return None
+    if not getattr(settings, "SENTRY_DSN", None):
+        return None
+    sentry_sdk.init(
+        dsn=settings.SENTRY_DSN,
+        environment=getattr(settings, "ENVIRONMENT", "development"),
+        before_send=_sentry_before_send,
+    )
+
+
+_init_sentry()
+
 # --------------------------------------------------------
 
 
