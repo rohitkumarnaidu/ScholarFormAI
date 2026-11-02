@@ -43,8 +43,12 @@ EXEMPT_PATH_PREFIXES = (
 )
 
 
-def _get_csrf_secret() -> bytes:
-    secret = getattr(settings, "SIGNED_URL_SECRET", None) or getattr(settings, "SUPABASE_JWT_SECRET", None)
+def _get_csrf_secret() -> bytes | None:
+    secret = (
+        getattr(settings, "CSRF_SECRET", None)
+        or getattr(settings, "SIGNED_URL_SECRET", None)
+        or getattr(settings, "SUPABASE_JWT_SECRET", None)
+    )
     if secret:
         return secret.encode("utf-8")
     logger.critical(
@@ -53,14 +57,17 @@ def _get_csrf_secret() -> bytes:
     return None
 
 
-def generate_csrf_token() -> str:
-    """Generate a CSRF token: timestamped HMAC of a random value."""
+def generate_csrf_token(user_id: str | None = None) -> str:
+    """Generate a CSRF token: timestamped HMAC of a random value, optionally bound to user_id."""
     secret = _get_csrf_secret()
     if not secret:
         return ""
     raw = secrets.token_hex(32)
     timestamp = str(int(time.time()))
-    message = f"{timestamp}:{raw}"
+    if user_id:
+        message = f"{timestamp}:{raw}:{user_id}"
+    else:
+        message = f"{timestamp}:{raw}"
     signature = hmac.new(
         secret,
         message.encode("utf-8"),
@@ -69,20 +76,28 @@ def generate_csrf_token() -> str:
     return f"{message}:{signature}"
 
 
-def validate_csrf_token(token: str) -> bool:
-    """Validate a CSRF token: check signature and expiry."""
+def validate_csrf_token(token: str, user_id: str | None = None) -> bool:
+    """Validate a CSRF token: check signature, user_id, and expiry."""
     secret = _get_csrf_secret()
     if not secret:
         return True
 
-    if not token:
+    if not token or not isinstance(token, str):
         return False
 
     parts = token.split(":")
-    if len(parts) != 3:
+    if len(parts) == 3:
+        if user_id is not None:
+            return False
+        timestamp_str, raw, provided_signature = parts
+        message = f"{timestamp_str}:{raw}"
+    elif len(parts) == 4:
+        timestamp_str, raw, token_user_id, provided_signature = parts
+        if user_id != token_user_id:
+            return False
+        message = f"{timestamp_str}:{raw}:{token_user_id}"
+    else:
         return False
-
-    timestamp_str, raw, provided_signature = parts
 
     try:
         timestamp = int(timestamp_str)
@@ -92,7 +107,6 @@ def validate_csrf_token(token: str) -> bool:
     if time.time() - timestamp > CSRF_TOKEN_EXPIRY_SECONDS:
         return False
 
-    message = f"{timestamp_str}:{raw}"
     expected_signature = hmac.new(
         secret,
         message.encode("utf-8"),
