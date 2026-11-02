@@ -204,8 +204,10 @@ def setup_logging() -> logging.Logger:
         from app.config.settings import settings
 
         if settings.ENABLE_STRUCTURED_LOGGING:
-            config["formatters"]["json"] = {"()": "app.config.logging_config.JsonFormatter"}
-            config["handlers"]["console"]["formatter"] = "json"
+            if "formatters" in config:
+                config["formatters"]["json"] = {"()": "app.config.logging_config.JsonFormatter"}
+            if "handlers" in config and "console" in config["handlers"]:
+                config["handlers"]["console"]["formatter"] = "json"
         logging.config.dictConfig(config)
         _logging_initialized = True
     except Exception as exc:

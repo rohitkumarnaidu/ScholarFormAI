@@ -35,13 +35,7 @@ jobs:
             python -m build
             cd ..
             for whl in $dir/dist/*.whl; do
-              digests=$(echo "$digests" | python -c "
-import json, sys, hashlib
-d = json.load(sys.stdin)
-h = hashlib.sha256(open('$whl','rb').read()).hexdigest()
-d.append({'file': '$whl', 'hash': f'sha256:$h'})
-print(json.dumps(d))
-")
+              digests=$(echo "$digests" | python -c "import json, sys, hashlib; d = json.load(sys.stdin); h = hashlib.sha256(open('$whl','rb').read()).hexdigest(); d.append({'file': '$whl', 'hash': f'sha256:{h}'}); print(json.dumps(d))")
             done
           done
           echo "digests=$digests" >> $GITHUB_OUTPUT
