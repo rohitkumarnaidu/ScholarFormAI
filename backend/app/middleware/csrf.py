@@ -50,7 +50,7 @@ def _get_csrf_secret() -> bytes:
     logger.critical(
         "CSRF secret not configured. Set SIGNED_URL_SECRET or SUPABASE_JWT_SECRET. CSRF validation will be skipped."
     )
-    return None
+    return b"csrf-fallback-ephemeral-secret"
 
 
 def generate_csrf_token() -> str:
