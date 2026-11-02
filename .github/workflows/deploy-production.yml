@@ -177,11 +177,21 @@ jobs:
           PROJECT_NAME=$(echo "$RESPONSE" | grep -v "HTTP_STATUS" | python3 -c "import sys,json; print(json.load(sys.stdin).get('name','unknown'))" 2>/dev/null || echo "unknown")
           echo "Vercel project '${PROJECT_NAME}' (${VERCEL_PROD_PROJECT_ID}) exists."
 
+      - name: Set up Python for database migrations
+        if: steps.preflight.outputs.ready == 'true'
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version: "3.12"
+
       - name: Run database migrations
         if: steps.preflight.outputs.ready == 'true'
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
+          if [ -z "${DATABASE_URL}" ]; then
+            echo "::warning::DATABASE_URL not configured. Skipping database migrations."
+            exit 0
+          fi
           cd backend
           pip install -r requirements-render.txt
           alembic upgrade head
