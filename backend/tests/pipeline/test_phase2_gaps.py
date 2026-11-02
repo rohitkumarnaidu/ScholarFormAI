@@ -86,27 +86,20 @@ class TestEquationStandardizerGaps:
 
         assert result
 
-    def test_omml_namespace_not_found(self, caplog):
+    def test_omml_namespace_not_found(self):
         """Lines 100-101: nsmap has NO default ns key and OMML ns absent -> debug log."""
-        import logging
-
-        caplog.set_level(logging.DEBUG)
         import lxml.etree as etree
-
         from app.pipeline.equations.standardizer import EquationStandardizer
-
         s = EquationStandardizer()
         fake_dom = MagicMock(spec=etree._Element)
-        # nsmap lacks None key (no default namespace) AND lacks OMML URI -> line 101
         fake_dom.nsmap = {"m": "http://bogus"}
-
-        with patch.object(s, "_xslt", MagicMock()) as mock_xslt:
-            mock_xslt.return_value = etree.fromstring("<math><mi>x</mi></math>")
-            with patch("app.pipeline.equations.standardizer.etree.fromstring", return_value=fake_dom):
-                result = s._convert_omml_to_mathml("<m:oMath><m:r><m:t>x</m:t></m:r></m:oMath>")
-
-        assert result
-        assert any("OMML namespace not found" in msg for msg in caplog.messages)
+        with patch("app.pipeline.equations.standardizer.logger.debug") as mock_debug:
+            with patch.object(s, "_xslt", MagicMock()) as mock_xslt:
+                mock_xslt.return_value = etree.fromstring("<math><mi>x</mi></math>")
+                with patch("app.pipeline.equations.standardizer.etree.fromstring", return_value=fake_dom):
+                    result = s._convert_omml_to_mathml("<m:oMath><m:r><m:t>x</m:t></m:r></m:oMath>")
+            assert result
+            assert any("OMML namespace not found" in str(call) for call in mock_debug.call_args_list)
 
     def test_generic_exception_in_conversion(self):
         """Lines 109-111: a non-XMLSyntaxError exception during xslt transform."""
