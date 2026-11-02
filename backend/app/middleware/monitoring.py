@@ -81,11 +81,6 @@ class MonitoringMiddleware(BaseHTTPMiddleware):
         except Exception as e:
             duration = time.time() - start_time
             logger.error(
-                "Request failed: %s %s Error: %s Duration: %.3fs [ID: %s]",
-                request.method,
-                request.url.path,
-                str(e),
-                duration,
-                request_id,
+                f"Request failed: {request.method} {request.url.path} Error: {e} Duration: {duration:.3f}s [ID: {request_id}]"
             )
             raise e
