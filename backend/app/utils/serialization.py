@@ -16,6 +16,8 @@ from typing import Any
 
 def sanitize_for_json(value: Any) -> Any:
     """Recursively sanitize values so they are JSON-serializable."""
+    if type(value) in (str, int, float, bool) or value is None:
+        return value
     if isinstance(value, dict):
         return {str(key): sanitize_for_json(val) for key, val in value.items()}
     if isinstance(value, list):

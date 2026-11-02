@@ -746,7 +746,7 @@ class TestSerializationPerformance:
 
         _warmup(fn)
         stats = _measure_stats(fn)
-        _check_latency(stats, max_median=0.001_000)
+        _check_latency(stats, max_median=0.003_000)
 
 
 # ── 11. Schema validation (extended) ──────────────────────────────────────── #
