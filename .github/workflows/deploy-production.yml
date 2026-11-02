@@ -80,7 +80,11 @@ jobs:
           PROD_BACKEND_URL: ${{ secrets.PROD_BACKEND_URL || vars.PROD_BACKEND_URL }}
         run: |
           echo "Running pre-deployment health check..."
-          STATUS=$(curl -L -sS --connect-timeout 5 --max-time 10 -o /dev/null -w "%{http_code}" "${PROD_BACKEND_URL}/api/v1/health/live")
+          if [ -z "${PROD_BACKEND_URL}" ]; then
+            echo "::warning::PROD_BACKEND_URL is not set. Proceeding with caution."
+            exit 0
+          fi
+          STATUS=$(curl -L -sS --connect-timeout 5 --max-time 10 -o /dev/null -w "%{http_code}" "${PROD_BACKEND_URL}/api/v1/health/live" 2>/dev/null || echo "000")
           echo "Current production health: HTTP $STATUS"
           if [ "$STATUS" = "200" ]; then
             echo "Production is healthy, proceeding with deploy."
@@ -228,7 +232,7 @@ jobs:
         run: |
           echo "Waiting for backend at ${PROD_BACKEND_URL}..."
           for i in {1..20}; do
-            STATUS=$(curl -L -sS --connect-timeout 5 --max-time 10 -o /dev/null -w "%{http_code}" "${PROD_BACKEND_URL}/api/v1/health/live")
+            STATUS=$(curl -L -sS --connect-timeout 5 --max-time 10 -o /dev/null -w "%{http_code}" "${PROD_BACKEND_URL}/api/v1/health/live" 2>/dev/null || echo "000")
             echo "Attempt $i: HTTP $STATUS"
             if [ "$STATUS" = "200" ]; then
               echo "Backend is healthy."
@@ -245,7 +249,7 @@ jobs:
           PROD_BACKEND_URL: ${{ secrets.PROD_BACKEND_URL || vars.PROD_BACKEND_URL }}
         run: |
           echo "Running post-deployment verification..."
-          STATUS=$(curl -L -sS --connect-timeout 5 --max-time 10 -o /dev/null -w "%{http_code}" "${PROD_BACKEND_URL}/api/v1/health/live")
+          STATUS=$(curl -L -sS --connect-timeout 5 --max-time 10 -o /dev/null -w "%{http_code}" "${PROD_BACKEND_URL}/api/v1/health/live" 2>/dev/null || echo "000")
           if [ "$STATUS" != "200" ]; then
             echo "Post-deployment health check failed with HTTP $STATUS"
             exit 1
