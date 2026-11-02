@@ -23,17 +23,35 @@ class MonitoringMiddleware(BaseHTTPMiddleware):
     """
 
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
-        request_id = getattr(request.state, "request_id", None)
-        if not request_id:
-            headers = getattr(request, "headers", None)
-            if headers is not None:
-                request_id = headers.get("x-request-id") or headers.get("X-Request-Id") or str(uuid4())
-                try:
-                    request.state.request_id = request_id
-                except Exception:
-                    pass
-            else:
-                request_id = "unknown"
+        req_headers = getattr(request, "headers", None)
+        header_id = None
+        if req_headers is not None and hasattr(req_headers, "get"):
+            val = req_headers.get("x-request-id") or req_headers.get("X-Request-Id")
+            if isinstance(val, str) and val:
+                header_id = val
+
+        state = getattr(request, "state", None)
+        state_id = None
+        if state is not None:
+            raw_state_id = getattr(state, "request_id", None)
+            if isinstance(raw_state_id, str) and raw_state_id:
+                state_id = raw_state_id
+
+        if header_id:
+            request_id = header_id
+        elif state_id:
+            request_id = state_id
+        elif req_headers is not None:
+            request_id = str(uuid4())
+        else:
+            request_id = "unknown"
+
+        if state is not None and request_id != "unknown":
+            try:
+                state.request_id = request_id
+            except Exception:
+                pass
+
         start_time = time.time()
 
         logger.info("Request started: %s %s [ID: %s]", request.method, request.url.path, request_id)
