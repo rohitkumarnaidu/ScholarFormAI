@@ -144,10 +144,7 @@ async def run_enveloped(
             request,
             status_code=500,
             code="INTERNAL_SERVER_ERROR",
-            message=(
-                "An internal error occurred. Please try again or contact support."
-                f" Request ID: {request_id}"
-            ),
+            message=(f"An internal error occurred. Please try again or contact support. Request ID: {request_id}"),
         )
 
     if isinstance(result, Response):
