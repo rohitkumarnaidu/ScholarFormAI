@@ -255,7 +255,6 @@ pyclipper==1.4.0
 pycparser==3.12
 pydantic==2.13.4
 pydantic-settings>=2.14.2
-pydantic_core>=2.47.0
 pydash==8.1.0
 pydeck==0.9.3
 pydyf==0.13.0

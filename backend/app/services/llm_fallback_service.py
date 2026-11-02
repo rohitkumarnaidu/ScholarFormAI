@@ -272,6 +272,10 @@ def generate_with_model(
 
 
 def _call_litellm_completion(**kwargs):
+    svc = _llm_service_module()
+    comp = getattr(svc, "completion", None)
+    if comp is not None:
+        return comp(**kwargs)
     from litellm import completion
 
     return completion(**kwargs)
