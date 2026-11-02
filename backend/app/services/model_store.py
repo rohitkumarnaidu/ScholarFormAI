@@ -33,6 +33,10 @@ class ModelStore:
         """Check if a model is registered."""
         return key in self._models
 
+    def clear(self):
+        """Clear all registered models."""
+        self._models.clear()
+
 
 # Global singleton
 model_store = ModelStore()

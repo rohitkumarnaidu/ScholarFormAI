@@ -33,3 +33,4 @@ class TestModelStore:
         assert store.is_loaded("y") is False
         store.set_model("y", 100)
         assert store.is_loaded("y") is True
+        store._models.pop("y", None)
