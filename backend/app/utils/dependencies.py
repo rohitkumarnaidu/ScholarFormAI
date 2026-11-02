@@ -197,4 +197,3 @@ async def verify_document_access(document_id: str, user: User) -> bool:
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Unable to verify document access.",
         ) from exc
-
