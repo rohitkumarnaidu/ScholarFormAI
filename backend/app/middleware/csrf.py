@@ -75,11 +75,11 @@ def generate_csrf_token(user_id: str | None = None) -> str:
 
 def validate_csrf_token(token: str, user_id: str | None = None) -> bool:
     """Validate a CSRF token: check signature, user_id, and expiry."""
+    if not token or not isinstance(token, str):
+        return False
+
     secret = _get_csrf_secret()
     if not secret:
-        return True
-
-    if not token or not isinstance(token, str):
         return False
 
     parts = token.split(":")
