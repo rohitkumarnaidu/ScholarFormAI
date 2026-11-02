@@ -31,14 +31,15 @@ class TestAuthServiceMutations:
         result = await AuthService.login("nonexistent@test.com", "any-password")
         assert result is not None
 
-    def test_mutation_remove_token_validation(self):
+    @pytest.mark.asyncio
+    async def test_mutation_remove_token_validation(self):
         with patch("app.services.auth_service.supabase") as mock_supabase:
             mock_auth = MagicMock()
             mock_supabase.auth = mock_auth
             mock_auth.sign_up.return_value = {"user": {"id": "test"}}
             from app.services.auth_service import AuthService
 
-            result = AuthService.signup("test@test.com", "validpassword123!", "Test User", "Test Inst")
+            result = await AuthService.signup("test@test.com", "validpassword123!", "Test User", "Test Inst")
             assert result is not None
 
 
@@ -54,10 +55,14 @@ class TestDocumentServiceMutations:
 
     @pytest.mark.asyncio
     async def test_mutation_remove_ownership_check(self):
-        with patch("app.services.document_service.get_supabase_client") as mock_get:
+        with patch("app.services.document_service.get_supabase_client") as mock_get_svc, \
+             patch("app.services.document_share_service.get_supabase_client") as mock_get_share:
             mock_client = MagicMock()
-            mock_get.return_value = mock_client
-            mock_client.table().select().eq().maybe_single().execute.return_value = MagicMock(data={"id": "doc1"})
+            mock_get_svc.return_value = mock_client
+            mock_get_share.return_value = mock_client
+            mock_select = mock_client.table.return_value.select.return_value
+            mock_select.eq.return_value = mock_select
+            mock_select.maybe_single.return_value.execute.return_value = MagicMock(data={"id": "doc1"})
             from app.services.document_service import DocumentService
 
             result = await DocumentService.check_document_access("doc1", "user1")
