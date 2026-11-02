@@ -203,10 +203,10 @@ def sanitize_for_llm(text: str) -> str:
     """Sanitize user-provided text before sending to LLM."""
     if not text:
         return text
-    for pattern in _INJECTION_PATTERNS:
-        text = pattern.sub("[CONTENT_FILTERED]", text)
     if len(text) > MAX_LLM_INPUT_LENGTH:
         text = text[:MAX_LLM_INPUT_LENGTH] + "\n[... content truncated for safety ...]"
+    for pattern in _INJECTION_PATTERNS:
+        text = pattern.sub("[CONTENT_FILTERED]", text)
     return text
 
 
