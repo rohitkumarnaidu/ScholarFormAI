@@ -166,7 +166,8 @@ def reset_rate_limit_state():
     Gracefully skipped if the app module cannot be loaded.
     """
     try:
-        from app.main import app
+        from app.main import app, _load_optional_routers
+        _load_optional_routers(app)
     except (ImportError, TypeError):
         yield
         return

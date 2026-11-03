@@ -310,6 +310,7 @@ def _load_optional_routers(target_app: FastAPI) -> None:
     target_app.include_router(v2_router, prefix="/api/v2")
     target_app.include_router(preview.router)
     target_app.state._routers_loaded = True
+    target_app.middleware_stack = None
     logger.info("Startup: API routers loaded.")
 
 
