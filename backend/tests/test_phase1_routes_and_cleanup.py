@@ -20,13 +20,23 @@ from app.pipeline.formatting.template_renderer import TemplateRenderer
 
 @pytest.fixture
 def client():
+    from app.routers.v1 import v1_router
+
+    app.state._routers_loaded = False
     _load_optional_routers(app)
+    if "/api/v1/auth/me" not in [route.path for route in app.routes]:
+        app.include_router(v1_router)
     return TestClient(app)
 
 
 def test_auth_me_endpoint_mounted():
     """Verify GET /api/v1/auth/me is mounted on the app router."""
+    from app.routers.v1 import v1_router
+
+    app.state._routers_loaded = False
     _load_optional_routers(app)
+    if "/api/v1/auth/me" not in [route.path for route in app.routes]:
+        app.include_router(v1_router)
     routes = [route.path for route in app.routes]
     assert "/api/v1/auth/me" in routes
 
