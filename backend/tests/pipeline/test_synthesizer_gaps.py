@@ -9,14 +9,9 @@ and error paths not tested in existing deep suites.
 from __future__ import annotations
 
 import json
-import sys
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
-# Break circular imports
-sys.modules["app.routers.v1.generator"] = MagicMock()
-sys.modules["app.routers.v1.synthesis"] = MagicMock()
 
 
 def _make_synthesizer(**kwargs):
