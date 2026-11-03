@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import logging
 
 import stripe
@@ -34,11 +36,34 @@ def _get_user_id_from_metadata(obj: dict) -> str | None:
     return None
 
 
-def _lookup_user_id_by_customer(customer_id: str | None) -> str | None:
-    if not customer_id:
+def _lookup_user_id_by_customer(sb_or_customer: Any = None, customer_id: str | None = None) -> str | None:
+    if customer_id is not None or (sb_or_customer is not None and not isinstance(sb_or_customer, str)):
+        sb = sb_or_customer
+        cid = customer_id
+    else:
+        sb = None
+        cid = sb_or_customer
+
+    if not cid:
         return None
-    repo = ProfileRepository()
-    return repo.get_user_id_by_stripe_customer_id(customer_id)
+
+    if sb is not None:
+        try:
+            res = sb.table("profiles").select("id").eq("stripe_customer_id", cid).maybe_single().execute()
+            if res and getattr(res, "data", None):
+                if isinstance(res.data, dict):
+                    return res.data.get("id")
+                if isinstance(res.data, list) and len(res.data) > 0:
+                    return res.data[0].get("id")
+        except Exception:
+            return None
+        return None
+
+    try:
+        repo = ProfileRepository()
+        return repo.get_user_id_by_stripe_customer_id(cid)
+    except Exception:
+        return None
 
 
 def _legacy_profile_updates(updates: dict) -> dict:
