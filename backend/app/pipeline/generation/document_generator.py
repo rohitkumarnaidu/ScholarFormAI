@@ -20,7 +20,6 @@ from app.config.settings import settings
 from app.db.repositories.document_repository import DocumentRepository  # noqa: F401
 from app.db.repositories.generator_session_repository import GeneratorSessionRepository
 from app.db.supabase_client import get_supabase_client  # noqa: F401
-from app.routers.v1.stream import emit_event  # noqa: F401
 from app.models.block import Block, BlockType
 from app.models.pipeline_document import DocumentMetadata, PipelineDocument, TemplateInfo
 from app.pipeline.export.exporter import Exporter
@@ -29,6 +28,13 @@ from app.pipeline.generation.content_parser import ContentParser
 from app.pipeline.generation.prompt_builder import PromptBuilder
 from app.services.document_service import DocumentService
 from app.utils.singleton import get_or_create
+
+
+def emit_event(job_id: str, event_type: str, data: dict[str, Any]) -> None:
+    from app.routers.v1.stream import emit_event as _stream_emit_event
+
+    _stream_emit_event(job_id, event_type, data)
+
 
 logger = logging.getLogger(__name__)
 
