@@ -489,7 +489,9 @@ class PipelineOrchestrator:
                     .execute()
                 )
                 if existing and getattr(existing, "data", None):
-                    sb.table("processing_status").update(status_data).eq("document_id", document_id).eq("phase", phase).execute()
+                    sb.table("processing_status").update(status_data).eq("document_id", document_id).eq(
+                        "phase", phase
+                    ).execute()
                 else:
                     status_data["created_at"] = "now()"
                     sb.table("processing_status").insert(status_data).execute()
