@@ -8,6 +8,8 @@ Prevents mass assignment by explicitly listing editable fields.
 
 from __future__ import annotations
 
+from typing import Any
+
 from pydantic import BaseModel, Field, field_validator
 
 
@@ -16,6 +18,7 @@ class DocumentEditRequest(BaseModel):
 
     model_config = {"extra": "forbid"}
 
+    edited_structured_data: dict[str, Any] | None = Field(None, description="Updated structured document data.")
     template: str | None = Field(None, max_length=50, description="Target formatting template.")
     add_page_numbers: bool | None = Field(None, description="Whether to add page numbers.")
     add_borders: bool | None = Field(None, description="Whether to add borders.")
@@ -26,8 +29,8 @@ class DocumentEditRequest(BaseModel):
     page_size: str | None = Field(None, max_length=20, description="Page size (Letter, A4, etc.).")
     title: str | None = Field(None, max_length=500, description="Document title.")
     content: str | None = Field(None, description="Updated document content.")
-    sections: list[dict] | None = Field(None, description="Updated section structure.")
-    metadata: dict | None = Field(None, description="Document metadata updates.")
+    sections: list[dict[str, Any]] | None = Field(None, description="Updated section structure.")
+    metadata: dict[str, Any] | None = Field(None, description="Document metadata updates.")
 
     @field_validator("template")
     @classmethod
@@ -46,6 +49,19 @@ class DocumentEditRequest(BaseModel):
             raise ValueError(f"Page size must be one of: {', '.join(sorted(allowed))}")
         return v.strip()
 
-    def to_safe_dict(self) -> dict:
+    def to_safe_dict(self) -> dict[str, Any]:
         """Return only the fields that were explicitly set (non-None)."""
-        return {k: v for k, v in self.model_dump().items() if v is not None}
+        d = {k: v for k, v in self.model_dump().items() if v is not None}
+        if "edited_structured_data" not in d:
+            structured: dict[str, Any] = {}
+            if self.title is not None:
+                structured["title"] = self.title
+            if self.sections is not None:
+                structured["sections"] = self.sections
+            if self.content is not None:
+                structured["content"] = self.content
+            if self.metadata is not None:
+                structured["metadata"] = self.metadata
+            if structured:
+                d["edited_structured_data"] = structured
+        return d
