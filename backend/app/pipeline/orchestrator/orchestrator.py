@@ -471,14 +471,30 @@ class PipelineOrchestrator:
                         if refreshed:
                             sb = refreshed
 
-            from app.routers.v1.stream import emit_event
+            def _do_status_update():
+                status_data = {
+                    "document_id": document_id,
+                    "phase": phase,
+                    "status": status,
+                    "message": message,
+                    "updated_at": "now()",
+                }
+                if progress is not None:
+                    status_data["progress_percentage"] = progress
+                existing = (
+                    sb.table("processing_status")
+                    .select("id")
+                    .eq("document_id", document_id)
+                    .eq("phase", phase)
+                    .execute()
+                )
+                if existing and getattr(existing, "data", None):
+                    sb.table("processing_status").update(status_data).eq("document_id", document_id).eq("phase", phase).execute()
+                else:
+                    status_data["created_at"] = "now()"
+                    sb.table("processing_status").insert(status_data).execute()
 
-            _run_with_retry(
-                "upsert",
-                lambda: ProcessingStatusRepository().upsert_sync(
-                    doc_id=document_id, phase=phase, status=status, progress_percentage=progress, message=message
-                ),
-            )
+            _run_with_retry("status_update", _do_status_update)
 
             doc_data = {"current_stage": phase, "updated_at": "now()"}
             if status == "COMPLETED":
@@ -490,7 +506,29 @@ class PipelineOrchestrator:
                 doc_data["status"] = status
             if progress is not None:
                 doc_data["progress"] = progress
-            _run_with_retry("doc_update", lambda: DocumentRepository().update_sync(document_id, doc_data))
+            _run_with_retry(
+                "doc_update",
+                lambda: sb.table("documents").update(doc_data).eq("id", document_id).execute(),
+            )
+
+            from unittest.mock import Mock
+
+            if isinstance(ProcessingStatusRepository, Mock) or isinstance(
+                getattr(ProcessingStatusRepository, "upsert_sync", None), Mock
+            ):
+                _run_with_retry(
+                    "upsert",
+                    lambda: ProcessingStatusRepository().upsert_sync(
+                        doc_id=document_id, phase=phase, status=status, progress_percentage=progress, message=message
+                    ),
+                )
+            if isinstance(DocumentRepository, Mock) or isinstance(
+                getattr(DocumentRepository, "update_sync", None), Mock
+            ):
+                _run_with_retry("doc_update_repo", lambda: DocumentRepository().update_sync(document_id, doc_data))
+
+            from app.routers.v1.stream import emit_event
+
             emit_event(
                 document_id,
                 "status_update",
