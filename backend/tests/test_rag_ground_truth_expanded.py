@@ -96,7 +96,7 @@ EXPANDED_GROUND_TRUTH = [
     {
         "query": "figure resolution & table formatting && (Elsevier || IEEE) !Springer",
         "relevant_docs": [
-            {"text": "Elsevier requires figures at minimum 300 DPI resolution.", "relevance": 3},
+            {"text": "Elsevier figure guidelines specify minimum 300 DPI for halftone illustrations.", "relevance": 3},
             {"text": "IEEE requires 600 DPI for line art figures, 300 DPI for photographs.", "relevance": 3},
             {"text": "Elsevier tables should be numbered consecutively with Arabic numerals.", "relevance": 2},
         ],
@@ -137,7 +137,10 @@ EXPANDED_GROUND_TRUTH = [
     {
         "query": "Compare figure resolution requirements between IEEE, Elsevier, and Springer",
         "relevant_docs": [
-            {"text": "Elsevier requires figures at minimum 300 DPI resolution.", "relevance": 3},
+            {
+                "text": "Elsevier figure resolution standards require at least 300 DPI for photographic images.",
+                "relevance": 3,
+            },
             {"text": "IEEE requires 600 DPI for line art and 300 DPI for photographs.", "relevance": 3},
             {"text": "Springer recommends 400-600 DPI for figures in print publications.", "relevance": 2},
         ],
@@ -448,7 +451,10 @@ class TestExpandedGroundTruthDataset:
     @pytest.mark.ai_quality
     @pytest.mark.rag
     def test_combined_dataset_reaches_fifty_plus(self):
-        from test_rag_ground_truth import GROUND_TRUTH as GT
+        try:
+            from test_rag_ground_truth import GROUND_TRUTH as GT
+        except ImportError:
+            from tests.test_rag_ground_truth import GROUND_TRUTH as GT
 
         combined = GT + EXPANDED_GROUND_TRUTH
         assert len(combined) >= 50, f"Combined dataset has {len(combined)} queries, expected >= 50"
