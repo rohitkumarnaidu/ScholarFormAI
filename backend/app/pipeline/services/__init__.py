@@ -13,6 +13,7 @@ This module provides clients for industry-standard tools:
 
 from .crossref_client import CrossRefClient
 from .csl_engine import CSLEngine
+from .docling_client import DoclingClient
 from .grobid_client import GROBIDClient
 
-__all__ = ["GROBIDClient", "CSLEngine", "CrossRefClient"]
+__all__ = ["GROBIDClient", "DoclingClient", "CSLEngine", "CrossRefClient"]
