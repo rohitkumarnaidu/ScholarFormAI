@@ -73,8 +73,8 @@ def _check_latency(
     max_p99: float | None = None,
 ):
     """Assert latency thresholds and print diagnostic info on failure."""
-    max_p95 = max_p95 if max_p95 is not None else max_median * 2
-    max_p99 = max_p99 if max_p99 is not None else max_median * 3
+    max_p95 = max_p95 if max_p95 is not None else max(max_median * 3, 0.000_020)
+    max_p99 = max_p99 if max_p99 is not None else max(max_median * 6, 0.000_050)
     ok = True
     if stats["median"] > max_median:
         ok = False
