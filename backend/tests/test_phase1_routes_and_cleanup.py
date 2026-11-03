@@ -20,24 +20,35 @@ from app.pipeline.formatting.template_renderer import TemplateRenderer
 
 @pytest.fixture
 def client():
-    from app.routers.v1 import v1_router
-
-    app.state._routers_loaded = False
     _load_optional_routers(app)
-    if "/api/v1/auth/me" not in [route.path for route in app.routes]:
-        app.include_router(v1_router)
     return TestClient(app)
+
+
+def _extract_all_paths(target_app) -> set[str]:
+    paths = set()
+    for route in getattr(target_app, "routes", []):
+        p = getattr(route, "path", None)
+        if p:
+            paths.add(p)
+        orig = getattr(route, "original_router", None) or getattr(route, "router", None)
+        if orig and hasattr(orig, "routes"):
+            prefix = getattr(route, "prefix", "") or ""
+            for sub in orig.routes:
+                sub_p = getattr(sub, "path", None)
+                if sub_p:
+                    paths.add(f"{prefix.rstrip('/')}/{sub_p.lstrip('/')}")
+    try:
+        schema = target_app.openapi()
+        paths.update(schema.get("paths", {}).keys())
+    except Exception:
+        pass
+    return paths
 
 
 def test_auth_me_endpoint_mounted():
     """Verify GET /api/v1/auth/me is mounted on the app router."""
-    from app.routers.v1 import v1_router
-
-    app.state._routers_loaded = False
     _load_optional_routers(app)
-    if "/api/v1/auth/me" not in [route.path for route in app.routes]:
-        app.include_router(v1_router)
-    routes = [route.path for route in app.routes]
+    routes = _extract_all_paths(app)
     assert "/api/v1/auth/me" in routes
 
 
