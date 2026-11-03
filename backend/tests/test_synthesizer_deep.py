@@ -7,14 +7,9 @@ from __future__ import annotations
 
 import asyncio
 import json
-import sys
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
-# Break circular imports: v1.generator and v1.synthesis both import from this module
-sys.modules["app.routers.v1.generator"] = MagicMock()
-sys.modules["app.routers.v1.synthesis"] = MagicMock()
 
 from app.models import Block, PipelineDocument
 from app.pipeline.synthesis.synthesizer import _REF_PATTERN, MultiDocSynthesizer, _FakeUpload
@@ -98,9 +93,9 @@ class TestFakeUpload:
         fu = _FakeUpload("test.pdf")
         assert fu.filename == "test.pdf"
 
-    def test_read(self):
+    async def test_read(self):
         fu = _FakeUpload("test.pdf")
-        result = asyncio.run(fu.read())
+        result = await fu.read()
         assert result == b""
 
 
