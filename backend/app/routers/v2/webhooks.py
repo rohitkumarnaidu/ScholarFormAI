@@ -1,11 +1,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
-from fastapi import APIRouter
+from __future__ import annotations
 
-router = APIRouter()
+from app.routers.v1.webhooks import router
 
-
-@router.get("")
-async def get_webhooks():
-    return {"message": "Not implemented"}
+__all__ = ["router"]
