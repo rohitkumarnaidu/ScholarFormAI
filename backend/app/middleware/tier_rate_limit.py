@@ -12,6 +12,7 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.cache.redis_cache import RedisCache
+from app.middleware.rbac import resolve_user_role
 from app.security.jwks_verifier import verify_jwt
 
 logger = logging.getLogger(__name__)
@@ -19,10 +20,14 @@ logger = logging.getLogger(__name__)
 
 class TierRateLimitMiddleware(BaseHTTPMiddleware):
     """
-    Tier-aware daily rate limiting for guest uploads and generation starts.
+    Tier-aware daily rate limiting for guest uploads and generation starts,
+    and per-minute rate limiting by user subscription tier for authenticated users.
 
     - Guest: 5 requests/day (UTC)
-    - Authenticated users: unlimited for now
+    - Free user: 60 requests/minute
+    - Pro user: 300 requests/minute
+    - Enterprise: 1000 requests/minute
+    - Admin: unlimited
     """
 
     def __init__(self, app, guest_daily_limit: int = 5):
@@ -51,7 +56,7 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
             "/api/v1/generator/sessions",
         }
 
-    def _get_user_id(self, request: Request) -> str | None:
+    def _get_user_payload(self, request: Request) -> dict | None:
         auth_header = request.headers.get("authorization", "")
         if not auth_header.lower().startswith("bearer "):
             return None
@@ -59,10 +64,15 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
         if not token:
             return None
         try:
-            payload = verify_jwt(token)
-            return payload.get("sub")
+            return verify_jwt(token)
         except Exception:
             return None
+
+    def _get_user_id(self, request: Request) -> str | None:
+        payload = self._get_user_payload(request)
+        if isinstance(payload, dict):
+            return payload.get("sub")
+        return None
 
     def _utc_day_key(self) -> str:
         return datetime.now(UTC).strftime("%Y%m%d")
@@ -96,9 +106,37 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
         if self._should_skip(request) or not self._is_limited_endpoint(request):
             return await call_next(request)
 
-        user_id = self._get_user_id(request)
-        if user_id:
-            return await call_next(request)
+        payload = self._get_user_payload(request)
+        if payload and isinstance(payload, dict):
+            user_id = payload.get("sub")
+            if user_id:
+                role = resolve_user_role(payload)
+                if role == "admin":
+                    return await call_next(request)
+
+                tier_limits = {
+                    "free": 60,
+                    "pro": 300,
+                    "enterprise": 1000,
+                }
+                limit = tier_limits.get(role, 60)
+                if self._redis:
+                    redis_key = f"ratelimit:user:{user_id}"
+                    try:
+                        count = self._redis.incr(redis_key)
+                        if count == 1:
+                            self._redis.expire(redis_key, 60)
+                        if count > limit:
+                            return JSONResponse(
+                                status_code=429,
+                                content={
+                                    "error": "Rate limit exceeded",
+                                    "upgrade_url": "/settings?tab=billing",
+                                },
+                            )
+                    except Exception:
+                        pass
+                return await call_next(request)
 
         client_ip = request.client.host if request.client else "unknown"
         count = self._increment_guest_count(client_ip)

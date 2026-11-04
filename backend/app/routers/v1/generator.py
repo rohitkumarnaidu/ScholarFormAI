@@ -253,6 +253,18 @@ def _assert_session_owner(session: dict[str, Any], user: Any) -> None:
         raise HTTPException(status_code=403, detail="Access denied.")
 
 
+async def verify_session_ownership(session_id: str, user_id: str) -> dict[str, Any]:
+    """Verify that a generator session exists and belongs to the specified user."""
+    if not session_id or not user_id:
+        raise HTTPException(status_code=404, detail="Session not found")
+    session = await _session_service.get_session(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    if session.get("user_id") != user_id:
+        raise HTTPException(status_code=404, detail="Session not found")
+    return session
+
+
 @router.post("/sessions", status_code=202)
 async def start_generation(
     request: Request,
