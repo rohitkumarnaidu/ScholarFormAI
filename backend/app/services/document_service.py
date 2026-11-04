@@ -627,31 +627,10 @@ class DocumentService:
 
     @classmethod
     async def get_document_result(cls, doc_id: str) -> dict[str, Any] | None:
-        doc_id = str(doc_id)
-        if not cls._should_query_document_tables(doc_id, "get_document_result"):
-            return None
-        sb = get_supabase_client()
-        if sb is None:
-            raise DatabaseUnavailableError("Supabase client is not configured.")
-
-        def run_query():
-            client = get_supabase_client()
-            return client.table("document_results").select("*").eq("document_id", str(doc_id)).maybe_single().execute()
-
-        try:
-            result = await cls._execute_with_transient_retry("get_document_result", run_query, job_id=doc_id)
-            if result is None:
-                return None
-            data = getattr(result, "data", None)
-            if data is None and isinstance(result, dict):
-                data = result.get("data")
-            return data
-        except APIError as e:
-            logger.error("get_document_result(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
-            raise DatabaseUnavailableError(f"Failed to get document result: {e}") from e
-        except Exception as e:
-            logger.error("get_document_result(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
-            raise DatabaseUnavailableError(f"Failed to get document result: {e}") from e
+        crud = getattr(cls, "_crud", None)
+        if crud is None or not hasattr(crud, "get_document_result"):
+            crud = DocumentCrudService()
+        return await crud.get_document_result(doc_id)
 
     @classmethod
     async def upsert_document_result(
@@ -660,64 +639,17 @@ class DocumentService:
         structured_data: dict[str, Any] | None = None,
         validation_results: dict[str, Any] | None = None,
     ) -> None:
-        doc_id = str(doc_id)
-        sb = get_supabase_client()
-        if sb is None:
-            logger.error("upsert_document_result: Supabase client not available.", extra=log_extra(job_id=doc_id))
-            raise DatabaseUnavailableError("Supabase client is not configured.")
-
-        payload: dict[str, Any] = {"document_id": doc_id}
-        if structured_data is not None:
-            payload["structured_data"] = structured_data
-        if validation_results is not None:
-            payload["validation_results"] = validation_results
-
-        def run_upsert():
-            client = get_supabase_client()
-            return client.table("document_results").upsert(payload).execute()
-
-        try:
-            await asyncio.to_thread(run_upsert)
-        except APIError as e:
-            logger.error("upsert_document_result(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
-            raise DatabaseUnavailableError(f"Failed to upsert document result: {e}") from e
-        except Exception as e:
-            logger.error("upsert_document_result(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
-            raise DatabaseUnavailableError(f"Failed to upsert document result: {e}") from e
+        crud = getattr(cls, "_crud", None)
+        if crud is None or not hasattr(crud, "upsert_document_result"):
+            crud = DocumentCrudService()
+        return await crud.upsert_document_result(doc_id, structured_data, validation_results)
 
     @classmethod
     async def get_processing_statuses(cls, doc_id: str) -> list[dict[str, Any]]:
-        doc_id = str(doc_id)
-        if not cls._should_query_document_tables(doc_id, "get_processing_statuses"):
-            return []
-        sb = get_supabase_client()
-        if sb is None:
-            raise DatabaseUnavailableError("Supabase client is not configured.")
-
-        def run_query():
-            client = get_supabase_client()
-            return (
-                client.table("processing_status")
-                .select("*")
-                .eq("document_id", str(doc_id))
-                .order("created_at", desc=False)
-                .execute()
-            )
-
-        try:
-            result = await cls._execute_with_transient_retry("get_processing_statuses", run_query, job_id=doc_id)
-            if result is None:
-                return []
-            data = getattr(result, "data", None)
-            if data is None and isinstance(result, dict):
-                data = result.get("data")
-            return data or []
-        except APIError as e:
-            logger.error("get_processing_statuses(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
-            raise DatabaseUnavailableError(f"Failed to get processing statuses: {e}") from e
-        except Exception as e:
-            logger.error("get_processing_statuses(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
-            raise DatabaseUnavailableError(f"Failed to get processing statuses: {e}") from e
+        crud = getattr(cls, "_crud", None)
+        if crud is None or not hasattr(crud, "get_processing_statuses"):
+            crud = DocumentCrudService()
+        return await crud.get_processing_statuses(doc_id)
 
     @classmethod
     async def upsert_processing_status(
@@ -728,34 +660,10 @@ class DocumentService:
         progress_percentage: int | None = None,
         message: str | None = None,
     ) -> None:
-        doc_id = str(doc_id)
-        sb = get_supabase_client()
-        if sb is None:
-            logger.error("upsert_processing_status: Supabase client not available.", extra=log_extra(job_id=doc_id))
-            raise DatabaseUnavailableError("Supabase client is not configured.")
-
-        payload: dict[str, Any] = {
-            "document_id": doc_id,
-            "phase": phase,
-            "status": status,
-        }
-        if progress_percentage is not None:
-            payload["progress_percentage"] = progress_percentage
-        if message is not None:
-            payload["message"] = message
-
-        def run_upsert():
-            client = get_supabase_client()
-            return client.table("processing_status").upsert(payload).execute()
-
-        try:
-            await asyncio.to_thread(run_upsert)
-        except APIError as e:
-            logger.error("upsert_processing_status(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
-            raise DatabaseUnavailableError(f"Failed to upsert processing status: {e}") from e
-        except Exception as e:
-            logger.error("upsert_processing_status(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
-            raise DatabaseUnavailableError(f"Failed to upsert processing status: {e}") from e
+        crud = getattr(cls, "_crud", None)
+        if crud is None or not hasattr(crud, "upsert_processing_status"):
+            crud = DocumentCrudService()
+        return await crud.upsert_processing_status(doc_id, phase, status, progress_percentage, message)
 
     # ── Advanced Operations (Pagination, Batch, Export) ──────────────────────
 
