@@ -10,6 +10,7 @@ from time import monotonic
 from typing import Any
 
 from app.config.settings import settings
+from app.services.scibert_gate import should_enable_scibert
 
 logger = logging.getLogger(__name__)
 

@@ -9,6 +9,7 @@ from app.models import Block
 from app.pipeline.classification.llm_classifier import get_llm_classifier
 from app.pipeline.safety import safe_function
 from app.services.classification_gate import should_enable_llm_classification
+from app.services.scibert_gate import should_enable_scibert
 from app.utils.singleton import get_or_create
 
 try:
