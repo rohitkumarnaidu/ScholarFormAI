@@ -919,6 +919,8 @@ class DocumentPipelineService:
         current_user: User | None = None,
     ) -> dict[str, Any]:
         """Handle user edits and trigger non-destructive re-formatting."""
+        require_db_fn = _get_impl_symbol("_require_db", _require_db)
+        require_db_fn()
         doc_service = _get_impl_symbol("DocumentService")
         audit_svc = _get_impl_symbol("audit_log_service", audit_log_service)
 
@@ -1112,6 +1114,8 @@ class DocumentPipelineService:
         current_user: User | None = None,
     ) -> dict[str, Any]:
         """Lightweight job summary for URL-based page hydration."""
+        require_db_fn = _get_impl_symbol("_require_db", _require_db)
+        require_db_fn()
         extract_quality_fn = _get_impl_symbol("_extract_quality_payload", _extract_quality_payload)
 
         crud_target = self._resolve_crud()
@@ -1152,6 +1156,8 @@ class DocumentPipelineService:
         current_user: User | None = None,
     ) -> dict[str, Any]:
         """Get the structured preview data for a document."""
+        require_db_fn = _get_impl_symbol("_require_db", _require_db)
+        require_db_fn()
         extract_quality_fn = _get_impl_symbol("_extract_quality_payload", _extract_quality_payload)
 
         crud_target = self._resolve_crud()

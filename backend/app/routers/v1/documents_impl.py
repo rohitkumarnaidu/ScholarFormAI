@@ -274,15 +274,16 @@ async def get_document_summary(
 async def edit_document(
     request: Request,
     job_id: str,
-    data: DocumentEditRequest,
+    data: DocumentEditRequest | dict[str, Any],
     background_tasks: BackgroundTasks,
     current_user: User = Depends(get_current_user),
 ):
     """Handle user edits and trigger non-destructive re-formatting."""
+    data_dict = data.to_safe_dict() if hasattr(data, "to_safe_dict") else dict(data)
     return await _pipeline_service.edit_document(
         request=request,
         job_id=job_id,
-        data=data.to_safe_dict(),
+        data=data_dict,
         background_tasks=background_tasks,
         current_user=current_user,
     )
