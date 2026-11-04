@@ -39,6 +39,17 @@ def get_current_user(request: Request, credentials: HTTPAuthorizationCredentials
 
     try:
         payload = AuthService.decode_token(token)
+        jti = payload.get("jti") if isinstance(payload, dict) else None
+        if jti:
+            from app.cache.redis_cache import RedisCache
+
+            cache = RedisCache()
+            if cache.is_token_blacklisted(jti):
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Token has been revoked",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
         user_id = AuthService.get_user_id_from_payload(payload)
 
         email = payload.get("email")
@@ -78,6 +89,17 @@ def get_optional_user(
 
     try:
         payload = AuthService.decode_token(token)
+        jti = payload.get("jti") if isinstance(payload, dict) else None
+        if jti:
+            from app.cache.redis_cache import RedisCache
+
+            cache = RedisCache()
+            if cache.is_token_blacklisted(jti):
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Token has been revoked",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
         user_id = AuthService.get_user_id_from_payload(payload)
         email = payload.get("email")
         role = payload.get("role", "authenticated")

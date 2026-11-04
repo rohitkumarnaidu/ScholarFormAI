@@ -150,6 +150,17 @@ class RedisCache:
         except Exception as e:
             logger.error(f"Error writing to Redis cache (key={key}): {e}")
 
+    def blacklist_token(self, jti: str, ttl: int = 3600) -> bool:
+        """Add a token jti to the blacklist with TTL (seconds)."""
+        key = f"blacklisted_token:{jti}"
+        self.set(key, "1", ttl=ttl)
+        return True
+
+    def is_token_blacklisted(self, jti: str) -> bool:
+        """Check if a token jti is present in the blacklist."""
+        key = f"blacklisted_token:{jti}"
+        return self.get(key) is not None
+
     def delete(self, key: str) -> None:
         """Delete a key from the cache."""
         client = self._ensure_client()

@@ -6,7 +6,31 @@
 import asyncio
 import contextlib
 import logging
+import os
 import time
+
+ALLOWED_DIRECTORIES = [
+    os.path.abspath("uploads"),
+    os.path.abspath("data/uploads"),
+    os.path.abspath("output"),
+    os.path.abspath("outputs"),
+]
+
+
+def validate_path_safety(path: str) -> str:
+    """Validate that path is non-empty, contains no null bytes, and resolves inside an allowed directory."""
+    if not path:
+        raise ValueError("Path is empty")
+    if "\x00" in path:
+        raise ValueError("Null byte in path")
+    resolved = os.path.abspath(path)
+    if not any(
+        resolved == allowed or resolved.startswith(allowed + os.sep) or resolved.startswith(allowed + "/")
+        for allowed in ALLOWED_DIRECTORIES
+    ):
+        raise ValueError(f"Path traversal detected: {path} is not in an allowed directory")
+    return path
+
 
 from celery import Celery
 from celery.schedules import crontab

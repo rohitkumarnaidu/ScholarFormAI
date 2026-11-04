@@ -27,7 +27,7 @@ class EncryptionService:
                 "Set the ENCRYPTION_KEY environment variable in production."
             )
             raise RuntimeError(
-                "ENCRYPTION_KEY environment variable is required. "
+                "ENCRYPTION_KEY is not set. ENCRYPTION_KEY environment variable is required. "
                 "Set ENCRYPTION_KEY to a valid Fernet key before starting the application."
             )
         if isinstance(self._key, str):
