@@ -131,6 +131,7 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
                                 status_code=429,
                                 content={
                                     "error": "Rate limit exceeded",
+                                    "message": "Maximum rate limit exceeded. Please try again later.",
                                     "upgrade_url": "/settings?tab=billing",
                                 },
                             )
@@ -145,6 +146,7 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
                 status_code=429,
                 content={
                     "error": "Rate limit exceeded",
+                    "message": "Maximum rate limit exceeded. Please try again later.",
                     "upgrade_url": "/settings?tab=billing",
                 },
             )
