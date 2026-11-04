@@ -11,6 +11,7 @@ Exempts API routes that use Bearer token auth.
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import hmac
 import logging
@@ -81,6 +82,15 @@ def validate_csrf_token(token: str, user_id: str | None = None) -> bool:
     secret = _get_csrf_secret()
     if not secret:
         return False
+
+    if ":" not in token:
+        try:
+            padded = token + "=" * ((4 - len(token) % 4) % 4)
+            decoded = base64.urlsafe_b64decode(padded.encode()).decode("utf-8")
+            if ":" in decoded:
+                token = decoded
+        except Exception:
+            pass
 
     parts = token.split(":")
     if len(parts) == 3:
