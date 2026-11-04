@@ -42,6 +42,7 @@ class Settings(BaseSettings):
     TEMP_FILE_TTL: int = 3600
     ENABLE_AUDIT_LOG: bool = True
     AUDIT_LOG_EXCLUDED_PATHS: list[str] = ["/health", "/ready", "/metrics"]
+    USE_SCIBERT_CLASSIFICATION: bool = False
 
     model_config = ConfigDict(
         env_file=".env",

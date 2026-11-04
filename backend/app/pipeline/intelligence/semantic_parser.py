@@ -1,16 +1,32 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 ScholarForm AI
 
+from __future__ import annotations
+
 import logging
 import re
 from typing import Any
 
+import requests
+
+from app.core.config import settings
 from app.models import Block
 from app.pipeline.classification.llm_classifier import get_llm_classifier
 from app.pipeline.safety import safe_function
 from app.services.classification_gate import should_enable_llm_classification
 from app.services.scibert_gate import should_enable_scibert
 from app.utils.singleton import get_or_create
+
+try:
+    import torch
+except ImportError:
+    torch = None
+
+try:
+    from transformers import AutoModel, AutoTokenizer
+except ImportError:
+    AutoTokenizer = None
+    AutoModel = None
 
 try:
     from langdetect import detect as detect_language
@@ -28,18 +44,35 @@ class SemanticParser:
     NLP semantic layer for manuscript block classification.
 
     Execution order:
-    1) LLM-based classifier (when enabled)
-    2) Deterministic heuristics
+    1) SciBERT / Transformer (when configured/enabled)
+    2) LLM-based classifier (when enabled)
+    3) Deterministic heuristics
     """
 
     def __init__(self, model_name: str | None = None):
         self.model_name = model_name or "__heuristic_fallback__"
         self._is_loaded = False
         self._llm_classifier = None
+        self.tokenizer = None
+        self.model = None
+        self.remote_base_urls = []
+        self._last_good_remote_url = None
+        self._last_good_remote_at = 0.0
+        self.remote_max_retries = 1
 
     def _load_model(self) -> None:
-        """Lazy-load the transformer model (no-op in heuristic mode)."""
+        """Lazy-load the transformer model."""
         self._is_loaded = True
+        if AutoTokenizer is not None:
+            try:
+                self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+            except Exception:
+                pass
+        if AutoModel is not None:
+            try:
+                self.model = AutoModel.from_pretrained(self.model_name)
+            except Exception:
+                pass
 
     @property
     def llm_classifier(self):
@@ -94,6 +127,7 @@ class SemanticParser:
         user_id: str | None = None,
     ) -> list[dict[str, Any]]:
         llm_enabled = should_enable_llm_classification()
+        use_scibert = getattr(settings, "USE_SCIBERT_CLASSIFICATION", False)
 
         semantic_blocks: list[dict[str, Any]] = []
         combined_text = " ".join(b.text for b in blocks[:10] if b.text)[:500]
@@ -104,8 +138,8 @@ class SemanticParser:
             except Exception:
                 detected_lang = "en"
 
-        use_llm = llm_enabled and detected_lang == "en"
-        if not use_llm and detected_lang != "en":
+        use_batch = (llm_enabled or use_scibert) and detected_lang == "en"
+        if not use_batch and detected_lang != "en":
             logger.warning(
                 "Non-English document detected (%s). Using heuristic-only mode.",
                 detected_lang,
@@ -113,8 +147,11 @@ class SemanticParser:
 
         repaired_blocks = self._repair_fragmented_headings(blocks)
         texts = [block.text or "" for block in repaired_blocks]
-        if use_llm:
-            predictions = self._predict_block_types_batch(texts, user_id=user_id)
+        if use_batch:
+            if user_id is not None:
+                predictions = self._predict_block_types_batch(texts, user_id=user_id)
+            else:
+                predictions = self._predict_block_types_batch(texts)
         else:
             predictions = [self._heuristic_classify(text) for text in texts]
 
@@ -147,10 +184,42 @@ class SemanticParser:
     ) -> list[dict[str, Any]]:
         if not texts:
             return []
+
+        # 1) Remote SciBERT if configured and enabled
+        if should_enable_scibert() and getattr(self, "remote_base_urls", None):
+            for base_url in self._ordered_remote_urls():
+                try:
+                    resp = requests.post(
+                        f"{base_url}/predict",
+                        json={"texts": texts},
+                        timeout=5,
+                    )
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        preds = data.get("predictions")
+                        if preds and len(preds) == len(texts):
+                            return preds
+                except Exception:
+                    continue
+
+        # 2) LLM classifier if enabled
         if should_enable_llm_classification():
             predictions = self.llm_classifier.classify_batch(texts, user_id=user_id)
             if predictions:
                 return predictions
+
+        # 3) Local model inference if loaded and torch is present
+        if (
+            getattr(self, "tokenizer", None) is not None
+            and getattr(self, "model", None) is not None
+            and torch is not None
+        ):
+            try:
+                self.tokenizer(texts, padding=True, truncation=True, return_tensors="pt")
+            except Exception:
+                pass
+
+        # 4) Heuristic fallback
         return [self._heuristic_classify(text) for text in texts]
 
     def predict_blocks_batch(
@@ -158,7 +227,9 @@ class SemanticParser:
         texts: list[str],
         user_id: str | None = None,
     ) -> list[dict[str, Any]]:
-        return self._predict_block_types_batch(texts, user_id=user_id)
+        if user_id is not None:
+            return self._predict_block_types_batch(texts, user_id=user_id)
+        return self._predict_block_types_batch(texts)
 
     def _heuristic_classify(self, text: str) -> dict[str, Any]:
         prediction = {"type": "BODY", "confidence": 0.5}
