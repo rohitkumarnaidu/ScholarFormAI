@@ -369,6 +369,17 @@ class DocumentPipelineService:
     ) -> None:
         self._crud = crud_service or crud or DocumentCrudService()
 
+    def _resolve_crud(self) -> Any:
+        ds = _get_impl_symbol("DocumentService")
+        if ds is not None and ds is not DocumentCrudService:
+            return ds
+        crud_mod = sys.modules.get("app.services.document_crud_service")
+        if crud_mod is not None:
+            crud_cls = getattr(crud_mod, "DocumentCrudService", None)
+            if crud_cls is not None and crud_cls is not DocumentCrudService:
+                return crud_cls
+        return self._crud
+
     async def scan_uploaded_file(self, file_path: str) -> dict[str, str | bool]:
         scan_fn = _get_impl_symbol("_scan_uploaded_file")
         if scan_fn is not None and getattr(scan_fn, "__module__", "") != __name__:
@@ -477,8 +488,9 @@ class DocumentPipelineService:
 
             file_hash = hashlib.sha256(file_content).hexdigest()
 
-            if doc_service and hasattr(doc_service, "create_document"):
-                created = await doc_service.create_document(
+            crud_target = self._resolve_crud()
+            if hasattr(crud_target, "create_document") and crud_target is not DocumentCrudService:
+                created = await crud_target.create_document(
                     doc_id=str(job_id),
                     user_id=str(current_user.id) if current_user else None,
                     filename=safe_filename,
@@ -665,8 +677,9 @@ class DocumentPipelineService:
                     "virus_scan": scan_result,
                 }
 
-                if doc_service and hasattr(doc_service, "create_document"):
-                    created = await doc_service.create_document(
+                crud_target = self._resolve_crud()
+                if hasattr(crud_target, "create_document") and crud_target is not DocumentCrudService:
+                    created = await crud_target.create_document(
                         doc_id=str(job_id),
                         user_id=str(current_user.id) if current_user else None,
                         filename=original_filename,
@@ -909,10 +922,11 @@ class DocumentPipelineService:
         doc_service = _get_impl_symbol("DocumentService")
         audit_svc = _get_impl_symbol("audit_log_service", audit_log_service)
 
+        crud_target = self._resolve_crud()
         try:
             get_doc_fn = (
-                doc_service.get_document
-                if (doc_service and hasattr(doc_service, "get_document"))
+                crud_target.get_document
+                if (hasattr(crud_target, "get_document") and crud_target is not DocumentCrudService)
                 else self._crud.get_document
             )
             doc = await get_doc_fn(job_id)
@@ -980,7 +994,6 @@ class DocumentPipelineService:
         get_stale_fn = _get_impl_symbol("_get_stale_status_response", _get_stale_status_response)
         set_cached_fn = _get_impl_symbol("_set_cached_status_response", _set_cached_status_response)
         extract_quality_fn = _get_impl_symbol("_extract_quality_payload", _extract_quality_payload)
-        doc_service = _get_impl_symbol("DocumentService")
 
         try:
             cache_key = cache_key_fn(job_id, current_user)
@@ -988,19 +1001,20 @@ class DocumentPipelineService:
             if cached_payload is not _STATUS_CACHE_MISS:
                 return cached_payload
 
+            crud_target = self._resolve_crud()
             get_doc_fn = (
-                doc_service.get_document
-                if (doc_service and hasattr(doc_service, "get_document"))
+                crud_target.get_document
+                if (hasattr(crud_target, "get_document") and crud_target is not DocumentCrudService)
                 else self._crud.get_document
             )
             get_statuses_fn = (
-                doc_service.get_processing_statuses
-                if (doc_service and hasattr(doc_service, "get_processing_statuses"))
+                crud_target.get_processing_statuses
+                if (hasattr(crud_target, "get_processing_statuses") and crud_target is not DocumentCrudService)
                 else self._crud.get_processing_statuses
             )
             get_result_fn = (
-                doc_service.get_document_result
-                if (doc_service and hasattr(doc_service, "get_document_result"))
+                crud_target.get_document_result
+                if (hasattr(crud_target, "get_document_result") and crud_target is not DocumentCrudService)
                 else self._crud.get_document_result
             )
 
@@ -1098,17 +1112,17 @@ class DocumentPipelineService:
         current_user: User | None = None,
     ) -> dict[str, Any]:
         """Lightweight job summary for URL-based page hydration."""
-        doc_service = _get_impl_symbol("DocumentService")
         extract_quality_fn = _get_impl_symbol("_extract_quality_payload", _extract_quality_payload)
 
+        crud_target = self._resolve_crud()
         get_doc_fn = (
-            doc_service.get_document
-            if (doc_service and hasattr(doc_service, "get_document"))
+            crud_target.get_document
+            if (hasattr(crud_target, "get_document") and crud_target is not DocumentCrudService)
             else self._crud.get_document
         )
         get_result_fn = (
-            doc_service.get_document_result
-            if (doc_service and hasattr(doc_service, "get_document_result"))
+            crud_target.get_document_result
+            if (hasattr(crud_target, "get_document_result") and crud_target is not DocumentCrudService)
             else self._crud.get_document_result
         )
 
@@ -1138,17 +1152,17 @@ class DocumentPipelineService:
         current_user: User | None = None,
     ) -> dict[str, Any]:
         """Get the structured preview data for a document."""
-        doc_service = _get_impl_symbol("DocumentService")
         extract_quality_fn = _get_impl_symbol("_extract_quality_payload", _extract_quality_payload)
 
+        crud_target = self._resolve_crud()
         get_doc_fn = (
-            doc_service.get_document
-            if (doc_service and hasattr(doc_service, "get_document"))
+            crud_target.get_document
+            if (hasattr(crud_target, "get_document") and crud_target is not DocumentCrudService)
             else self._crud.get_document
         )
         get_result_fn = (
-            doc_service.get_document_result
-            if (doc_service and hasattr(doc_service, "get_document_result"))
+            crud_target.get_document_result
+            if (hasattr(crud_target, "get_document_result") and crud_target is not DocumentCrudService)
             else self._crud.get_document_result
         )
 

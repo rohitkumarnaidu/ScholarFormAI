@@ -374,14 +374,21 @@ class DocumentCrudService:
             return {"documents": [], "total": 0, "limit": limit, "offset": offset}
 
         doc_service = _get_impl_symbol("DocumentService")
+        if doc_service is None or doc_service is DocumentCrudService:
+            crud_mod = sys.modules.get("app.services.document_crud_service")
+            if crud_mod is not None and getattr(crud_mod, "DocumentCrudService", None) is not DocumentCrudService:
+                doc_service = getattr(crud_mod, "DocumentCrudService")
+            else:
+                doc_service = self
+
         list_fn = (
             doc_service.list_documents
-            if (doc_service and hasattr(doc_service, "list_documents"))
+            if (doc_service and hasattr(doc_service, "list_documents") and doc_service is not DocumentCrudService)
             else self.list_documents
         )
         count_fn = (
             doc_service.count_documents
-            if (doc_service and hasattr(doc_service, "count_documents"))
+            if (doc_service and hasattr(doc_service, "count_documents") and doc_service is not DocumentCrudService)
             else self.count_documents
         )
 
@@ -451,12 +458,21 @@ class DocumentCrudService:
             require_db_fn()
 
         doc_service = _get_impl_symbol("DocumentService")
+        if doc_service is None or doc_service is DocumentCrudService:
+            crud_mod = sys.modules.get("app.services.document_crud_service")
+            if crud_mod is not None and getattr(crud_mod, "DocumentCrudService", None) is not DocumentCrudService:
+                doc_service = getattr(crud_mod, "DocumentCrudService")
+            else:
+                doc_service = self
+
         get_doc_fn = (
-            doc_service.get_document if (doc_service and hasattr(doc_service, "get_document")) else self.get_document
+            doc_service.get_document
+            if (doc_service and hasattr(doc_service, "get_document") and doc_service is not DocumentCrudService)
+            else self.get_document
         )
         del_doc_fn = (
             doc_service.delete_document
-            if (doc_service and hasattr(doc_service, "delete_document"))
+            if (doc_service and hasattr(doc_service, "delete_document") and doc_service is not DocumentCrudService)
             else self.delete_document
         )
         audit_svc = _get_impl_symbol("audit_log_service")
