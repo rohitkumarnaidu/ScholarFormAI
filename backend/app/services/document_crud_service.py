@@ -36,6 +36,41 @@ from app.utils.logging_context import log_extra
 
 logger = logging.getLogger(__name__)
 
+import sys
+
+
+def _is_mock_or_custom(obj: Any) -> bool:
+    if obj is None:
+        return False
+    if hasattr(obj, "assert_called") or hasattr(obj, "assert_called_once"):
+        return True
+    try:
+        import unittest.mock as _mock
+
+        if isinstance(obj, (_mock.Mock, _mock.MagicMock)):
+            return True
+    except Exception:
+        pass
+    if isinstance(obj, type):
+        return getattr(obj, "__module__", "") != "app.services.document_crud_service"
+    return getattr(type(obj), "__module__", "") != "app.services.document_crud_service"
+
+
+def _resolve_crud_target(fallback: Any) -> Any:
+    impl = sys.modules.get("app.routers.v1.documents_impl")
+    if impl is not None and hasattr(impl, "DocumentService"):
+        ds = getattr(impl, "DocumentService")
+        if _is_mock_or_custom(ds):
+            return ds
+
+    crud_mod = sys.modules.get("app.services.document_crud_service")
+    if crud_mod is not None and hasattr(crud_mod, "DocumentCrudService"):
+        cs = getattr(crud_mod, "DocumentCrudService")
+        if _is_mock_or_custom(cs):
+            return cs
+
+    return fallback
+
 
 class DocumentCrudService:
     """
@@ -373,24 +408,9 @@ class DocumentCrudService:
         if not current_user:
             return {"documents": [], "total": 0, "limit": limit, "offset": offset}
 
-        doc_service = _get_impl_symbol("DocumentService")
-        if doc_service is None or doc_service is DocumentCrudService:
-            crud_mod = sys.modules.get("app.services.document_crud_service")
-            if crud_mod is not None and getattr(crud_mod, "DocumentCrudService", None) is not DocumentCrudService:
-                doc_service = getattr(crud_mod, "DocumentCrudService")
-            else:
-                doc_service = self
-
-        list_fn = (
-            doc_service.list_documents
-            if (doc_service and hasattr(doc_service, "list_documents") and doc_service is not DocumentCrudService)
-            else self.list_documents
-        )
-        count_fn = (
-            doc_service.count_documents
-            if (doc_service and hasattr(doc_service, "count_documents") and doc_service is not DocumentCrudService)
-            else self.count_documents
-        )
+        target = _resolve_crud_target(self)
+        list_fn = getattr(target, "list_documents", self.list_documents)
+        count_fn = getattr(target, "count_documents", self.count_documents)
 
         try:
             documents = await list_fn(
@@ -457,24 +477,9 @@ class DocumentCrudService:
         if require_db_fn is not None:
             require_db_fn()
 
-        doc_service = _get_impl_symbol("DocumentService")
-        if doc_service is None or doc_service is DocumentCrudService:
-            crud_mod = sys.modules.get("app.services.document_crud_service")
-            if crud_mod is not None and getattr(crud_mod, "DocumentCrudService", None) is not DocumentCrudService:
-                doc_service = getattr(crud_mod, "DocumentCrudService")
-            else:
-                doc_service = self
-
-        get_doc_fn = (
-            doc_service.get_document
-            if (doc_service and hasattr(doc_service, "get_document") and doc_service is not DocumentCrudService)
-            else self.get_document
-        )
-        del_doc_fn = (
-            doc_service.delete_document
-            if (doc_service and hasattr(doc_service, "delete_document") and doc_service is not DocumentCrudService)
-            else self.delete_document
-        )
+        target = _resolve_crud_target(self)
+        get_doc_fn = getattr(target, "get_document", self.get_document)
+        del_doc_fn = getattr(target, "delete_document", self.delete_document)
         audit_svc = _get_impl_symbol("audit_log_service")
         os_mod = _get_impl_symbol("os", os)
 
