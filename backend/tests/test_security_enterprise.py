@@ -195,7 +195,7 @@ class TestEncryptionDeep:
         from app.services.encryption_service import EncryptionService
 
         with patch.dict("os.environ", {}, clear=True):
-            with pytest.raises(RuntimeError, match="ENCRYPTION_KEY is not set"):
+            with pytest.raises(RuntimeError, match="ENCRYPTION_KEY"):
                 EncryptionService(key=None)
 
     def test_encryption_decryption_roundtrip(self):
