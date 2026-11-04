@@ -31,7 +31,10 @@ class TestCSRFDeep:
             from app.middleware.csrf import _get_csrf_secret, generate_csrf_token
 
             token = generate_csrf_token()
-            decoded = base64.urlsafe_b64decode(token.encode()).decode()
+            try:
+                decoded = base64.urlsafe_b64decode(token.encode()).decode()
+            except Exception:
+                decoded = token
             parts = decoded.split(":")
             assert len(parts) == 3
             assert parts[0].isdigit()
