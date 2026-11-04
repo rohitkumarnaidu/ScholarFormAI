@@ -14,6 +14,7 @@ import difflib
 import hashlib
 import logging
 import os
+import sys
 from typing import Any
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
@@ -27,14 +28,33 @@ from app.schemas.user import User
 from app.services.document_crud_service import DocumentCrudService
 
 
-def _get_doc_service():
+def _get_impl_symbol(name: str, fallback: Any = None) -> Any:
+    """Resolve symbol from app.routers.v1.documents_impl if patched during route tests."""
+    try:
+        impl = sys.modules.get("app.routers.v1.documents_impl")
+        if impl is not None and hasattr(impl, name):
+            val = getattr(impl, name)
+            if val is not None:
+                return val
+    except Exception:
+        pass
+    return fallback
+
+
+def _get_doc_service() -> Any:
+    doc_service = _get_impl_symbol("DocumentService")
+    if doc_service is not None and doc_service is not DocumentCrudService:
+        return doc_service
+
     from app.services.document_service import DocumentService
 
     return DocumentService
 
 
-def _get_doc_crud_service():
-    from app.services.document_crud_service import DocumentCrudService
+def _get_doc_crud_service() -> Any:
+    doc_service = _get_impl_symbol("DocumentService")
+    if doc_service is not None and doc_service is not DocumentCrudService:
+        return doc_service
 
     return DocumentCrudService()
 
