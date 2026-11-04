@@ -85,7 +85,9 @@ class TestMaxBodySizeMiddleware:
         }
         mw = mw_class(app, max_size=1024)
         await mw(scope, receive, send)
-        app.assert_awaited_once_with(scope, receive, send)
+        app.assert_awaited_once()
+        assert app.await_args[0][0] == scope
+        assert app.await_args[0][2] == send
 
     async def test_over_limit_returns_413(self, mw_class):
         app = MagicMock()
@@ -124,7 +126,9 @@ class TestMaxBodySizeMiddleware:
         scope = {"type": "http", "headers": []}
         mw = mw_class(app)
         await mw(scope, receive, send)
-        app.assert_awaited_once_with(scope, receive, send)
+        app.assert_awaited_once()
+        assert app.await_args[0][0] == scope
+        assert app.await_args[0][2] == send
 
     async def test_invalid_content_length_passes_through(self, mw_class):
         app = AsyncMock()
@@ -133,4 +137,6 @@ class TestMaxBodySizeMiddleware:
         scope = {"type": "http", "headers": [(b"content-length", b"not-a-number")]}
         mw = mw_class(app)
         await mw(scope, receive, send)
-        app.assert_awaited_once_with(scope, receive, send)
+        app.assert_awaited_once()
+        assert app.await_args[0][0] == scope
+        assert app.await_args[0][2] == send
