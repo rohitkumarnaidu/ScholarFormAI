@@ -28,6 +28,39 @@ from app.schemas.user import User
 from app.services.document_crud_service import DocumentCrudService
 
 
+def _is_mock_or_custom(obj: Any) -> bool:
+    if obj is None:
+        return False
+    if hasattr(obj, "assert_called") or hasattr(obj, "assert_called_once"):
+        return True
+    try:
+        import unittest.mock as _mock
+
+        if isinstance(obj, (_mock.Mock, _mock.MagicMock)):
+            return True
+    except Exception:
+        pass
+    if isinstance(obj, type):
+        return getattr(obj, "__module__", "") != "app.services.document_crud_service"
+    return getattr(type(obj), "__module__", "") != "app.services.document_crud_service"
+
+
+def _resolve_crud_target(fallback: Any) -> Any:
+    impl = sys.modules.get("app.routers.v1.documents_impl")
+    if impl is not None and hasattr(impl, "DocumentService"):
+        ds = getattr(impl, "DocumentService")
+        if _is_mock_or_custom(ds):
+            return ds
+
+    crud_mod = sys.modules.get("app.services.document_crud_service")
+    if crud_mod is not None and hasattr(crud_mod, "DocumentCrudService"):
+        cs = getattr(crud_mod, "DocumentCrudService")
+        if _is_mock_or_custom(cs):
+            return cs
+
+    return fallback
+
+
 def _get_impl_symbol(name: str, fallback: Any = None) -> Any:
     """Resolve symbol from app.routers.v1.documents_impl if patched during route tests."""
     try:
@@ -52,19 +85,11 @@ def _get_doc_service() -> Any:
 
 
 def _get_doc_crud_service() -> Any:
-    doc_service = _get_impl_symbol("DocumentService")
-    if doc_service is not None and doc_service is not DocumentCrudService:
-        return doc_service
-    crud_mod = sys.modules.get("app.services.document_crud_service")
-    if crud_mod is not None:
-        crud_cls = getattr(crud_mod, "DocumentCrudService", None)
-        if crud_cls is not None and crud_cls is not DocumentCrudService:
-            return crud_cls
-
-    return DocumentCrudService()
+    return _resolve_crud_target(DocumentCrudService())
 
 
 logger = logging.getLogger(__name__)
+
 
 _READY_FOR_EXPORT_STATUSES = {"COMPLETED", "COMPLETED_WITH_WARNINGS"}
 _SUPPORTED_EXPORT_FORMATS = {"docx", "pdf", "tex"}
