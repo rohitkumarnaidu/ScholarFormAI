@@ -827,13 +827,21 @@ async def stop_session(
             config_json=config,
         )
 
-        await _get_agent_pipeline()._emit_sse(
-            sessionId,
-            stage="stopped",
-            progress=session.get("progress") or 0,
-            message="Task stopped by user.",
-            extra={"status": "canceled"},
-        )
+        pipeline = _get_agent_pipeline()
+        emit_fn = getattr(pipeline, "_emit_sse", None)
+        if callable(emit_fn):
+            try:
+                res = emit_fn(
+                    sessionId,
+                    stage="stopped",
+                    progress=session.get("progress") or 0,
+                    message="Task stopped by user.",
+                    extra={"status": "canceled"},
+                )
+                if asyncio.iscoroutine(res) or hasattr(res, "__await__"):
+                    await res
+            except Exception as exc:
+                logger.warning("Failed to emit SSE event for stopped session: %s", exc)
 
         await audit_log_service.log(
             user_id=str(getattr(user, "id", user)),

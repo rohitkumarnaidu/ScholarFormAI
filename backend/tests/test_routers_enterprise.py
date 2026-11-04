@@ -934,45 +934,61 @@ class TestGeneratorGetOrchestrator:
     def test_lazy_init(self):
         import app.routers.v1.generator as gen_mod
 
-        gen_mod._orchestrator = None
-        from app.routers.v1.generator import _get_orchestrator
+        orig = gen_mod._orchestrator
+        try:
+            gen_mod._orchestrator = None
+            from app.routers.v1.generator import _get_orchestrator
 
-        with patch("app.routers.v1.generator.PipelineOrchestrator", return_value=MagicMock()):
-            orch = _get_orchestrator()
-            assert orch is not None
+            with patch("app.routers.v1.generator.PipelineOrchestrator", return_value=MagicMock()):
+                orch = _get_orchestrator()
+                assert orch is not None
+        finally:
+            gen_mod._orchestrator = orig
 
     def test_cached(self):
         import app.routers.v1.generator as gen_mod
 
-        gen_mod._orchestrator = MagicMock()
-        from app.routers.v1.generator import _get_orchestrator
+        orig = gen_mod._orchestrator
+        try:
+            gen_mod._orchestrator = MagicMock()
+            from app.routers.v1.generator import _get_orchestrator
 
-        orch = _get_orchestrator()
-        assert orch is gen_mod._orchestrator
+            orch = _get_orchestrator()
+            assert orch is gen_mod._orchestrator
+        finally:
+            gen_mod._orchestrator = orig
 
 
 class TestGeneratorGetAgentPipeline:
     def test_lazy_init(self):
         import app.routers.v1.generator as gen_mod
 
-        gen_mod._agent_pipeline = None
-        from app.routers.v1.generator import _get_agent_pipeline
+        orig = gen_mod._agent_pipeline
+        try:
+            gen_mod._agent_pipeline = None
+            from app.routers.v1.generator import _get_agent_pipeline
 
-        with patch("app.routers.v1.generator.AgentPipeline", return_value=MagicMock()):
-            pipeline = _get_agent_pipeline()
-            assert pipeline is not None
+            with patch("app.routers.v1.generator.AgentPipeline", return_value=MagicMock()):
+                pipeline = _get_agent_pipeline()
+                assert pipeline is not None
+        finally:
+            gen_mod._agent_pipeline = orig
 
 
 class TestGeneratorGetSynthesizer:
     def test_lazy_init(self):
         import app.routers.v1.generator as gen_mod
 
-        gen_mod._synthesizer = None
-        from app.routers.v1.generator import _get_synthesizer
+        orig = gen_mod._synthesizer
+        try:
+            gen_mod._synthesizer = None
+            from app.routers.v1.generator import _get_synthesizer
 
-        with patch("app.routers.v1.generator.MultiDocSynthesizer", return_value=MagicMock()):
-            synth = _get_synthesizer()
-            assert synth is not None
+            with patch("app.routers.v1.generator.MultiDocSynthesizer", return_value=MagicMock()):
+                synth = _get_synthesizer()
+                assert synth is not None
+        finally:
+            gen_mod._synthesizer = orig
 
 
 # ── provider helpers ────────────────────────────────────────────────────
