@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import uuid
 from datetime import datetime
 from typing import Any
 
@@ -55,6 +56,7 @@ _STATUS_CACHE_MISS = _ps._STATUS_CACHE_MISS
 # Legacy re-exports: tests patch these symbols on documents_impl directly.
 # Importing them here makes `patch("app.routers.v1.documents_impl.X")` work
 # even though the actual logic now lives in the service layer.
+from app.pipeline.export.latex_exporter import LaTeXExporter  # noqa: E402
 from app.pipeline.orchestrator import PipelineOrchestrator  # noqa: E402
 from app.services.audit_log_service import audit_log_service  # noqa: E402
 from app.services.enhancement_manager import enhancement_manager  # noqa: E402
@@ -62,6 +64,7 @@ from app.utils.virus_scanner import virus_scanner  # noqa: E402
 
 __all__ = [
     "DocumentService",
+    "LaTeXExporter",
     "UPLOAD_DIR",
     "ACCEPTED_EXTENSIONS",
     "TEXT_EXTENSIONS",
@@ -73,6 +76,7 @@ __all__ = [
     "PipelineOrchestrator",
     "audit_log_service",
     "enhancement_manager",
+    "uuid",
     "virus_scanner",
 ]
 

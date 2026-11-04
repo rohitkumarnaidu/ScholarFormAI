@@ -55,6 +55,11 @@ def _get_doc_crud_service() -> Any:
     doc_service = _get_impl_symbol("DocumentService")
     if doc_service is not None and doc_service is not DocumentCrudService:
         return doc_service
+    crud_mod = sys.modules.get("app.services.document_crud_service")
+    if crud_mod is not None:
+        crud_cls = getattr(crud_mod, "DocumentCrudService", None)
+        if crud_cls is not None and crud_cls is not DocumentCrudService:
+            return crud_cls
 
     return DocumentCrudService()
 
@@ -141,7 +146,8 @@ class DocumentExportService:
     def compile_latex(self, input_docx_path: str, output_dir: str) -> str:
         """Compile/convert DOCX document to LaTeX format using LaTeXExporter."""
         try:
-            exporter = LaTeXExporter()
+            exporter_cls = _get_impl_symbol("LaTeXExporter", LaTeXExporter)
+            exporter = exporter_cls()
             generated_path = exporter.convert_to_latex(input_docx_path, output_dir)
             if not generated_path:
                 raise HTTPException(status_code=500, detail="LaTeX conversion failed unexpectedly.")
