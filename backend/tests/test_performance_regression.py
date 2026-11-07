@@ -253,8 +253,8 @@ class TestLLMServicePerformance:
         mock_choice.message.content = "model response"
         mock_response.choices = [mock_choice]
 
-        llm.completion = MagicMock(return_value=mock_response)
         with (
+            patch.object(llm, "completion", MagicMock(return_value=mock_response), create=True),
             patch.object(llm, "LITELLM_AVAILABLE", True),
             patch("app.cache.redis_cache.redis_cache.get_llm_result", return_value=None),
             patch("app.cache.redis_cache.redis_cache.set_llm_result"),

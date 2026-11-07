@@ -588,9 +588,11 @@ class TestEncryptionService:
     def test_auto_generates_key_if_not_set(self):
         from app.services.encryption_service import EncryptionService
 
-        with patch("app.services.encryption_service.os.environ", {}):
-            service = EncryptionService()
-            assert service._fernet is not None
+        with (
+            patch("app.services.encryption_service.os.environ", {}),
+            pytest.raises(RuntimeError, match="ENCRYPTION_KEY"),
+        ):
+            EncryptionService()
 
     def test_get_encryption_service_singleton(self):
         from app.services.encryption_service import get_encryption_service
