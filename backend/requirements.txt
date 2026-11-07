@@ -403,7 +403,7 @@ wheel==0.48.0
 wrapt==2.5.2
 xlsxwriter==3.3.1
 xmltodict==1.0.4
-xxhash==3.8.1
+xxhash==4.0.0
 yake==0.7.3
 yarl==1.25.1
 zipp==4.1.2
