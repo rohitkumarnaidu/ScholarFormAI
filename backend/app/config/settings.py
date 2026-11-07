@@ -185,6 +185,10 @@ class PipelineSettings(BaseSettings):
     GROBID_URLS: str = ""
     GROBID_HEALTH_PATH: str = DEFAULT_GROBID_HEALTH_PATH
     DOCX_CONVERTER_HEALTH_PATH: str = DEFAULT_DOCX_CONVERTER_HEALTH_PATH
+    NOUGAT_URL: str = ""
+    NOUGAT_URLS: str = ""
+    SCIBERT_URL: str = ""
+    SCIBERT_URLS: str = ""
     GROBID_TIMEOUT: int = 10
     GROBID_MAX_RETRIES: int = 3
     GROBID_ENABLED: bool = True
@@ -424,6 +428,12 @@ class Settings:
             if normalized:
                 return [normalized]
         return list(default_urls)
+
+    def get_nougat_urls(self) -> list[str]:
+        return self._resolve_service_urls("NOUGAT_URLS", ("NOUGAT_URL",), ())
+
+    def get_scibert_urls(self) -> list[str]:
+        return self._resolve_service_urls("SCIBERT_URLS", ("SCIBERT_URL",), ())
 
     def get_grobid_urls(self) -> list[str]:
         return self._resolve_service_urls("GROBID_URLS", ("GROBID_URL", "GROBID_BASE_URL"), (DEFAULT_GROBID_URL,))

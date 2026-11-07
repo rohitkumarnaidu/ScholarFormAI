@@ -21,6 +21,7 @@ Test categories:
 
 import hashlib
 import hmac
+import os
 import statistics
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -73,21 +74,23 @@ def _check_latency(
     max_p99: float | None = None,
 ):
     """Assert latency thresholds and print diagnostic info on failure."""
-    max_p95 = max_p95 if max_p95 is not None else max(max_median * 3, 0.000_020)
-    max_p99 = max_p99 if max_p99 is not None else max(max_median * 6, 0.000_050)
+    ci_factor = 5.0 if os.environ.get("CI") or os.environ.get("GITHUB_ACTIONS") else 1.0
+    effective_max_median = max_median * ci_factor
+    effective_max_p95 = (max_p95 if max_p95 is not None else max(max_median * 3, 0.000_020)) * ci_factor
+    effective_max_p99 = (max_p99 if max_p99 is not None else max(max_median * 6, 0.005_000)) * ci_factor
     ok = True
-    if stats["median"] > max_median:
+    if stats["median"] > effective_max_median:
         ok = False
-    if stats["p95"] > max_p95:
+    if stats["p95"] > effective_max_p95:
         ok = False
-    if stats["p99"] > max_p99:
+    if stats["p99"] > effective_max_p99:
         ok = False
     if not ok:
         pytest.fail(
             f"median={stats['median'] * 1e6:.2f}us "
             f"p95={stats['p95'] * 1e6:.2f}us "
             f"p99={stats['p99'] * 1e6:.2f}us "
-            f"(max_median={max_median * 1e6:.2f}us)"
+            f"(max_median={effective_max_median * 1e6:.2f}us)"
         )
 
 

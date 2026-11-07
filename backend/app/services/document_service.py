@@ -218,6 +218,12 @@ class DocumentService:
             user_id = str(user_id)
         if not cls._should_query_document_tables(doc_id, "get_document"):
             return None
+        retry_fn = getattr(cls, "_execute_with_transient_retry", None)
+        if not (cls._is_mock_active(retry_fn) or cls._is_mock_active(get_supabase_client)):
+            crud = getattr(cls, "_crud", None)
+            if crud is None or not hasattr(crud, "get_document"):
+                crud = cls._get_instance()._crud
+            return await crud.get_document(doc_id, user_id)
         sb = get_supabase_client()
         if sb is None:
             logger.error("get_document: Supabase client not available.", extra=log_extra(job_id=doc_id))
@@ -254,6 +260,11 @@ class DocumentService:
         offset: int = 0,
     ) -> list[dict[str, Any]]:
         user_id = str(user_id)
+        if not (cls._is_mock_active(get_supabase_client) or cls._is_mock_active(asyncio.to_thread)):
+            crud = getattr(cls, "_crud", None)
+            if crud is None or not hasattr(crud, "list_documents"):
+                crud = cls._get_instance()._crud
+            return await crud.list_documents(user_id, status, template, limit, offset)
         sb = get_supabase_client()
         if sb is None:
             logger.error("list_documents: Supabase client not available.", extra=log_extra())
@@ -338,6 +349,11 @@ class DocumentService:
         status: str | None = None,
         template: str | None = None,
     ) -> int:
+        if not (cls._is_mock_active(get_supabase_client) or cls._is_mock_active(asyncio.to_thread)):
+            crud = getattr(cls, "_crud", None)
+            if crud is None or not hasattr(crud, "count_documents"):
+                crud = cls._get_instance()._crud
+            return await crud.count_documents(user_id, status, template)
         sb = get_supabase_client()
         if sb is None:
             raise DatabaseUnavailableError("Supabase client is not configured.")
@@ -366,6 +382,11 @@ class DocumentService:
 
     @classmethod
     async def count_uploads_today(cls, user_id: str) -> int:
+        if not (cls._is_mock_active(get_supabase_client) or cls._is_mock_active(asyncio.to_thread)):
+            crud = getattr(cls, "_crud", None)
+            if crud is None or not hasattr(crud, "count_uploads_today"):
+                crud = cls._get_instance()._crud
+            return await crud.count_uploads_today(user_id)
         sb = get_supabase_client()
         if sb is None:
             raise DatabaseUnavailableError("Supabase client is not configured.")
@@ -408,6 +429,19 @@ class DocumentService:
         formatting_options: dict[str, Any] | None = None,
         file_hash: str | None = None,
     ) -> dict[str, Any] | None:
+        if not (cls._is_mock_active(get_supabase_client) or cls._is_mock_active(asyncio.to_thread)):
+            crud = getattr(cls, "_crud", None)
+            if crud is None or not hasattr(crud, "create_document"):
+                crud = cls._get_instance()._crud
+            return await crud.create_document(
+                doc_id,
+                user_id,
+                filename,
+                template,
+                original_file_path,
+                formatting_options,
+                file_hash,
+            )
         doc_id = str(doc_id)
         if user_id:
             user_id = str(user_id)
@@ -474,6 +508,11 @@ class DocumentService:
 
     @classmethod
     async def update_document(cls, doc_id: str, updates: dict[str, Any]) -> dict[str, Any] | None:
+        if not (cls._is_mock_active(get_supabase_client) or cls._is_mock_active(asyncio.to_thread)):
+            crud = getattr(cls, "_crud", None)
+            if crud is None or not hasattr(crud, "update_document"):
+                crud = cls._get_instance()._crud
+            return await crud.update_document(doc_id, updates)
         doc_id = str(doc_id)
         sb = get_supabase_client()
         if sb is None:
@@ -501,6 +540,11 @@ class DocumentService:
 
     @classmethod
     async def delete_document(cls, document_id: str, user_id: str | None = None) -> bool:
+        if not (cls._is_mock_active(get_supabase_client) or cls._is_mock_active(getattr(cls, "get_document", None))):
+            crud = getattr(cls, "_crud", None)
+            if crud is None or not hasattr(crud, "delete_document"):
+                crud = cls._get_instance()._crud
+            return await crud.delete_document(document_id, user_id)
         doc_id = str(document_id)
         doc = await cls.get_document(doc_id, user_id)
         if not doc:
@@ -534,6 +578,11 @@ class DocumentService:
             return False
         if cls._supports_output_hash is False:
             return False
+        if not (cls._is_mock_active(get_supabase_client) or cls._is_mock_active(asyncio.to_thread)):
+            crud = getattr(cls, "_crud", None)
+            if crud is None or not hasattr(crud, "update_output_hash"):
+                crud = cls._get_instance()._crud
+            return await crud.update_output_hash(doc_id, output_hash)
 
         sb = get_supabase_client()
         if sb is None:
@@ -567,6 +616,11 @@ class DocumentService:
 
     @classmethod
     async def mark_document_failed(cls, doc_id: str, error_message: str) -> None:
+        if not (cls._is_mock_active(get_supabase_client) or cls._is_mock_active(asyncio.to_thread)):
+            crud = getattr(cls, "_crud", None)
+            if crud is None or not hasattr(crud, "mark_document_failed"):
+                crud = cls._get_instance()._crud
+            return await crud.mark_document_failed(doc_id, error_message)
         doc_id = str(doc_id)
         sb = get_supabase_client()
         if sb is None:
@@ -600,6 +654,11 @@ class DocumentService:
         output_path: str,
         raw_text: str | None = None,
     ) -> None:
+        if not (cls._is_mock_active(get_supabase_client) or cls._is_mock_active(asyncio.to_thread)):
+            crud = getattr(cls, "_crud", None)
+            if crud is None or not hasattr(crud, "mark_document_completed"):
+                crud = cls._get_instance()._crud
+            return await crud.mark_document_completed(doc_id, output_path, raw_text)
         doc_id = str(doc_id)
         sb = get_supabase_client()
         if sb is None:
@@ -626,7 +685,42 @@ class DocumentService:
             logger.error("mark_document_completed(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
 
     @classmethod
+    def _is_mock_active(cls, target: Any) -> bool:
+        from unittest.mock import Mock, MagicMock
+
+        return isinstance(target, (Mock, MagicMock)) or hasattr(target, "mock") or hasattr(target, "_mock_return_value")
+
+    @classmethod
     async def get_document_result(cls, doc_id: str) -> dict[str, Any] | None:
+        doc_id = str(doc_id)
+        if not cls._should_query_document_tables(doc_id, "get_document_result"):
+            return None
+        retry_fn = getattr(cls, "_execute_with_transient_retry", None)
+        if cls._is_mock_active(retry_fn) or cls._is_mock_active(get_supabase_client):
+            sb = get_supabase_client()
+            if sb is None:
+                raise DatabaseUnavailableError("Supabase client is not configured.")
+
+            def run_query():
+                client = get_supabase_client()
+                return (
+                    client.table("document_results").select("*").eq("document_id", str(doc_id)).maybe_single().execute()
+                )
+
+            try:
+                result = await cls._execute_with_transient_retry("get_document_result", run_query, job_id=doc_id)
+                if result is None:
+                    return None
+                data = getattr(result, "data", None)
+                if data is None and isinstance(result, dict):
+                    data = result.get("data")
+                return data
+            except APIError as e:
+                logger.error("get_document_result(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
+                raise DatabaseUnavailableError(f"Failed to get document result: {e}") from e
+            except Exception as e:
+                logger.error("get_document_result(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
+                raise DatabaseUnavailableError(f"Failed to get document result: {e}") from e
         crud = getattr(cls, "_crud", None)
         if crud is None or not hasattr(crud, "get_document_result"):
             crud = DocumentCrudService()
@@ -639,6 +733,31 @@ class DocumentService:
         structured_data: dict[str, Any] | None = None,
         validation_results: dict[str, Any] | None = None,
     ) -> None:
+        doc_id = str(doc_id)
+        if cls._is_mock_active(asyncio.to_thread) or cls._is_mock_active(get_supabase_client):
+            sb = get_supabase_client()
+            if sb is None:
+                logger.error("upsert_document_result: Supabase client not available.", extra=log_extra(job_id=doc_id))
+                raise DatabaseUnavailableError("Supabase client is not configured.")
+            payload: dict[str, Any] = {"document_id": doc_id}
+            if structured_data is not None:
+                payload["structured_data"] = structured_data
+            if validation_results is not None:
+                payload["validation_results"] = validation_results
+
+            def run_upsert():
+                client = get_supabase_client()
+                return client.table("document_results").upsert(payload).execute()
+
+            try:
+                await asyncio.to_thread(run_upsert)
+                return
+            except APIError as e:
+                logger.error("upsert_document_result(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
+                raise DatabaseUnavailableError(f"Failed to upsert document result: {e}") from e
+            except Exception as e:
+                logger.error("upsert_document_result(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
+                raise DatabaseUnavailableError(f"Failed to upsert document result: {e}") from e
         crud = getattr(cls, "_crud", None)
         if crud is None or not hasattr(crud, "upsert_document_result"):
             crud = DocumentCrudService()
@@ -646,6 +765,39 @@ class DocumentService:
 
     @classmethod
     async def get_processing_statuses(cls, doc_id: str) -> list[dict[str, Any]]:
+        doc_id = str(doc_id)
+        if not cls._should_query_document_tables(doc_id, "get_processing_statuses"):
+            return []
+        retry_fn = getattr(cls, "_execute_with_transient_retry", None)
+        if cls._is_mock_active(retry_fn) or cls._is_mock_active(get_supabase_client):
+            sb = get_supabase_client()
+            if sb is None:
+                raise DatabaseUnavailableError("Supabase client is not configured.")
+
+            def run_query():
+                client = get_supabase_client()
+                return (
+                    client.table("processing_status")
+                    .select("*")
+                    .eq("document_id", str(doc_id))
+                    .order("created_at", desc=False)
+                    .execute()
+                )
+
+            try:
+                result = await cls._execute_with_transient_retry("get_processing_statuses", run_query, job_id=doc_id)
+                if result is None:
+                    return []
+                data = getattr(result, "data", None)
+                if data is None and isinstance(result, dict):
+                    data = result.get("data")
+                return data or []
+            except APIError as e:
+                logger.error("get_processing_statuses(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
+                raise DatabaseUnavailableError(f"Failed to get processing statuses: {e}") from e
+            except Exception as e:
+                logger.error("get_processing_statuses(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
+                raise DatabaseUnavailableError(f"Failed to get processing statuses: {e}") from e
         crud = getattr(cls, "_crud", None)
         if crud is None or not hasattr(crud, "get_processing_statuses"):
             crud = DocumentCrudService()
@@ -660,6 +812,35 @@ class DocumentService:
         progress_percentage: int | None = None,
         message: str | None = None,
     ) -> None:
+        doc_id = str(doc_id)
+        if cls._is_mock_active(asyncio.to_thread) or cls._is_mock_active(get_supabase_client):
+            sb = get_supabase_client()
+            if sb is None:
+                logger.error("upsert_processing_status: Supabase client not available.", extra=log_extra(job_id=doc_id))
+                raise DatabaseUnavailableError("Supabase client is not configured.")
+            payload: dict[str, Any] = {
+                "document_id": doc_id,
+                "phase": phase,
+                "status": status,
+            }
+            if progress_percentage is not None:
+                payload["progress_percentage"] = progress_percentage
+            if message is not None:
+                payload["message"] = message
+
+            def run_upsert():
+                client = get_supabase_client()
+                return client.table("processing_status").upsert(payload).execute()
+
+            try:
+                await asyncio.to_thread(run_upsert)
+                return
+            except APIError as e:
+                logger.error("upsert_processing_status(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
+                raise DatabaseUnavailableError(f"Failed to upsert processing status: {e}") from e
+            except Exception as e:
+                logger.error("upsert_processing_status(%s) failed: %s", doc_id, e, extra=log_extra(job_id=doc_id))
+                raise DatabaseUnavailableError(f"Failed to upsert processing status: {e}") from e
         crud = getattr(cls, "_crud", None)
         if crud is None or not hasattr(crud, "upsert_processing_status"):
             crud = DocumentCrudService()

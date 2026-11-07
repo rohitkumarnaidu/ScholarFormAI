@@ -558,6 +558,8 @@ class RagEngine:
 
     def query_guidelines(self, publisher: str, intent: str, top_k: int = 3) -> list[str]:
         """Retrieve the most relevant guideline text."""
+        if not intent or not intent.strip():
+            return []
         if self.chroma_enabled:
             try:
                 results = self.collection.query(

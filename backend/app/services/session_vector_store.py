@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from pathlib import Path
 from typing import Any
@@ -115,8 +116,20 @@ class SessionVectorStore:
 
     def _schedule_ttl_delete(self, session_id: str, ttl_seconds: int) -> None:
         self._persist_redis_ttl(session_id, ttl_seconds)
-        # Volatile in-memory timers have been removed in favor of Redis TTL
-        # and the scheduled purge_expired_vector_sessions Celery task.
+        try:
+            loop = asyncio.get_running_loop()
+
+            async def _async_delete():
+                await asyncio.sleep(ttl_seconds)
+                self.delete_collection(session_id)
+
+            loop.create_task(_async_delete())
+        except RuntimeError:
+            import threading
+
+            t = threading.Timer(ttl_seconds, self.delete_collection, args=(session_id,))
+            t.daemon = True
+            t.start()
 
     def _persist_redis_ttl(self, session_id: str, ttl_seconds: int) -> None:
         """Persist vector session TTL key to Redis if available."""
@@ -220,3 +233,5 @@ class SessionVectorStore:
                     r_client.delete(f"vector_session:{raw_id}:ttl")
         except Exception:
             pass  # intentionally ignored
+
+    delete_session = delete_collection

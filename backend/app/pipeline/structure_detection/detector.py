@@ -67,7 +67,9 @@ class StructureDetector(PipelineStage):
 
             # Step 2: Detect heading candidates
             # Check for LLM layout data (replaces Docling)
-            llm_layout = document.metadata.ai_hints.get("llm_layout")
+            llm_layout = document.metadata.ai_hints.get("llm_layout") or document.metadata.ai_hints.get(
+                "docling_layout"
+            )
 
             heading_candidates: list = []
             if llm_layout:
@@ -75,7 +77,10 @@ class StructureDetector(PipelineStage):
                     "Using LLM layout data for structure detection (%d elements)",
                     len(llm_layout.get("elements", [])),
                 )
-                heading_candidates = self._detect_structure_with_llm_layout(document.blocks, llm_layout)
+                is_docling = "docling_layout" in document.metadata.ai_hints
+                heading_candidates = self._detect_structure_with_llm_layout(
+                    document.blocks, llm_layout, is_docling=is_docling
+                )
 
             if not heading_candidates:
                 if llm_layout:
@@ -381,7 +386,7 @@ class StructureDetector(PipelineStage):
 
     @safe_function(fallback_value=[], error_message="LLM layout structure detection failed")
     def _detect_structure_with_llm_layout(
-        self, blocks: list[Block], layout_data: dict[str, Any]
+        self, blocks: list[Block], layout_data: dict[str, Any], is_docling: bool = False
     ) -> list[dict[str, Any]]:
         """
         Detect structure using LLM layout analysis data (replaces Docling).
@@ -479,6 +484,10 @@ class StructureDetector(PipelineStage):
                 continue
 
             # 4. Apply Docling Logic
+            is_docling_active = (
+                is_docling or ("docling_layout" in layout_data) or (layout_data.get("source") == "docling")
+            )
+            source_label = "Docling Layout" if is_docling_active else "LLM Layout"
 
             # A. Title Detection (Logo Tolerance built-in to Docling types)
             if not found_title and matched_element.get("type") == "title":
@@ -491,7 +500,7 @@ class StructureDetector(PipelineStage):
                     block.level = 0
                     block.metadata["is_heading_candidate"] = True
                     block.metadata["heading_confidence"] = 1.0
-                    block.metadata["heading_reasons"] = ["LLM Layout: Title Detected"]
+                    block.metadata["heading_reasons"] = [f"{source_label}: Title Detected"]
                     block.metadata["semantic_intent"] = "TITLE"
                     block.metadata["level"] = 0
 
@@ -501,7 +510,7 @@ class StructureDetector(PipelineStage):
                             "block_id": block.block_id,
                             "level": 0,
                             "confidence": 1.0,
-                            "reasons": ["LLM Layout: Title Detected"],
+                            "reasons": [f"{source_label}: Title Detected"],
                         }
                     )
                     found_title = True
@@ -528,7 +537,7 @@ class StructureDetector(PipelineStage):
                 block.level = level
                 block.metadata["is_heading_candidate"] = True
                 block.metadata["heading_confidence"] = matched_element.get("confidence", 0.9)
-                block.metadata["heading_reasons"] = [f"LLM Layout: Heading (Level {level})"]
+                block.metadata["heading_reasons"] = [f"{source_label}: Heading (Level {level})"]
                 block.metadata["semantic_intent"] = "HEADING"
                 block.metadata["level"] = level
 
@@ -538,7 +547,7 @@ class StructureDetector(PipelineStage):
                         "block_id": block.block_id,
                         "level": level,
                         "confidence": 0.9,
-                        "reasons": [f"LLM Layout: Heading (Level {level})"],
+                        "reasons": [f"{source_label}: Heading (Level {level})"],
                     }
                 )
 
@@ -548,7 +557,8 @@ class StructureDetector(PipelineStage):
 
         return candidates
 
-    _detect_structure_with_docling = _detect_structure_with_llm_layout
+    def _detect_structure_with_docling(self, blocks: list[Block], layout_data: dict[str, Any]) -> list[dict[str, Any]]:
+        return self._detect_structure_with_llm_layout(blocks, layout_data, is_docling=True)
 
 
 # Convenience function

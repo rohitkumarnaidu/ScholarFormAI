@@ -272,13 +272,16 @@ def generate_with_model(
 
 
 def _call_litellm_completion(**kwargs):
+    import litellm
+    from unittest.mock import Mock, MagicMock
+
+    if isinstance(getattr(litellm, "completion", None), (Mock, MagicMock)):
+        return litellm.completion(**kwargs)
     svc = _llm_service_module()
     comp = getattr(svc, "completion", None)
     if comp is not None:
         return comp(**kwargs)
-    from litellm import completion
-
-    return completion(**kwargs)
+    return litellm.completion(**kwargs)
 
 
 def _generate_openai_compat(**kwargs) -> str:

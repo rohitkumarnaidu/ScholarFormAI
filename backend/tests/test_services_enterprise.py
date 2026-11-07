@@ -349,24 +349,28 @@ class TestLlmServiceEnterprise:
 
     def test_generate_litellm_available(self):
         with patch("litellm.completion") as mock_completion:
-            with patch("app.cache.redis_cache.redis_cache") as mock_cache:
-                with patch("app.services.llm_service.LITELLM_AVAILABLE", True):
-                    mock_cache.get_llm_result.return_value = None
-                    mock_choice = MagicMock()
-                    mock_choice.message.content = "Hello response"
-                    mock_completion.return_value = MagicMock(choices=[mock_choice])
-                    from app.services.llm_service import generate
+            with patch("app.services.llm_service.completion", mock_completion, create=True):
+                with patch("app.cache.redis_cache.redis_cache") as mock_cache:
+                    with patch("app.services.llm_service.LITELLM_AVAILABLE", True):
+                        mock_cache.get_llm_result.return_value = None
+                        mock_choice = MagicMock()
+                        mock_choice.message.content = "Hello response"
+                        mock_completion.return_value = MagicMock(choices=[mock_choice])
+                        from app.services.llm_service import generate
 
-                    result = generate([{"role": "user", "content": "hi"}], model="nvidia_nim/test", api_key="sk-test")
-                    assert result == "Hello response"
+                        result = generate(
+                            [{"role": "user", "content": "hi"}], model="nvidia_nim/test", api_key="sk-test"
+                        )
+                        assert result == "Hello response"
 
     def test_generate_litellm_empty_choices(self):
         with patch("litellm.completion") as mock_completion:
-            with patch("app.cache.redis_cache.redis_cache") as mock_cache:
-                with patch("app.services.llm_service.LITELLM_AVAILABLE", True):
-                    mock_cache.get_llm_result.return_value = None
-                    mock_completion.return_value = MagicMock(choices=[])
-                    from app.services.llm_service import generate
+            with patch("app.services.llm_service.completion", mock_completion, create=True):
+                with patch("app.cache.redis_cache.redis_cache") as mock_cache:
+                    with patch("app.services.llm_service.LITELLM_AVAILABLE", True):
+                        mock_cache.get_llm_result.return_value = None
+                        mock_completion.return_value = MagicMock(choices=[])
+                        from app.services.llm_service import generate
 
                     result = generate([{"role": "user", "content": "hi"}], model="nvidia_nim/test")
                     assert result == ""
@@ -382,11 +386,14 @@ class TestLlmServiceEnterprise:
     def test_generate_fallback_path(self):
         with patch("app.cache.redis_cache.redis_cache") as mock_cache:
             mock_cache.get_llm_result.return_value = None
-            with patch("app.services.llm_service._generate_fallback", return_value="fallback ok"):
-                from app.services.llm_service import generate
+            with patch("app.services.llm_service.LITELLM_AVAILABLE", False):
+                with patch("app.services.llm_fallback_service.LITELLM_AVAILABLE", False):
+                    with patch("app.services.llm_service._generate_fallback", return_value="fallback ok"):
+                        with patch("app.services.llm_fallback_service._generate_fallback", return_value="fallback ok"):
+                            from app.services.llm_service import generate
 
-                result = generate([{"role": "user", "content": "hi"}], model="nvidia_nim/test")
-                assert result == "fallback ok"
+                            result = generate([{"role": "user", "content": "hi"}], model="nvidia_nim/test")
+                            assert result == "fallback ok"
 
     def test_generate_fallback_nvidia(self):
         with patch("app.services.llm_service._openai_compat", return_value="ok"):
@@ -432,8 +439,9 @@ class TestLlmServiceEnterprise:
         from app.services.llm_service import generate_with_model
 
         with patch("app.services.provider_registry.resolve_model_provider", return_value="custom_abc"):
-            with patch("app.db.session.get_db") as mock_get_db:
+            with patch("app.db.session.SessionLocal") as mock_sl, patch("app.db.session.get_db") as mock_get_db:
                 mock_db = MagicMock()
+                mock_sl.return_value.__enter__.return_value = mock_db
                 mock_get_db.return_value.__enter__.return_value = mock_db
                 mock_get_db.return_value.__next__.return_value = mock_db
                 mock_cp = MagicMock()
@@ -460,8 +468,9 @@ class TestLlmServiceEnterprise:
         from app.services.llm_service import LLMUnavailableError, generate_with_model
 
         with patch("app.services.provider_registry.resolve_model_provider", return_value="custom_abc"):
-            with patch("app.db.session.get_db") as mock_get_db:
+            with patch("app.db.session.SessionLocal") as mock_sl, patch("app.db.session.get_db") as mock_get_db:
                 mock_db = MagicMock()
+                mock_sl.return_value.__enter__.return_value = mock_db
                 mock_get_db.return_value.__next__.return_value = mock_db
                 mock_db.execute.return_value.scalar_one_or_none.return_value = None
                 with pytest.raises(LLMUnavailableError):

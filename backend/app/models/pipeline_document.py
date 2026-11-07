@@ -12,6 +12,7 @@ from pydantic import BaseModel, Field, field_validator
 from app.models.block import Block
 from app.models.equation import Equation
 from app.models.figure import Figure
+from app.models.review import ReviewStatus
 from app.models.reference import Reference
 from app.models.review import ReviewMetadata
 from app.models.table import Table

@@ -105,7 +105,12 @@ def _service_urls(setting_method_name: str) -> list[str]:
     return []
 
 
-def _service_health_path(service_name: str) -> str:
+def _service_health_path(service_name: str, custom_path: str | None = None) -> str:
+    if custom_path is not None:
+        p = custom_path.strip().rstrip("/")
+        if not p:
+            return "/"
+        return p if p.startswith("/") else f"/{p}"
     try:
         path = settings.get_service_health_path(service_name)
     except (ValueError, Exception) as e:
