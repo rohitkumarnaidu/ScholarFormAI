@@ -84,7 +84,7 @@ tenacity==9.2.1
 prometheus_client==0.26.0
 prometheus-fastapi-instrumentator==8.0.2
 structlog==26.1.0
-posthog==7.29.0
+posthog==7.84.2
 sentry-sdk[fastapi]==2.73.0
 
 # ─── Utilities ─────────────────────────────────────────────────────────────────
