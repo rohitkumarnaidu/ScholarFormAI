@@ -197,7 +197,7 @@ oauthlib==3.3.1
 ollama==0.6.3
 omegaconf==2.4.0
 onnxruntime==1.31.1
-openai==2.50.0
+openai==3.46.0
 opencv-contrib-python==5.0.0.93
 opencv-python==5.0.0.93
 opencv-python-headless==5.0.0.93
