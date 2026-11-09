@@ -1,4 +1,4 @@
-FROM lfoppiano/grobid:0.8.2
+FROM lfoppiano/grobid:0.9.0
 
 WORKDIR /opt/grobid
 
