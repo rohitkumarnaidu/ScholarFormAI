@@ -1,16 +1,16 @@
 # ─── Core Web Server ───────────────────────────────────────────────────────────
-fastapi==0.162.0
+fastapi==0.165.0
 uvicorn==0.54.0
 starlette==1.10.0
-python-multipart==0.0.32
-sse-starlette==3.6.0
+python-multipart==0.0.34
+sse-starlette==3.7.0
 slowapi==0.1.10
 
 # ─── Settings / Config ─────────────────────────────────────────────────────────
 pydantic==2.12.5
 pydantic-settings>=2.14.0
 pydantic_core>=2.41.5
-email-validator==2.3.0
+email-validator==2.4.0
 python-dotenv==1.2.4
 
 # ─── Auth / Security ───────────────────────────────────────────────────────────
@@ -21,17 +21,17 @@ bcrypt==5.0.0
 cryptography==46.0.7
 
 # ─── Database / Supabase ───────────────────────────────────────────────────────
-supabase==2.33.0
-supabase-auth==2.33.0
-supabase-functions==2.33.0
-storage3==2.33.0
-postgrest==2.33.0
-realtime==2.33.0
-SQLAlchemy==2.1.6
+supabase==2.34.1
+supabase-auth==2.34.1
+supabase-functions==2.34.1
+storage3==2.34.1
+postgrest==2.34.1
+realtime==2.34.1
+SQLAlchemy==2.1.9
 alembic==1.20.1
 psycopg2-binary==2.9.13
-psycopg==3.3.6
-psycopg-binary==3.3.6
+psycopg==3.3.9
+psycopg-binary==3.3.9
 
 # ─── HTTP Clients ──────────────────────────────────────────────────────────────
 httpx==0.28.1
@@ -64,17 +64,17 @@ docxtpl==0.20.2
 weasyprint==62.3
 reportlab==4.4.9
 pylatexenc==2.11
-numpy>=2.5.4
+numpy>=2.5.5
 
 # ─── LLM Clients (light) ───────────────────────────────────────────────────────
 litellm>=1.81.13
 openai==2.50.0
 groq
 anthropic
-langchain-core==1.7.3
-langchain-openai==1.7.3
+langchain-core==1.8.4
+langchain-openai==1.8.5
 langchain-community==0.4.2
-langchain==1.4.7
+langchain==1.5.2
 langchain-anthropic
 langdetect
 tiktoken==0.14.0
@@ -85,20 +85,20 @@ prometheus_client==0.26.0
 prometheus-fastapi-instrumentator==6.1.0
 structlog==25.5.0
 posthog==5.4.0
-sentry-sdk[fastapi]==2.73.0
+sentry-sdk[fastapi]==2.75.0
 
 # ─── Utilities ─────────────────────────────────────────────────────────────────
-celery==5.6.3
-kombu==5.6.2
+celery==5.7.0
+kombu==5.7.0
 python-clamd
-anyio==4.15.1
+anyio==4.16.0
 orjson==3.13.0
 PyYAML==6.0.3
 toml==0.10.2
-click==8.5.0
+click==8.5.1
 rich==14.3.2
 tqdm==4.70.1
-regex==2026.9.29
+regex==2026.11.19
 python-Levenshtein==0.27.5
 RapidFuzz==3.14.6
 cachetools==6.2.6
@@ -122,7 +122,7 @@ scipy==1.18.1
 joblib==1.6.0
 
 # ─── Reference / Citation ──────────────────────────────────────────────────────
-citeproc-py==0.11.1
+citeproc-py==0.12.3
 
 # ─── Security ──────────────────────────────────────────────────────────────────
 defusedxml>=0.7.1
@@ -132,8 +132,8 @@ stripe==15.2.1
 
 # ─── Testing ───────────────────────────────────────────────────────────────────
 pytest>=9.2.0
-pytest-asyncio>=1.4.1
+pytest-asyncio>=1.5.0
 pytest-cov>=5.0.0
 pytest-mock>=3.17.0
 
-hypothesis>=6.170.14
+hypothesis>=6.170.17
